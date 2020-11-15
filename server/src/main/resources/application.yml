@@ -1,0 +1,60 @@
+#server.port=3000
+
+spring:
+  security:
+    oauth2:
+#      client:
+#        registration:
+#          google:
+#            clientId: 932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com
+#            clientSecret: LyIRcUAqz77ZoslEhynVDTsW
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://api.github.com/user
+#          jwk-set-uri:
+#          issuer-uri: https://accounts.google.com
+  data:
+    mongodb:
+      database: hrpg
+      auto-index-creation: true
+      port: 27018
+      replica-set-name: rs0
+#      uri: mongodb://localhost:30001/hrpg?ssl=false&replicaSet=my-mongo-set&readPreference=primary
+#      uri: mongodb://localhost:30001,localhost:30002,localhost:30003/hrpg
+
+mongock:
+  change-logs-scan-package:
+    - hrpg.server.common.mongock
+
+
+parameters:
+  user:
+    start-coins: 0
+  items:
+    max: 100
+  captures:
+    time: 10
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+#  security:
+#    oauth2:
+#      client:
+#        registration:
+#          test:
+#            clientId: d0e40e1858a6ccf54357
+#            clientSecret: da78df6928ac20210b56e0e3d6eddbe110f5b9d8
+#            userAuthorizationUri: "http://localhost:8080/github-authorize"
+#            accessTokenUri: https://github.com/login/oauth/access_token
+            #            userAuthorizationUri: https://github.com/login/oauth/authorize
+#            clientAuthenticationScheme: form
+#          github:
+#            clientId: d0e40e1858a6ccf54357
+#            clientSecret: da78df6928ac20210b56e0e3d6eddbe110f5b9d8
+#          google:
+#            clientId: 932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com
+#            clientSecret: LyIRcUAqz77ZoslEhynVDTsW

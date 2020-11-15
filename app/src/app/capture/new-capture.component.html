@@ -1,0 +1,14 @@
+<div>
+  <div *ngIf="!activeCapture">
+    <div (click)="startCapture()">Start</div>
+    <br/>
+    <div>Nest:</div>
+    <div (click)="setNest(1)">1</div>
+    <div (click)="setNest(2)">2</div>
+    <div (click)="setNest(3)">3</div>
+  </div>
+
+  <div *ngIf="activeCapture">
+    <div (click)="finish()">Remaining {{timeLeft | date:'HH:mm:ss':'UTC'}}</div>
+  </div>
+</div>

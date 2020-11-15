@@ -1,0 +1,89 @@
+package hrpg.server.capture.resource;
+
+import hrpg.server.capture.service.CaptureService;
+import hrpg.server.capture.service.exception.NestUnavailableException;
+import hrpg.server.common.resource.SortValues;
+import hrpg.server.common.resource.exception.ResourceNotFoundException;
+import hrpg.server.common.resource.exception.ValidationError;
+import hrpg.server.common.resource.exception.ValidationException;
+import hrpg.server.user.service.exception.TooManyCaptureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.data.web.SortDefault;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.EntityLinks;
+import org.springframework.hateoas.server.ExposesResourceFor;
+import org.springframework.hateoas.server.TypedEntityLinks;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Collections;
+
+@RestController
+@RequestMapping(path = "captures")
+@ExposesResourceFor(CaptureResponse.class)
+public class CaptureController {
+
+    public static final String ITEM_COLLECTION_VALUE = "captures";
+
+    private final TypedEntityLinks<CaptureResponse> links;
+    private final PagedResourcesAssembler<CaptureResponse> pagedResourcesAssembler;
+
+    private final CaptureService captureService;
+    private final CaptureResourceMapper captureResourceMapper;
+
+    public CaptureController(EntityLinks entityLinks,
+                             PagedResourcesAssembler<CaptureResponse> pagedResourcesAssembler,
+                             CaptureService captureService,
+                             CaptureResourceMapper captureResourceMapper) {
+        this.links = entityLinks.forType(CaptureResponse::getId);
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
+
+        this.captureService = captureService;
+        this.captureResourceMapper = captureResourceMapper;
+    }
+
+    @PostMapping
+    public ResponseEntity<?> create(@Valid @RequestBody CaptureRequest request) {
+        captureService.updateFlagAndFillEmpty();
+
+        CaptureResponse response;
+        try {
+            response = captureResourceMapper.toResponse(captureService.create(request.getQuality()));
+        } catch (TooManyCaptureException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("tooMany").build()));
+        } catch (NestUnavailableException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("quality").code("unavailable").build()));
+        }
+        return ResponseEntity.created(links.linkToItemResource(response).toUri())
+                .header("Access-Control-Expose-Headers", HttpHeaders.LOCATION).build();
+    }
+
+    @GetMapping("{id}")
+    public CaptureResponse get(@PathVariable String id) {
+        //todo add link to creature
+        CaptureResponse response = captureService.findById(id)
+                .map(captureResourceMapper::toResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("id"));
+        return response.add(links.linkToItemResource(response));
+    }
+
+    @GetMapping
+    @SortValues(values = {"startTime", "endTime"})
+    public PagedModel<EntityModel<CaptureResponse>> search(
+            @SortDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable) {
+        captureService.updateFlagAndFillEmpty();
+
+        Page<CaptureResponse> captures = captureService.search(pageable)
+                .map(captureResourceMapper::toResponse)
+                .map(capture -> capture.add(links.linkToItemResource(capture)));
+        return pagedResourcesAssembler.toModel(captures);
+    }
+}

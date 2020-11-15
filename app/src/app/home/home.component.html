@@ -1,0 +1,8 @@
+<div>
+  <login *ngIf="!isLoggedIn"></login>
+
+  <app-header *ngIf="isLoggedIn" [isHome]="true" [title]="'Llama Breeder'" [user]="user"></app-header>
+  <div *ngIf="isLoggedIn">
+    <a href="capture">Wild land</a>
+  </div>
+</div>

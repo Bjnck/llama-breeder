@@ -1,10 +1,14 @@
 package hrpg.server.user.resource;
 
 import hrpg.server.item.resource.ItemController;
+import hrpg.server.shop.resource.ShopItemController;
 import hrpg.server.user.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -30,6 +34,19 @@ public class UserController {
     public UserResponse user() {
         return userResourceMapper.toResponse(userService.get())
                 .add(linkTo(UserController.class).withSelfRel(),
-                        linkTo(ItemController.class).withRel(ItemController.ITEM_COLLECTION_VALUE));
+                        linkTo(ItemController.class).withRel(ItemController.COLLECTION_REF),
+                        linkTo(ShopItemController.class).withRel(ShopItemController.COLLECTION_REF));
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> update(@Valid @RequestBody UserRequest request) {
+        userService.updateName(request.getName());
+        return ResponseEntity.ok().header(HttpHeaders.LOCATION, linkTo(UserController.class).toUri().toString()).build();
+    }
+
+    @DeleteMapping
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void delete() {
+        userService.delete();
     }
 }

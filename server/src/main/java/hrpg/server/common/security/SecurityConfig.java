@@ -37,8 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 oauth2.authenticationManagerResolver(this.tokenAuthenticationManagerResolver())
         );
         http.cors();
-        http.addFilterAfter(
-                new DbUserFilter(userService), BearerTokenAuthenticationFilter.class);
+        http.addFilterAfter(new DbUserFilter(userService), BearerTokenAuthenticationFilter.class);
     }
 
     @Bean

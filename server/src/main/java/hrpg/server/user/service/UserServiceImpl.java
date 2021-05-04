@@ -1,12 +1,14 @@
 package hrpg.server.user.service;
 
 import hrpg.server.common.properties.ParametersProperties;
-import hrpg.server.common.security.OAuthUserUtil;
 import hrpg.server.user.dao.User;
+import hrpg.server.user.dao.UserDetails;
 import hrpg.server.user.dao.UserRepository;
 import hrpg.server.user.service.exception.TooManyCaptureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
@@ -25,11 +27,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto create(String registrationKey) {
-        return userMapper.toDto(userRepository.save(User.builder()
-                .registrationKey(registrationKey)
+    public UserDto create(@NotNull String registrationKey) {
+        User user = User.builder().registrationKey(registrationKey).build();
+        user.setDetails(UserDetails.builder()
+                .user(user)
                 .coins(parametersProperties.getUser().getStartCoins())
-                .build()));
+                .build());
+        return userMapper.toDto(userRepository.save(user));
     }
 
     @Override
@@ -39,19 +43,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto get() {
-        return userMapper.toDto(getUser());
+        return userMapper.toDto(userRepository.get());
     }
 
     @Override
     public void flagCapture(boolean flag) throws TooManyCaptureException {
-        User user = getUser();
-        if (flag && user.isCapture())
-            throw new TooManyCaptureException();
-
-        userRepository.save(user.toBuilder().capture(flag).build());
+//        User user = getUser();
+//        if (flag && user.isCapture())
+//            throw new TooManyCaptureException();
+//
+//        userRepository.save(user.toBuilder().capture(flag).build());
     }
 
-    private User getUser() {
-        return userRepository.findById(OAuthUserUtil.getUserId()).orElseThrow();
+    @Transactional
+    @Override
+    public UserDto updateName(String name) {
+        User user = userRepository.get();
+        user.setName(name);
+        return userMapper.toDto(user);
+    }
+
+    @Transactional
+    @Override
+    public void delete() {
+        User user = userRepository.get();
+        //todo if user has no creatures
+        // userRepository.delete(user);
+        // else remove extra info
+        user.setRegistrationKeys(null);
+        user.setDetails(null);
     }
 }

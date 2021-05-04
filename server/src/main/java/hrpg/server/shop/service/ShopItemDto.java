@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class ShopItemDto {
-    private String id;
+    private Integer id;
 
     private ItemCode code;
     private int quality;

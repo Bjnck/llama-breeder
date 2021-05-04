@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class ItemDto {
-    private String id;
+    private Long id;
 
     private ItemCode code;
     private int quality;

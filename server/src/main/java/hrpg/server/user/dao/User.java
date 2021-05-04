@@ -1,43 +1,34 @@
 package hrpg.server.user.dao;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Singular;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
 
-import java.util.List;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
-
+@NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "users")
+@Entity
+@Table(name = "user")
 public class User {
-    @Transient
-    public static final String SEQUENCE_NAME = "users_sequence";
-
     @Id
-    private String id;
-    @Version
-    @Builder.Default
-    private int version = 0;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Indexed(unique = true)
     private String name;
 
     @Singular
-    private List<String> registrationKeys;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_registration", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "registration_Key")
+    private Set<String> registrationKeys = new HashSet<>();
 
-    @Builder.Default
-    private long coins = 0;
-    @Builder.Default
-    private int level = 0;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UserDetails details;
 
-    @Builder.Default
-    private boolean capture = false;
+//    @Builder.Default
+//    @Column(name = "is_in_capture", nullable = false)
+//    private boolean capture = false;
 }

@@ -23,22 +23,19 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!--mongock-->
         <dependency>
-            <groupId>com.github.cloudyrock.mongock</groupId>
-            <artifactId>mongock-spring-v5</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.cloudyrock.mongock</groupId>
-            <artifactId>mongodb-springdata-v3-driver</artifactId>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver-sync</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-mongodb</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -61,11 +58,6 @@
                         <version>1.4.0.Final</version>
                     </path>
                 </annotationProcessorPaths>
-                <compilerArgs>
-                    <compilerArg>
-                        -Amapstruct.defaultComponentModel=spring
-                    </compilerArg>
-                </compilerArgs>
             </configuration>
         </plugin>
     </plugins>

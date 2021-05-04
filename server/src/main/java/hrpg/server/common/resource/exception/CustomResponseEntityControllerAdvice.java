@@ -1,10 +1,8 @@
 package hrpg.server.common.resource.exception;
 
-import com.mongodb.MongoCommandException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +20,12 @@ import java.util.stream.Collectors;
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 class CustomResponseEntityControllerAdvice extends ResponseEntityExceptionHandler {
 
-    @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(UncategorizedMongoDbException.class)
-    public void handleUncategorizedMongoDbException(UncategorizedMongoDbException e) {
-        if (((MongoCommandException) e.getCause()).getErrorCode() != 112)
-            throw e;
-    }
+//    @ResponseStatus(HttpStatus.CONFLICT)
+//    @ExceptionHandler(UncategorizedMongoDbException.class)
+//    public void handleUncategorizedMongoDbException(UncategorizedMongoDbException e) {
+//        if (((MongoCommandException) e.getCause()).getErrorCode() != 112)
+//            throw e;
+//    }
 
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(OptimisticLockingFailureException.class)
@@ -37,12 +34,7 @@ class CustomResponseEntityControllerAdvice extends ResponseEntityExceptionHandle
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(ResourceNotFoundException e) {
-        return ResponseEntity.badRequest().body(Collections.singletonList(
-                ErrorResponse.builder()
-                        .field(e.getField())
-                        .code("notFound")
-                        .build()));
+    public void handleNotFoundException(ResourceNotFoundException e) {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

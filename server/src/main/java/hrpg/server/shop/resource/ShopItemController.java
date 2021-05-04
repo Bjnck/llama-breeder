@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "shop/items")
+@RequestMapping(path = "shop-items")
 @ExposesResourceFor(ShopItemResponse.class)
 public class ShopItemController {
 
-    public static final String SHOP_COLLECTION_VALUE = "shop";
+    public static final String COLLECTION_REF = "shop";
 
     private final ShopItemService shopItemService;
     private final ShopItemResourceMapper shopItemResourceMapper;
@@ -31,8 +31,8 @@ public class ShopItemController {
     }
 
     @GetMapping
-    public PagedModel<EntityModel<ShopItemResponse>> search(ShopItemSearchParams searchParams, Pageable pageable) {
-        Page<ShopItemResponse> items = shopItemService.search(shopItemResourceMapper.toSearch(searchParams), pageable)
+    public PagedModel<EntityModel<ShopItemResponse>> search(ShopItemQueryParams queryParams, Pageable pageable) {
+        Page<ShopItemResponse> items = shopItemService.search(shopItemResourceMapper.toSearch(queryParams), pageable)
                 .map(shopItemResourceMapper::toResponse);
         return pagedResourcesAssembler.toModel(items);
     }

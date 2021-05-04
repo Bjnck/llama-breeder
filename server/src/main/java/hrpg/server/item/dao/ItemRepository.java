@@ -1,6 +1,8 @@
 package hrpg.server.item.dao;
 
 import hrpg.server.common.dao.WithUserRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ItemRepository extends WithUserRepository<Item, String> {
+@Repository
+public interface ItemRepository extends WithUserRepository<Item, Long> {
 }

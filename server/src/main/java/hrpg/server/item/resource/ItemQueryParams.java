@@ -1,8 +1,8 @@
-package hrpg.server.shop.resource;
+package hrpg.server.item.resource;
 
 import hrpg.server.item.type.ItemCode;
 
-public interface ShopItemSearchParams {
+public interface ItemQueryParams {
     ItemCode getCode();
     Integer getQuality();
 }

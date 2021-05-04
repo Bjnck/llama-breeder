@@ -17,7 +17,7 @@ public class CustomPrincipal implements OAuth2AuthenticatedPrincipal, Serializab
     private final Collection<GrantedAuthority> authorities;
     private final String name;
 
-    private String userId;
+    private Integer userId;
 
     /**
      * Constructs an {@code CustomPrincipal} using the provided parameters.
@@ -73,11 +73,11 @@ public class CustomPrincipal implements OAuth2AuthenticatedPrincipal, Serializab
         return this.name;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 }

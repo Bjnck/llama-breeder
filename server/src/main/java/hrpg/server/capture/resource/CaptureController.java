@@ -71,7 +71,7 @@ public class CaptureController {
         //todo add link to creature
         CaptureResponse response = captureService.findById(id)
                 .map(captureResourceMapper::toResponse)
-                .orElseThrow(() -> new ResourceNotFoundException("id"));
+                .orElseThrow(ResourceNotFoundException::new);
         return response.add(links.linkToItemResource(response));
     }
 

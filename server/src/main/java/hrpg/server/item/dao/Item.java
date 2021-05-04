@@ -3,28 +3,33 @@ package hrpg.server.item.dao;
 import hrpg.server.common.dao.WithUser;
 import hrpg.server.item.type.ItemCode;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Builder(toBuilder = true)
-@AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "items")
-@CompoundIndex(def = "{'code' : 1, 'quality' : 1}", unique = true)
+@AllArgsConstructor
+@Entity
+@Table(name = "item")
 public class Item extends WithUser {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @NotNull
+    @Builder.Default
+    @Version
+    private int version = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ItemCode code;
-    @NotNull
+    @Column(nullable = false)
     private Integer quality;
 
-    @NotNull
-    private Integer life;
+    @Builder.Default
+    @Column(nullable = false)
+    private Integer life = 100;
 }

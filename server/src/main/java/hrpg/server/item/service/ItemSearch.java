@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 public class ItemSearch {
     private ItemCode code;

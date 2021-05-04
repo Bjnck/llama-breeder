@@ -4,18 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class UserDto {
-    private String id;
+    private Integer id;
     private String name;
 
-    private List<String> registrationKeys;
+    private Set<String> registrationKeys;
 
-    private long coins;
+    private int version;
+
+    private int coins;
     private int level;
-    private boolean capture;
+//    private boolean capture;
 }

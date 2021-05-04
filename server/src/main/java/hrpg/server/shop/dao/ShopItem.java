@@ -5,27 +5,26 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Data
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "shopItems")
-@CompoundIndex(def = "{'code' : 1, 'quality' : 1}", unique = true)
+@Table(name = "shop")
+@Entity
 public class ShopItem {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ItemCode code;
-    @NotNull
+    @Column(nullable = false)
     private Integer quality;
 
-    @NotNull
+    @Column(nullable = false)
     private Integer coins;
 }

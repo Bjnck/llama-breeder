@@ -10,5 +10,5 @@ public interface ShopItemResourceMapper {
 
     ShopItemResponse toResponse(ShopItemDto dto);
 
-    ShopItemSearch toSearch(ShopItemSearchParams params);
+    ShopItemSearch toSearch(ShopItemQueryParams params);
 }

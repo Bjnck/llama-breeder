@@ -13,19 +13,17 @@ spring:
           jwk-set-uri: https://api.github.com/user
 #          jwk-set-uri:
 #          issuer-uri: https://accounts.google.com
-  data:
-    mongodb:
-      database: hrpg
-      auto-index-creation: true
-      port: 27018
-      replica-set-name: rs0
-#      uri: mongodb://localhost:30001/hrpg?ssl=false&replicaSet=my-mongo-set&readPreference=primary
-#      uri: mongodb://localhost:30001,localhost:30002,localhost:30003/hrpg
 
-mongock:
-  change-logs-scan-package:
-    - hrpg.server.common.mongock
-
+  jpa:
+    generate-ddl: true
+  #  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+  datasource:
+    url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/llama"
+    username: llama
+    password: password
+    initialization-mode: ALWAYS
 
 parameters:
   user:
@@ -35,11 +33,7 @@ parameters:
   captures:
     time: 10
 
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+
 
 #  security:
 #    oauth2:

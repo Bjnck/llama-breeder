@@ -13,4 +13,8 @@ public interface UserService {
     UserDto get();
 
     void flagCapture(boolean flag) throws TooManyCaptureException;
+
+    UserDto updateName(String name);
+
+    void delete();
 }

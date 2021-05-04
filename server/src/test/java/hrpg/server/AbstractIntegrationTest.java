@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -37,11 +36,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@TestPropertySource(properties = "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration")
 public abstract class AbstractIntegrationTest {
 
     private final static String AUTHORIZED_CLIENT_REGISTRATION_ID = "testRegistrationId";
-    private final static String USER_SUB = UUID.randomUUID().toString();
 
     @Autowired
     protected MockMvc mockMvc;
@@ -57,18 +54,19 @@ public abstract class AbstractIntegrationTest {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(new JavaTimeModule());
 
-        UserDto userDto = userService.create(AUTHORIZED_CLIENT_REGISTRATION_ID + "." + USER_SUB);
-        authentication = buildPrincipal(userDto.getId());
+        String userSub = UUID.randomUUID().toString();
+        UserDto userDto = userService.create(AUTHORIZED_CLIENT_REGISTRATION_ID + "." + userSub);
+        authentication = buildPrincipal(userSub, userDto.getId());
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 new SecurityContextImpl(authentication));
     }
 
-    private static BearerTokenAuthentication buildPrincipal(String userId) {
+    private static BearerTokenAuthentication buildPrincipal(String userSub, Integer userId) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("registration", AUTHORIZED_CLIENT_REGISTRATION_ID);
         attributes.put("registration_id", "sub");
-        attributes.put("sub", USER_SUB);
+        attributes.put("sub", userSub);
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new OAuth2UserAuthority("ROLE_USER", attributes));
         CustomPrincipal user = new CustomPrincipal(attributes, authorities);
@@ -96,6 +94,12 @@ public abstract class AbstractIntegrationTest {
     protected ResultActions get(String urlTemplate) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders.get(urlTemplate)
                 .session(session));
+    }
+
+    protected ResultActions delete(String urlTemplate) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.delete(urlTemplate)
+                .session(session)
+                .with(csrf()));
     }
 
     protected static ResultMatcher jsonPathTotalElements(int totalElements) {

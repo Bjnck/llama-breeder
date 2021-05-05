@@ -1,6 +1,7 @@
 package hrpg.server.item.service;
 
 import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsReachedException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
@@ -18,5 +19,5 @@ public interface ItemService {
 
     Page<ItemDto> search(ItemSearch search, Pageable pageable);
 
-    void delete(long id);
+    void delete(long id) throws ItemNotFoundException;
 }

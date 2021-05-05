@@ -30,7 +30,7 @@ public class WithUserAspect {
         return point.proceed();
     }
 
-    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository.findById(..))")
+    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository.findBy*(..))")
     public void findByIdPointCut() {
     }
 
@@ -46,7 +46,7 @@ public class WithUserAspect {
     public void findAllPointCut() {
     }
 
-    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository.count(..))")
+    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository.count*(..))")
     public void countPointCut() {
     }
 

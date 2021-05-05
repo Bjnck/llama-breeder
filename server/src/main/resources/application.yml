@@ -31,7 +31,9 @@ parameters:
   items:
     max: 100
   captures:
-    time: 10
+    time-unit: SECONDS
+    time-value: 10
+    max: 20
 
 
 

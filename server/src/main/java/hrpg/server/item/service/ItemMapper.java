@@ -10,7 +10,5 @@ public interface ItemMapper {
 
     ItemDto toDto(Item entity);
 
-    Item toEntity(ItemDto dto);
-
     ItemCriteria toCriteria(ItemSearch search);
 }

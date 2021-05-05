@@ -5,6 +5,7 @@ import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.item.dao.Item;
 import hrpg.server.item.dao.ItemRepository;
 import hrpg.server.item.dao.ItemSpecification;
+import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsReachedException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
@@ -42,7 +43,11 @@ public class ItemServiceImpl implements ItemService {
         this.parametersProperties = parametersProperties;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {
+            ShopItemNotFoundException.class,
+            InsufficientCoinsException.class,
+            MaxItemsReachedException.class
+    })
     @Override
     public ItemDto create(@NotNull ItemCode code, int quality)
             throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsReachedException {
@@ -53,15 +58,15 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.get();
 
         //validate user has enough coins
-        if(shopItemDto.getCoins() > 0){
-            if(user.getDetails().getCoins() < shopItemDto.getCoins())
+        if (shopItemDto.getCoins() > 0) {
+            if (user.getDetails().getCoins() < shopItemDto.getCoins())
                 throw new InsufficientCoinsException();
-            user.getDetails().setCoins(user.getDetails().getCoins()- shopItemDto.getCoins());
+            user.getDetails().setCoins(user.getDetails().getCoins() - shopItemDto.getCoins());
         }
 
         //validate max number of items reached
         long itemCount = itemRepository.count();
-        if(itemCount >= parametersProperties.getItems().getMax())
+        if (itemCount >= parametersProperties.getItems().getMax())
             throw new MaxItemsReachedException();
 
         //create new item
@@ -81,7 +86,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void delete(long id) {
-        itemRepository.findById(id).ifPresent(itemRepository::delete);
+    public void delete(long id) throws ItemNotFoundException {
+        Item item = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+        itemRepository.delete(item);
     }
 }

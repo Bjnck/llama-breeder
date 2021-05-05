@@ -6,8 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(config = SpringBaseMapperConfig.class)
 public interface CaptureResourceMapper {
-    CaptureDto toRequest(CaptureRequest request);
 
     CaptureResponse toResponse(CaptureDto dto);
-
 }

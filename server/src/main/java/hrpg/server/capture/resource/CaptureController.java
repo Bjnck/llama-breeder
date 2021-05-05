@@ -1,12 +1,14 @@
 package hrpg.server.capture.resource;
 
+import hrpg.server.capture.service.CaptureComputor;
+import hrpg.server.capture.service.CaptureDto;
 import hrpg.server.capture.service.CaptureService;
 import hrpg.server.capture.service.exception.NestUnavailableException;
+import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
-import hrpg.server.user.service.exception.TooManyCaptureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 
 @RestController
@@ -29,35 +32,38 @@ import java.util.Collections;
 @ExposesResourceFor(CaptureResponse.class)
 public class CaptureController {
 
-    public static final String ITEM_COLLECTION_VALUE = "captures";
+    public static final String COLLECTION_REF = "captures";
 
     private final TypedEntityLinks<CaptureResponse> links;
     private final PagedResourcesAssembler<CaptureResponse> pagedResourcesAssembler;
 
     private final CaptureService captureService;
     private final CaptureResourceMapper captureResourceMapper;
+    private final CaptureComputor captureComputor;
 
     public CaptureController(EntityLinks entityLinks,
                              PagedResourcesAssembler<CaptureResponse> pagedResourcesAssembler,
                              CaptureService captureService,
-                             CaptureResourceMapper captureResourceMapper) {
+                             CaptureResourceMapper captureResourceMapper,
+                             CaptureComputor captureComputor) {
         this.links = entityLinks.forType(CaptureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.captureService = captureService;
         this.captureResourceMapper = captureResourceMapper;
+        this.captureComputor = captureComputor;
     }
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CaptureRequest request) {
-        captureService.updateFlagAndFillEmpty();
+        captureComputor.compute();
 
         CaptureResponse response;
         try {
             response = captureResourceMapper.toResponse(captureService.create(request.getQuality()));
-        } catch (TooManyCaptureException e) {
+        } catch (RunningCaptureException e) {
             throw new ValidationException(Collections.singletonList(
-                    ValidationError.builder().field("_self").code("tooMany").build()));
+                    ValidationError.builder().field("_self").code("runningCapture").build()));
         } catch (NestUnavailableException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("quality").code("unavailable").build()));
@@ -67,23 +73,28 @@ public class CaptureController {
     }
 
     @GetMapping("{id}")
-    public CaptureResponse get(@PathVariable String id) {
-        //todo add link to creature
-        CaptureResponse response = captureService.findById(id)
-                .map(captureResourceMapper::toResponse)
-                .orElseThrow(ResourceNotFoundException::new);
-        return response.add(links.linkToItemResource(response));
+    public CaptureResponse get(@PathVariable long id) {
+        captureComputor.compute(id);
+        return toResponse(captureService.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
     @GetMapping
-    @SortValues(values = {"startTime", "endTime"})
+    @SortValues(values = {"id", "startTime", "endTime"})
     public PagedModel<EntityModel<CaptureResponse>> search(
-            @SortDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        captureService.updateFlagAndFillEmpty();
-
-        Page<CaptureResponse> captures = captureService.search(pageable)
-                .map(captureResourceMapper::toResponse)
-                .map(capture -> capture.add(links.linkToItemResource(capture)));
+            @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        captureComputor.compute();
+        Page<CaptureResponse> captures = captureService.search(pageable).map(this::toResponse);
         return pagedResourcesAssembler.toModel(captures);
+    }
+
+    private CaptureResponse toResponse(@NotNull CaptureDto captureDto) {
+        CaptureResponse response = captureResourceMapper.toResponse(captureDto);
+        response.add(links.linkToItemResource(response));
+
+        //todo add link to creature if not null
+//        if(captureResponse.getCreatureId() != null)
+//            captureResponse.add(linkTo(CreatureController.class, captureResponse.getId()).withRel("creature"));
+
+        return response;
     }
 }

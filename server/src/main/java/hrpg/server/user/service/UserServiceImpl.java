@@ -4,7 +4,6 @@ import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserDetails;
 import hrpg.server.user.dao.UserRepository;
-import hrpg.server.user.service.exception.TooManyCaptureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,15 +45,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(userRepository.get());
     }
 
-    @Override
-    public void flagCapture(boolean flag) throws TooManyCaptureException {
-//        User user = getUser();
-//        if (flag && user.isCapture())
-//            throw new TooManyCaptureException();
-//
-//        userRepository.save(user.toBuilder().capture(flag).build());
-    }
-
     @Transactional
     @Override
     public UserDto updateName(String name) {
@@ -67,6 +57,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete() {
         User user = userRepository.get();
+
+        //todo delete all items
+        //todo delete all captures
+
         //todo if user has no creatures
         // userRepository.delete(user);
         // else remove extra info

@@ -7,6 +7,7 @@ import hrpg.server.common.resource.exception.ValidationCode;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.item.service.ItemService;
+import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsReachedException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import org.springframework.data.domain.Page;
@@ -52,8 +53,8 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Object> create(@Valid @RequestBody ItemRequest request) {
         try {
-            ItemResponse item = itemResourceMapper.toResponse(itemService.create(request.getCode(), request.getQuality()));
-            return ResponseEntity.created(links.linkToItemResource(item).toUri()).build();
+            ItemResponse response = itemResourceMapper.toResponse(itemService.create(request.getCode(), request.getQuality()));
+            return ResponseEntity.created(links.linkToItemResource(response).toUri()).build();
         } catch (ShopItemNotFoundException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("code,quality").code("shopItemNotFound").build()));
@@ -70,7 +71,7 @@ public class ItemController {
     public ItemResponse get(@PathVariable long id) {
         return itemService.findById(id)
                 .map(itemResourceMapper::toResponse)
-                .map(item -> item.add(links.linkToItemResource(item)))
+                .map(response -> response.add(links.linkToItemResource(response)))
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -78,15 +79,19 @@ public class ItemController {
     @SortValues(values = {"id", "life"})
     public PagedModel<EntityModel<ItemResponse>> search(ItemQueryParams queryParams,
                                                         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<ItemResponse> items = itemService.search(itemResourceMapper.toSearch(queryParams), pageable)
+        Page<ItemResponse> responses = itemService.search(itemResourceMapper.toSearch(queryParams), pageable)
                 .map(itemResourceMapper::toResponse)
-                .map(item -> item.add(links.linkToItemResource(item)));
-        return pagedResourcesAssembler.toModel(items);
+                .map(response -> response.add(links.linkToItemResource(response)));
+        return pagedResourcesAssembler.toModel(responses);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
-        itemService.delete(id);
+        try {
+            itemService.delete(id);
+        } catch (ItemNotFoundException e) {
+            throw new ResourceNotFoundException();
+        }
     }
 }

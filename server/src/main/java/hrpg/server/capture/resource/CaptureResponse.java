@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -13,12 +13,12 @@ import java.time.Instant;
 @NoArgsConstructor
 @Relation(collectionRelation = "captures")
 public class CaptureResponse extends RepresentationModel<CaptureResponse> {
-    private String id;
+    private Long id;
 
     private int quality;
 
-    private String creatureId;
+    private Long creatureId;
 
-    private Instant startTime;
-    private Instant endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

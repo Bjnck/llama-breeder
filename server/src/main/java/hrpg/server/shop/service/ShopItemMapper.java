@@ -10,7 +10,5 @@ public interface ShopItemMapper {
 
     ShopItemDto toDto(ShopItem entity);
 
-    ShopItem toEntity(ShopItemDto dto);
-
     ShopItemCriteria toCriteria(ShopItemSearch search);
 }

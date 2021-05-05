@@ -1,114 +1,111 @@
 package hrpg.server.capture.service;
 
+import hrpg.server.capture.dao.Capture;
+import hrpg.server.capture.dao.CaptureRepository;
 import hrpg.server.capture.service.exception.NestUnavailableException;
+import hrpg.server.capture.service.exception.RunningCaptureException;
+import hrpg.server.common.exception.ConflictException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.item.service.ItemDto;
 import hrpg.server.item.service.ItemSearch;
 import hrpg.server.item.service.ItemService;
+import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
-import hrpg.server.user.service.UserService;
-import hrpg.server.user.service.exception.TooManyCaptureException;
+import hrpg.server.user.dao.User;
+import hrpg.server.user.dao.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 public class CaptureServiceImpl implements CaptureService {
 
-//    private final CaptureRepository captureRepository;
-//    private final CaptureMapper captureMapper;
+    private final CaptureRepository captureRepository;
+    private final UserRepository userRepository;
+    private final CaptureMapper captureMapper;
     private final ItemService itemService;
-    private final UserService userService;
     private final ParametersProperties parametersProperties;
 
-    public CaptureServiceImpl(
-//            CaptureRepository captureRepository,
-//                              CaptureMapper captureMapper,
+    public CaptureServiceImpl(CaptureRepository captureRepository,
+                              UserRepository userRepository,
+                              CaptureMapper captureMapper,
                               ItemService itemService,
-                              UserService userService,
                               ParametersProperties parametersProperties) {
-//        this.captureRepository = captureRepository;
-//        this.captureMapper = captureMapper;
+        this.captureRepository = captureRepository;
+        this.userRepository = userRepository;
+        this.captureMapper = captureMapper;
         this.itemService = itemService;
-        this.userService = userService;
         this.parametersProperties = parametersProperties;
     }
 
     @Transactional(rollbackFor = {
-            TooManyCaptureException.class,
-            NestUnavailableException.class
+            NestUnavailableException.class,
+            RunningCaptureException.class
     })
     @Override
-    public CaptureDto create(int quality) throws TooManyCaptureException, NestUnavailableException {
-        userService.flagCapture(true);
-
+    public CaptureDto create(int quality) throws NestUnavailableException, RunningCaptureException {
+        //validate nest with quality is available and delete it
         if (quality > 0) {
             ItemDto nest = itemService.search(
                     ItemSearch.builder().code(ItemCode.NEST).quality(quality).build(),
                     PageRequest.of(0, 1))
                     .stream().findAny().orElseThrow(NestUnavailableException::new);
-            itemService.delete(nest.getId());
+            try {
+                itemService.delete(nest.getId());
+            } catch (ItemNotFoundException e) {
+                //item found already deleted -> conflict with other operation
+                throw new ConflictException();
+            }
         }
 
-        Instant current = Instant.now();
-//        return captureMapper.toDto(captureRepository.save(Capture.builder()
-//                .quality(quality)
-//                .startTime(current)
-//                .endTime(current.plus(parametersProperties.getCaptures().getTime(), ChronoUnit.SECONDS))
-//                .build()));
-        return null;
+        //validate no running capture
+        if (hasRunningCapture())
+            throw new RunningCaptureException();
+
+
+        //delete oldest capture if max reached
+        long captureCount = userRepository.count();
+        if (captureCount >= parametersProperties.getCaptures().getMax()) {
+            captureRepository.findAll(PageRequest.of(0, 1, Sort.by("id").ascending()))
+                    .stream()
+                    .findFirst()
+                    .ifPresent(captureRepository::delete);
+        }
+
+        //create new capture
+        User user = userRepository.get();
+        user.getDetails().setLastCapture(Instant.now());
+
+        LocalDateTime current = LocalDateTime.now();
+        return captureMapper.toDto(captureRepository.save(Capture.builder()
+                .quality(quality)
+                .startTime(current)
+                .endTime(current.plus(
+                        parametersProperties.getCaptures().getTimeValue(),
+                        parametersProperties.getCaptures().getTimeUnit()))
+                .build()));
     }
 
-    @Transactional
     @Override
-    public void updateFlagAndFillEmpty() {
-//        UserDto userDto = userService.get();
-//        if (userDto.isCapture() && this.findRunning().isEmpty()) {
-//            this.findEmpty().map(this::fill);
-//            try {
-//                userService.flagCapture(false);
-//            } catch (TooManyCaptureException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-    }
-
-//    private Optional<Capture> findEmpty() {
-//        return captureRepository.findByCreatureIdIsNullAndUserId(OAuthUserUtil.getUserId());
-//    }
-//
-//    private Capture fill(Capture capture) {
-//        if (StringUtils.isNotBlank(capture.getCreatureId()))
-//            return capture;
-//        //todo generate creature
-//        capture.setCreatureId("todo");
-//        return captureRepository.save(capture);
-//    }
-
-    @Override
-    public Optional<CaptureDto> findById(String id) {
-        return null;
-//        return captureRepository.findById(id).map(captureMapper::toDto);
+    public Optional<CaptureDto> findById(Long id) {
+        return captureRepository.findById(id).map(captureMapper::toDto);
     }
 
     @Override
     public Page<CaptureDto> search(Pageable pageable) {
-        return null;
-//        return captureRepository.findAllWithUserId(Example.of(new Capture()), pageable)
-//                .map(captureMapper::toDto);
+        return captureRepository.findAll(pageable).map(captureMapper::toDto);
     }
 
     @Override
-    public Optional<CaptureDto> findRunning() {
-        Instant current = Instant.now();
-        return null;
-//        return captureRepository.findByStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndUserId(
-//                current, current, OAuthUserUtil.getUserId())
-//                .map(captureMapper::toDto);
+    public boolean hasRunningCapture() {
+        LocalDateTime current = LocalDateTime.now();
+        return captureRepository.countByStartTimeLessThanEqualAndEndTimeGreaterThanEqual(current, current) > 0;
     }
 }

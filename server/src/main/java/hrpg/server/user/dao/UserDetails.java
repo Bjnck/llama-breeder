@@ -23,7 +23,7 @@ public class UserDetails {
 
     @Builder.Default
     @Version
-    private int version = 0;
+    private long version = 0;
 
     @Builder.Default
     @Column(nullable = false)
@@ -34,4 +34,6 @@ public class UserDetails {
 
     @Column(name = "last_purchase_timestamp")
     private Instant lastPurchase;
+    @Column(name = "last_capture_timestamp")
+    private Instant lastCapture;
 }

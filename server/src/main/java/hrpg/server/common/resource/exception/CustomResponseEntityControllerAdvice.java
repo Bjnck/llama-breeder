@@ -1,5 +1,6 @@
 package hrpg.server.common.resource.exception;
 
+import hrpg.server.common.exception.ConflictException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -20,21 +21,19 @@ import java.util.stream.Collectors;
 @Order(value = Ordered.HIGHEST_PRECEDENCE)
 class CustomResponseEntityControllerAdvice extends ResponseEntityExceptionHandler {
 
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    @ExceptionHandler(UncategorizedMongoDbException.class)
-//    public void handleUncategorizedMongoDbException(UncategorizedMongoDbException e) {
-//        if (((MongoCommandException) e.getCause()).getErrorCode() != 112)
-//            throw e;
-//    }
-
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public void handleOptimisticLockingFailureException(OptimisticLockingFailureException e) {
     }
 
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    public void handleConflictException(ConflictException e) {
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public void handleNotFoundException(ResourceNotFoundException e) {
+    public void handleResourceNotFoundException(ResourceNotFoundException e) {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

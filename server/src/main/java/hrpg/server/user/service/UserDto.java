@@ -15,9 +15,6 @@ public class UserDto {
 
     private Set<String> registrationKeys;
 
-    private int version;
-
     private int coins;
     private int level;
-//    private boolean capture;
 }

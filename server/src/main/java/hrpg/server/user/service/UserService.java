@@ -1,7 +1,5 @@
 package hrpg.server.user.service;
 
-import hrpg.server.user.service.exception.TooManyCaptureException;
-
 import java.util.Optional;
 
 public interface UserService {
@@ -11,8 +9,6 @@ public interface UserService {
     Optional<UserDto> findByRegistrationKey(String registrationKey);
 
     UserDto get();
-
-    void flagCapture(boolean flag) throws TooManyCaptureException;
 
     UserDto updateName(String name);
 

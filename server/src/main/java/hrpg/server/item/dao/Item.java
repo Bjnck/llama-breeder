@@ -21,12 +21,12 @@ public class Item extends WithUser {
 
     @Builder.Default
     @Version
-    private int version = 0;
+    private long version = 0;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private ItemCode code;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer quality;
 
     @Builder.Default

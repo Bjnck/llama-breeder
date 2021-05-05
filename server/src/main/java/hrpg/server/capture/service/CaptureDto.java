@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Builder(toBuilder = true)
@@ -12,10 +12,10 @@ import java.time.Instant;
 public class CaptureDto {
     private String id;
 
-    private int quality;
-
     private String creatureId;
 
-    private Instant startTime;
-    private Instant endTime;
+    private int quality;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }

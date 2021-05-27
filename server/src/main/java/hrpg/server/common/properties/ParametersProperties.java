@@ -13,5 +13,7 @@ public class ParametersProperties {
     private ItemsProperties items;
     private CapturesProperties captures;
     private UserProperties user;
+    private CreaturesProperties creatures;
+    private GenesProperties genes;
 }
 

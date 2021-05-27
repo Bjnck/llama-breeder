@@ -18,15 +18,12 @@ public class Color {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String code;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String name;
-
+    @Column(nullable = false, updatable = false)
+    private Integer generation;
     @Column(nullable = false)
-    private Integer red;
-    @Column(nullable = false)
-    private Integer blue;
-    @Column(nullable = false)
-    private Integer green;
+    private String parentCode;
 }

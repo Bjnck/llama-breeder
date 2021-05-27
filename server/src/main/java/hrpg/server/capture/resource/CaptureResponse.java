@@ -16,6 +16,7 @@ public class CaptureResponse extends RepresentationModel<CaptureResponse> {
     private Long id;
 
     private int quality;
+    private Integer bait;
 
     private Long creatureId;
 

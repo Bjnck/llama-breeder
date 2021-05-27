@@ -1,0 +1,3 @@
+parameters:
+  captures:
+    max: 2

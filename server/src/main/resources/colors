@@ -1,0 +1,134 @@
+Gen1:
+Crimson    #DC143C
+Cornflower #6495ED
+Forest	   #228B22
+
+Cornflower-Crimson
+Forest-Crimson
+Forest-Cornflower
+
+Gen2:
+Cornflower-Crimson + Forest-Crimson = Orange	#FFA500
+Cornflower-Crimson + Forest-Cornflower = Violet #9400D3
+Forest-Crimson + Forest-Cornflower = Olive	    #808000
+
+Violet-Orange
+Olive-Violet
+Olive-Orange
+
+Gen3:
+Violet-Orange + Olive-Violet = Midnight	#191970
+Violet-Orange + Olive-Orange = Tomato   #FF6347
+Olive-Violet + Olive-Orange = Khaki	    #F0E68C
+
+Midnight-Khaki
+Midnight-Tomato
+Khaki-Tomato
+
+Gen4:
+Midnight-Khaki + Midnight-Tomato = Turquoise    #40E0D0
+Midnight-Khaki + Khaki-Tomato = Chocolate       #D2691E
+Midnight-Tomato + Khaki-Tomato = Pink	        #FFC0CB
+
+Turquoise-Chocolate
+Turquoise-Pink
+Chocolate-Pink
+
+Gen5:
+Turquoise-Chocolate + Turquoise-Pink = Chartreuse   #7FFF00
+Turquoise-Chocolate + Chocolate-Pink = Maroon	    #800000
+Turquoise-Pink + Chocolate-Pink = Slate	            #708090
+
+Slate-Chartreuse
+Slate-Maroon
+Chartreuse-Maroon
+
+Gen6:
+Slate-Chartreuse + Slate-Maroon = Silver        #C0C0C0
+Slate-Chartreuse + Chartreuse-Maroon = Bronze   #614E1A
+Slate-Maroon + Chartreuse-Maroon = Orchid	    #DA70D6
+
+Bronze-Silver
+Bronze-Orchid
+Silver-Orchid
+
+Gen7:
+Silver-Orchid + Bronze-Orchid = Gold    #FFD700
+Silver-Orchid + Bronze-Silver = Ivory	#FFFFF0
+Bronze-Orchid + Bronze-Silver = Ebony	#000000
+
+Ebony-Ivory
+Ebony-Gold
+Gold-Ivory
+
+gen1-7 21 color / 21 dual
+
+total combo:
+18 dual * 3 = 54 gen8 colors
+21 gen1-7 + 54 gen8 = 75 gen1-8 colors
+comb(75) - 75 = 2700 dual - 21 dual gen1-7 = 2679 dual gen8
+3 unique
+
+total = 75 + 2700 + 3 = 2778 llama
+
+unique
+rainbow => can be any color             RAINBOW
+Chameleon => duplicate                  CHAMELE
+albino => get one color                 ALBINO
+
+54 color (135)
+Gen8:
+Aqua	                #00FFFF
+Beige	                #F5F5DC
+Peach	                #FFDAB9
+Aquamarine              #7FFFD4
+Spring	                #00FF7F
+RosyBrown	            #BC8F8F
+Teal	                #008080
+Indian	                #CD5C5C
+BloodRed	            #8B0000
+Brick	                #B22222
+DarkPink	            #FF69B4
+DeepPink	            #FF1493
+Coral	                #FF7F50
+FireRed	                #FF4500
+DarkOrange	            #FF8C00
+Lemon	                #FFFACD
+Papaya	                #FFEFD5
+Moccasin	            #FFE4B5
+Buff	                #BDB76B
+Lavender	            #E6E6FA
+Thistle	                #D8BFD8
+Plum	                #DDA0DD
+Fuchsia	                #FF00FF
+Mauve	                #BA55D3
+Purple	                #800080
+Indigo	                #4B0082
+Lime	                #00FF00
+PaleGreen	            #98FB98
+SeaGreen	            #2E8B57
+LimeTreeGreen	        #9ACD32
+OliveDrab	            #6B8E23
+Lichen	                #8FBC8B
+Azure	                #E0FFFF
+CadetBlue	            #5F9EA0
+SteelBlue	            #4682B4
+PowderBlue	            #B0E0E6
+LightBlue	            #ADD8E6
+SkyBlue	                #87CEEB
+DeepSkyBlue	            #00BFFF
+Dodger	                #1E90FF
+SlateBlue               #6A5ACD
+Royal	                #4169E1
+Cornsilk	            #FFF8DC
+Navajo	                #FFDEAD
+Tan	                    #D2B48C
+SandyBrown	            #F4A460
+Dandelion	            #DAA520
+SaddleBrown             #8B4513
+Sienna	                #A0522D
+Brown	                #A52A2A
+Smoke	                #F5F5F5
+LavenderRed	            #FFF0F5
+Gainsboro	            #DCDCDC
+DarkSlate	            #2F4F4F

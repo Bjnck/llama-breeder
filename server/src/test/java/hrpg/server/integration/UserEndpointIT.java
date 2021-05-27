@@ -1,7 +1,7 @@
-package hrpg.server.user;
+package hrpg.server.integration;
 
-import hrpg.server.AbstractIntegrationTest;
 import hrpg.server.user.resource.UserResponse;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,12 +18,13 @@ class UserEndpointIT extends AbstractIntegrationTest {
     private static final String USER_URL = "/user";
 
     @Test
-    void testUserEndpoints() throws Exception {
+    @SneakyThrows
+    void user_endpoints() {
         //get new user (previously created in AbstractIntegrationTest.setUp())
         MvcResult userResult = get(USER_URL)
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", nullValue()))
+                .andExpect(jsonPath("$.name", equalTo("Breeder")))
                 .andExpect(jsonPath("$.level", equalTo(0)))
                 .andExpect(jsonPath("$.coins", equalTo(parametersProperties.getUser().getStartCoins())))
                 .andExpect(jsonPath("$._links.self.href", endsWith("/user")))

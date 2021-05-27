@@ -1,8 +1,8 @@
-package hrpg.server.item;
+package hrpg.server.integration;
 
-import hrpg.server.AbstractIntegrationTest;
 import hrpg.server.item.resource.ItemRequest;
 import hrpg.server.item.type.ItemCode;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
@@ -13,9 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class ItemEndpointIT extends AbstractIntegrationTest {
 
-    private static final String ITEM_URL = "/items";
     @Test
-    void testItemEndpoints() throws Exception {
+    @SneakyThrows
+    void item_endpoints() {
         //get all items found 0
         get(ITEM_URL)
                 .andDo(print())

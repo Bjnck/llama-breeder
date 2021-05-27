@@ -4,6 +4,7 @@ import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserDetails;
 import hrpg.server.user.dao.UserRepository;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String getNameFromId(int id) {
+        return userRepository.findById(id).map(User::getName).orElse(null);
+    }
+
+    @Override
     public UserDto get() {
         return userMapper.toDto(userRepository.get());
     }
@@ -48,9 +54,18 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDto updateName(String name) {
+        if (Strings.isBlank(name))
+            name = "Breeder";
         User user = userRepository.get();
         user.setName(name);
         return userMapper.toDto(user);
+    }
+
+    @Transactional
+    @Override
+    public void addCoins(int coins) {
+        User user = userRepository.get();
+        user.getDetails().setCoins(user.getDetails().getCoins() + coins);
     }
 
     @Transactional

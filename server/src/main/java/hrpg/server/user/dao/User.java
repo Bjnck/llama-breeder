@@ -17,7 +17,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    @Builder.Default
+    @Column(nullable = false)
+    private String name = "Breeder";
 
     @Singular
     @ElementCollection(fetch = FetchType.EAGER)

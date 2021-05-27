@@ -8,9 +8,13 @@ public interface UserService {
 
     Optional<UserDto> findByRegistrationKey(String registrationKey);
 
+    String getNameFromId(int id);
+
     UserDto get();
 
     UserDto updateName(String name);
+
+    void addCoins(int coins);
 
     void delete();
 }

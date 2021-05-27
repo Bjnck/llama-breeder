@@ -1,8 +1,8 @@
-package hrpg.server.item;
+package hrpg.server.integration;
 
-import hrpg.server.AbstractIntegrationTest;
 import hrpg.server.item.resource.ItemRequest;
 import hrpg.server.item.type.ItemCode;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -15,7 +15,8 @@ class ItemSearchIT extends AbstractIntegrationTest {
     private static final String ITEM_URL = "/items";
 
     @Test
-    void listAllItems() throws Exception {
+    @SneakyThrows
+    void item_search() {
         //create 2 items
         post(ITEM_URL, ItemRequest.builder().code(ItemCode.THIRST).quality(1).build())
                 .andDo(print())

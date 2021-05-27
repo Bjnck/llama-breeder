@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface CreatureService {
-    Optional<CreatureDto> findById(Long id);
+    Optional<CreatureDto> findById(long id);
+
+    long count();
 
     Page<CreatureDto> search(CreatureSearch search, Pageable pageable);
 

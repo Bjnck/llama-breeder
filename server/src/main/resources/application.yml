@@ -15,10 +15,7 @@ spring:
 #          issuer-uri: https://accounts.google.com
 
   jpa:
-    generate-ddl: true
-  #  jpa:
-#    hibernate:
-#      ddl-auto: create-drop
+    generate-ddl: false
   datasource:
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/llama"
     username: llama
@@ -34,6 +31,33 @@ parameters:
     time-unit: SECONDS
     time-value: 10
     max: 20
+  creatures:
+    max: 250
+    chance-female: 50
+    price:
+      gen-1: 1
+      gen-2: 5
+      gen-3: 10
+      gen-4: 15
+      gen-5: 20
+      gen-6: 25
+      gen-7: 30
+      gen-8: 35
+      gen-9: 40
+      gen-10: 45
+      gen-11: 50
+  genes:
+    chance-quality-1: 1
+    chance-quality-2: 10
+    chance-quality-3: 20
+    chance-love: 30
+    chance-hunger: 30
+    chance-thirst: 30
+    chance-fertile: 10
+    special-chance: 20
+    special-chance-quality-1: 20
+    special-chance-quality-2: 25
+    special-chance-quality-3: 30
 
 
 

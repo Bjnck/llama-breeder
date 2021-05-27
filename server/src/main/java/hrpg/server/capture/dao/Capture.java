@@ -28,6 +28,8 @@ public class Capture extends WithUser {
     @Builder.Default
     @Column(nullable = false, updatable = false)
     private Integer quality = 0;
+    @Column(updatable = false)
+    private Integer baitGeneration;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime startTime;

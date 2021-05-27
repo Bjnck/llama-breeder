@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CreatureDto {
     private Long id;
 
-    private int originalUserId;
+    private String originalUser;
 
     private int generation;
 

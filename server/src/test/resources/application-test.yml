@@ -1,10 +1,10 @@
-spring:
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
-        use_sql_comments: true
-        format_sql: true
+#spring:
+#  jpa:
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        use_sql_comments: true
+#        format_sql: true
 #    generate-ddl: false
 #  datasource:
 #    driver-class-name: org.h2.Driver
@@ -15,9 +15,10 @@ spring:
 
 parameters:
   user:
-    start-coins: 100
+    start-coins: 100000
   captures:
-    time: 1
+    time-unit: SECONDS
+    time-value: 1
   items:
     max: 100
 

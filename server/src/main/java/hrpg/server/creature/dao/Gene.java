@@ -19,6 +19,6 @@ public class Gene {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private hrpg.server.creature.type.Gene code;
 }

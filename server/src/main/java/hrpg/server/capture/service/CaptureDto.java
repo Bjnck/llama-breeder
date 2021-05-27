@@ -15,6 +15,7 @@ public class CaptureDto {
     private String creatureId;
 
     private int quality;
+    private Integer baitGeneration;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

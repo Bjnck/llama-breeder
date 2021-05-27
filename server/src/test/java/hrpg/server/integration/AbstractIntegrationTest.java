@@ -1,4 +1,4 @@
-package hrpg.server;
+package hrpg.server.integration;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.security.CustomPrincipal;
 import hrpg.server.user.service.UserDto;
 import hrpg.server.user.service.UserService;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -38,31 +39,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public abstract class AbstractIntegrationTest {
 
-    private final static String AUTHORIZED_CLIENT_REGISTRATION_ID = "testRegistrationId";
+    protected static final String USER_URL = "/user";
+    protected static final String CAPTURE_URL = "/captures";
+    protected static final String CREATURE_URL = "/creatures";
+    protected static final String ITEM_URL = "/items";
+    protected static final String PEN_URL = "/pens";
+
+    private static final String AUTHORIZED_CLIENT_REGISTRATION_ID = "testRegistrationId";
 
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
     protected ParametersProperties parametersProperties;
 
-    protected static BearerTokenAuthentication authentication;
-    static MockHttpSession session = new MockHttpSession();
-    protected static ObjectMapper objectMapper = new ObjectMapper();
+    BearerTokenAuthentication authentication;
+    protected UserDto userDto;
+    MockHttpSession session = new MockHttpSession();
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
-    @BeforeAll
-    static void setUp(@Autowired UserService userService) {
+    @BeforeEach
+    void setUp(@Autowired UserService userService) {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.registerModule(new JavaTimeModule());
 
         String userSub = UUID.randomUUID().toString();
-        UserDto userDto = userService.create(AUTHORIZED_CLIENT_REGISTRATION_ID + "." + userSub);
+        userDto = userService.create(AUTHORIZED_CLIENT_REGISTRATION_ID + "." + userSub);
         authentication = buildPrincipal(userSub, userDto.getId());
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 new SecurityContextImpl(authentication));
     }
 
-    private static BearerTokenAuthentication buildPrincipal(String userSub, Integer userId) {
+    private BearerTokenAuthentication buildPrincipal(String userSub, Integer userId) {
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("registration", AUTHORIZED_CLIENT_REGISTRATION_ID);
         attributes.put("registration_id", "sub");
@@ -104,5 +112,9 @@ public abstract class AbstractIntegrationTest {
 
     protected static ResultMatcher jsonPathTotalElements(int totalElements) {
         return jsonPath("$.page.totalElements", equalTo(totalElements));
+    }
+
+    protected static ResultMatcher jsonPathIdFromLocation(@NotNull String location) {
+        return jsonPath("$.id", equalTo(Integer.valueOf(location.substring(location.lastIndexOf("/") + 1))));
     }
 }

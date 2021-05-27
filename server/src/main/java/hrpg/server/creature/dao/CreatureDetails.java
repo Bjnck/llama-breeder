@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @ToString(exclude = "creature")
+@EqualsAndHashCode(exclude = "creature")
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor

@@ -3,6 +3,7 @@ package hrpg.server.capture.resource;
 import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.capture.service.CaptureDto;
 import hrpg.server.capture.service.CaptureService;
+import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.NestUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.resource.SortValues;
@@ -60,13 +61,16 @@ public class CaptureController {
 
         CaptureResponse response;
         try {
-            response = captureResourceMapper.toResponse(captureService.create(request.getQuality()));
+            response = captureResourceMapper.toResponse(captureService.create(request.getQuality(), request.getBait()));
         } catch (RunningCaptureException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code("runningCapture").build()));
         } catch (NestUnavailableException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("quality").code("unavailable").build()));
+        } catch (BaitUnavailableException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("bait").code("unavailable").build()));
         }
         return ResponseEntity.created(links.linkToItemResource(response).toUri())
                 .header("Access-Control-Expose-Headers", HttpHeaders.LOCATION).build();

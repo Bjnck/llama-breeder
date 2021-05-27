@@ -16,15 +16,13 @@ import java.time.LocalDateTime;
 public class CreatureResponse extends RepresentationModel<CreatureResponse> {
     private Long id;
 
-    private int originalUserId;
+    private String originalUser;
 
     private int generation;
     private Sex sex;
     private String name;
 
-    private Long parentId1;
-    private Long parentId2;
-
+    private Parents parents;
     private Colors colors;
     private Genes genes;
 

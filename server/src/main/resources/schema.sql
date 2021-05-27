@@ -1,6 +1,6 @@
 create table if not exists user (
     id int not null auto_increment,
-    name varchar(255),
+    name varchar(100) not null default 'Breeder',
     primary key (id)
 );
 
@@ -15,7 +15,7 @@ create table if not exists user_registration (
 create table if not exists user_details (
     user_id int not null,
     version bigint not null default 0,
-    level tinyint(1) not null default 0, check (level between 0 and 10),
+    level tinyint(1) not null default 0, check (level between 0 and 7),
     coins int not null default 0, check (coins >= 0),
     last_purchase_timestamp timestamp,
     last_capture_timestamp timestamp,
@@ -40,16 +40,15 @@ create table if not exists shop (
     quality tinyint(1) not null, check (quality between 1 and 10),
     coins int not null, check (coins >= 0),
     primary key (id),
-    unique key code_quality (code,quality)
+    unique key code_quality (code, quality)
 );
 
 create table if not exists color (
     id int not null auto_increment,
-    code varchar(12) not null unique,
-    name varchar(100) not null,
-    red tinyint(1) unsigned not null,
-    green tinyint(1) unsigned not null,
-    blue tinyint(1) unsigned not null,
+    code varchar(7) not null unique,
+    name varchar(100) not null unique,
+    generation tinyint(1) not null, check (generation between 1 and 8),
+    parent_code varchar(8) unique,
     primary key (id)
 );
 
@@ -64,7 +63,7 @@ create table if not exists creature (
     user_id int not null,
     original_user_id int not null,
     version bigint not null default 0,
-    generation tinyint(1) not null default 1, check (generation between 1 and 11),
+    generation tinyint(1) not null default 1, check (generation between 1 and 8),
     parent_one_id bigint,
     parent_two_id bigint,
     name varchar(255),
@@ -92,11 +91,11 @@ create table if not exists creature_details (
     pregnant boolean not null default 0,
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,
-    energy tinyint(1) not null default 100, check (generation between 0 and 100),
-    love tinyint(1) not null default 0, check (generation between 0 and 100),
-    thirst tinyint(1) not null default 0, check (generation between 0 and 100),
-    hunger tinyint(1) not null default 0, check (generation between 0 and 100),
-    maturity tinyint(1) not null default 0, check (generation between 0 and 100),
+    energy tinyint(1) not null default 100, check (energy between 0 and 100),
+    love tinyint(1) not null default 0, check (love between 0 and 100),
+    thirst tinyint(1) not null default 0, check (thirst between 0 and 100),
+    hunger tinyint(1) not null default 0, check (hunger between 0 and 100),
+    maturity tinyint(1) not null default 0, check (maturity between 0 and 100),
     primary key (creature_id),
     foreign key (creature_id) REFERENCES creature(id)
 );
@@ -104,12 +103,51 @@ create table if not exists creature_details (
 create table if not exists capture (
     id bigint not null auto_increment,
     user_id int not null,
-    creature_id bigint not null,
+    creature_id bigint,
     version bigint not null default 0,
     quality tinyint(1) not null default 0, check (quality between 0 and 3),
+    bait_generation tinyint(1), check (bait_generation between 1 and 8),
     start_time datetime not null,
     end_time datetime not null,
     primary key (id),
     foreign key (user_id) REFERENCES user(id),
+    foreign key (creature_id) REFERENCES creature(id)
+);
+
+create table if not exists bait (
+    id bigint not null auto_increment,
+    user_id int not null,
+    generation tinyint(1) not null, check (generation between 1 and 8),
+    version bigint not null default 0,
+    count int not null default 0,
+    primary key (id),
+    foreign key (user_id) REFERENCES user(id),
+    unique key user_generation (user_id, generation)
+);
+
+create table if not exists pen (
+    id int not null auto_increment,
+    user_id int not null,
+    version bigint not null default 0,
+    size int not null default 3, check (size between 3 and 20),
+    primary key (id),
+    foreign key (user_id) REFERENCES user(id)
+);
+
+create table if not exists pen_item (
+    id bigint not null auto_increment,
+    pen_id int not null,
+    item_id bigint not null unique,
+    primary key (id),
+    foreign key (pen_id) REFERENCES pen(id),
+    foreign key (item_id) REFERENCES item(id)
+);
+
+create table if not exists pen_creature (
+    id bigint not null auto_increment,
+    pen_id int not null,
+    creature_id bigint not null unique,
+    primary key (id),
+    foreign key (pen_id) REFERENCES pen(id),
     foreign key (creature_id) REFERENCES creature(id)
 );

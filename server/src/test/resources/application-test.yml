@@ -15,12 +15,15 @@
 
 parameters:
   user:
-    start-coins: 100000
+    start-coins: 1000
   captures:
     time-unit: SECONDS
     time-value: 1
   items:
     max: 100
+  pens:
+    price:
+      size-20: 10000
 
 #logging:
 #  level:

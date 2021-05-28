@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 @Relation(collectionRelation = "pens")
 public class PenResponse extends RepresentationModel<PenResponse> {
@@ -19,6 +19,6 @@ public class PenResponse extends RepresentationModel<PenResponse> {
 
     private Integer size;
 
-    private Set<PenCreature> creatures;
-    private Set<PenItem> items;
+    private Set<PenCreatureResponse> creatures;
+    private Set<PenItemResponse> items;
 }

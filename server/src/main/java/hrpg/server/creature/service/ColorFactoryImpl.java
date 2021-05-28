@@ -23,7 +23,7 @@ public class ColorFactoryImpl implements ColorFactory {
         int random = new Random().nextInt(colors.size());
         Color color = colors.get(random);
         if (previousColorCode != null && previousColorCode.equals(color.getCode()))
-            color = colors.get(random + 1 % colors.size());
+            color = colors.get((random + 1) % colors.size());
 
         return color;
     }

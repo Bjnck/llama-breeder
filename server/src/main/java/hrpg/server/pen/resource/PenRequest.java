@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Data
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PenRequest {
@@ -20,6 +20,6 @@ public class PenRequest {
     @Max(20)
     private Integer size;
 
-    private Set<PenCreature> creatures;
-    private Set<PenItem> items;
+    private Set<PenCreatureRequest> creatures;
+    private Set<PenItemRequest> items;
 }

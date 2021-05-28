@@ -11,11 +11,11 @@ public interface PenResourceMapper {
     @Mapping(target = "itemIds", source = "items")
     PenDto toDto(PenRequest request);
 
-    default Long toCreatureId(PenCreature creature) {
+    default Long toCreatureId(PenCreatureRequest creature) {
         return creature.getId();
     }
 
-    default Long toItemId(PenItem item) {
+    default Long toItemId(PenItemRequest item) {
         return item.getId();
     }
 
@@ -23,11 +23,11 @@ public interface PenResourceMapper {
     @Mapping(target = "items", source = "itemIds")
     PenResponse toResponse(PenDto dto);
 
-    default PenCreature toCreature(Long id) {
-        return PenCreature.builder().id(id).build();
+    default PenCreatureResponse toCreature(Long id) {
+        return PenCreatureResponse.builder().id(id).build();
     }
 
-    default PenItem toItem(Long id) {
-        return PenItem.builder().id(id).build();
+    default PenItemResponse toItem(Long id) {
+        return PenItemResponse.builder().id(id).build();
     }
 }

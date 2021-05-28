@@ -8,8 +8,8 @@ import org.springframework.hateoas.RepresentationModel;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
-public class PenCreature extends RepresentationModel<PenCreature> {
+public class PenItemResponse extends RepresentationModel<PenItemResponse> {
     private Long id;
 }

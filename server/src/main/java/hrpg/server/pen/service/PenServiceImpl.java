@@ -91,7 +91,7 @@ public class PenServiceImpl implements PenService {
         if (size < pen.getSize()) throw new InvalidPenSizeException();
         else if (size > pen.getSize()) {
             int priceForUpdate = 0;
-            for (int i = 1; i <= size - pen.getSize(); i++) {
+            for (int i = pen.getSize() + 1; i <= size; i++) {
                 priceForUpdate += pensProperties.getPrice().get("size-" + i);
             }
             userService.removeCoins(priceForUpdate);

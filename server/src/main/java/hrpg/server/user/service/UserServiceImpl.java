@@ -1,5 +1,6 @@
 package hrpg.server.user.service;
 
+import hrpg.server.common.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserDetails;
@@ -66,6 +67,17 @@ public class UserServiceImpl implements UserService {
     public void addCoins(int coins) {
         User user = userRepository.get();
         user.getDetails().setCoins(user.getDetails().getCoins() + coins);
+    }
+
+    @Transactional
+    @Override
+    public void removeCoins(int coins) throws InsufficientCoinsException {
+        if (coins > 0) {
+            User user = userRepository.get();
+            if (user.getDetails().getCoins() < coins)
+                throw new InsufficientCoinsException();
+            user.getDetails().setCoins(user.getDetails().getCoins() - coins);
+        }
     }
 
     @Transactional

@@ -58,6 +58,25 @@ parameters:
     special-chance-quality-1: 20
     special-chance-quality-2: 25
     special-chance-quality-3: 30
+  pens:
+    price:
+      size-4: 1
+      size-5: 1
+      size-6: 1
+      size-7: 1
+      size-8: 1
+      size-9: 1
+      size-10: 1
+      size-11: 1
+      size-12: 1
+      size-13: 1
+      size-14: 1
+      size-15: 1
+      size-16: 1
+      size-17: 1
+      size-18: 1
+      size-19: 1
+      size-20: 1
 
 
 

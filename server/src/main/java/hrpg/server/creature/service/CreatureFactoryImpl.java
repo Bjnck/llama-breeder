@@ -4,7 +4,7 @@ import hrpg.server.common.properties.CreaturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.security.OAuthUserUtil;
 import hrpg.server.creature.dao.*;
-import hrpg.server.creature.service.exception.MaxCreaturesReachedException;
+import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.creature.type.Sex;
 import hrpg.server.user.service.UserService;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +40,9 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
     @Override
     public CreatureDto generateForCapture(int userLevel, int nestQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
-            throws MaxCreaturesReachedException {
+            throws MaxCreaturesException {
         if (creatureRepository.count() >= creaturesParameters.getMax())
-            throw new MaxCreaturesReachedException();
+            throw new MaxCreaturesException();
 
         Creature.CreatureBuilder creatureBuilder = Creature.builder();
 

@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface PenResourceMapper {
     @Mapping(target = "creatureIds", source = "creatures")
     @Mapping(target = "itemIds", source = "items")
-    PenDto toRequest(PenRequest request);
+    PenDto toDto(PenRequest request);
 
     default Long toCreatureId(PenCreature creature) {
         return creature.getId();

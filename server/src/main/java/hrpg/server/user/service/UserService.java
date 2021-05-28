@@ -1,5 +1,7 @@
 package hrpg.server.user.service;
 
+import hrpg.server.common.exception.InsufficientCoinsException;
+
 import java.util.Optional;
 
 public interface UserService {
@@ -15,6 +17,8 @@ public interface UserService {
     UserDto updateName(String name);
 
     void addCoins(int coins);
+
+    void removeCoins(int coins) throws InsufficientCoinsException;
 
     void delete();
 }

@@ -6,7 +6,7 @@ import hrpg.server.item.dao.Item;
 import hrpg.server.item.dao.ItemRepository;
 import hrpg.server.item.dao.ItemSpecification;
 import hrpg.server.item.service.exception.ItemNotFoundException;
-import hrpg.server.item.service.exception.MaxItemsReachedException;
+import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
 import hrpg.server.shop.service.ShopItemDto;
@@ -46,17 +46,18 @@ public class ItemServiceImpl implements ItemService {
     @Transactional(rollbackFor = {
             ShopItemNotFoundException.class,
             InsufficientCoinsException.class,
-            MaxItemsReachedException.class
+            MaxItemsException.class
     })
     @Override
     public ItemDto create(@NotNull ItemCode code, int quality)
-            throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsReachedException {
+            throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsException {
         //validate shopItem exists
         ShopItemDto shopItemDto = shopItemService.findByCodeAndQuality(code, quality)
                 .orElseThrow(ShopItemNotFoundException::new);
 
         User user = userRepository.get();
 
+        //todo use userservice remove coins
         //validate user has enough coins
         if (shopItemDto.getCoins() > 0) {
             if (user.getDetails().getCoins() < shopItemDto.getCoins())
@@ -67,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
         //validate max number of items reached
         long itemCount = itemRepository.count();
         if (itemCount >= parametersProperties.getItems().getMax())
-            throw new MaxItemsReachedException();
+            throw new MaxItemsException();
 
         //create new item
         user.getDetails().setLastPurchase(Instant.now());

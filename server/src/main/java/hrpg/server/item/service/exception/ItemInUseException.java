@@ -3,13 +3,13 @@ package hrpg.server.item.service.exception;
 import lombok.Getter;
 
 @Getter
-public class ItemNotFoundException extends Exception{
+public class ItemInUseException extends Exception{
     private Long id;
 
-    public ItemNotFoundException() {
+    public ItemInUseException() {
     }
 
-    public ItemNotFoundException(Long id) {
+    public ItemInUseException(Long id) {
         this.id = id;
     }
 }

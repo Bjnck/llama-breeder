@@ -44,6 +44,7 @@ class CustomResponseEntityControllerAdvice extends ResponseEntityExceptionHandle
                 .map(error -> ErrorResponse.builder()
                         .field(error.getField())
                         .code(error.getCode())
+                        .value(error.getValue())
                         .build())
                 .collect(Collectors.toList()));
     }

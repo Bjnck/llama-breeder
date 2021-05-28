@@ -2,7 +2,7 @@ package hrpg.server.item.service;
 
 import hrpg.server.common.exception.InsufficientCoinsException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
-import hrpg.server.item.service.exception.MaxItemsReachedException;
+import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface ItemService {
 
-    ItemDto create(@NotNull ItemCode code, int quality) throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsReachedException;
+    ItemDto create(@NotNull ItemCode code, int quality) throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsException;
 
     Optional<ItemDto> findById(long id);
 

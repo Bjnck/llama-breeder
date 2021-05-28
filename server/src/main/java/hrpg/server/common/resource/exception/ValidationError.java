@@ -8,4 +8,5 @@ import lombok.Data;
 public class ValidationError {
     private String field;
     private String code;
+    private String value;
 }

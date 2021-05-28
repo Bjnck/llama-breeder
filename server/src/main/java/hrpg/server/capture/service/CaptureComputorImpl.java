@@ -4,7 +4,7 @@ import hrpg.server.capture.dao.CaptureRepository;
 import hrpg.server.creature.service.CreatureDto;
 import hrpg.server.creature.service.CreatureFactory;
 import hrpg.server.creature.service.CreatureService;
-import hrpg.server.creature.service.exception.MaxCreaturesReachedException;
+import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserRepository;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class CaptureComputorImpl implements CaptureComputor {
                     CreatureDto creatureDto = creatureFactory.generateForCapture(
                             user.getDetails().getLevel(), capture.getQuality(), capture.getBaitGeneration(), capture.getEndTime().toLocalDate());
                     capture.setCreatureId(creatureDto.getId());
-                } catch (MaxCreaturesReachedException e) {
+                } catch (MaxCreaturesException e) {
                     //todo notify user
                 }
 

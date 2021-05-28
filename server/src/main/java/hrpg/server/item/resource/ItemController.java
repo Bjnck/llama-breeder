@@ -8,7 +8,7 @@ import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.item.service.ItemService;
 import hrpg.server.item.service.exception.ItemNotFoundException;
-import hrpg.server.item.service.exception.MaxItemsReachedException;
+import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,11 +57,11 @@ public class ItemController {
             return ResponseEntity.created(links.linkToItemResource(response).toUri()).build();
         } catch (ShopItemNotFoundException e) {
             throw new ValidationException(Collections.singletonList(
-                    ValidationError.builder().field("code,quality").code("shopItemNotFound").build()));
+                    ValidationError.builder().field("code,quality").code(ValidationCode.INVALID_VALUE.getCode()).build()));
         } catch (InsufficientCoinsException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("code,quality").code(ValidationCode.INSUFFICIENT_COINS.getCode()).build()));
-        } catch (MaxItemsReachedException e) {
+        } catch (MaxItemsException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code(ValidationCode.MAX_SIZE.getCode()).build()));
         }

@@ -15,5 +15,6 @@ public class ParametersProperties {
     private UserProperties user;
     private CreaturesProperties creatures;
     private GenesProperties genes;
+    private PensProperties pens;
 }
 

@@ -10,4 +10,5 @@ import lombok.Data;
 public class ErrorResponse {
     private String field;
     private String code;
+    private String value;
 }

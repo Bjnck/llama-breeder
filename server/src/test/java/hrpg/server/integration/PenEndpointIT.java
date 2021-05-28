@@ -61,6 +61,23 @@ public class PenEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$._links.self.href", containsString(PEN_URL + "/" + pen.getId())));
     }
 
+    @Test
+    @SneakyThrows
+    void pen_updates() {
+
+        //update size insuficientCoins
+        //update size less than
+        //update size more than 1 -> check pay enough
+
+        //update items not found
+        //update items new
+        //update items remove
+        //udpate items max size
+        //update items conflict
+
+        //idem creatures
+    }
+
     private Pen givenPen(Creature creature, Item item) {
         Pen pen = Pen.builder()
                 .creature(creature)

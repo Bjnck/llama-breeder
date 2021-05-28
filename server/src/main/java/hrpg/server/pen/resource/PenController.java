@@ -1,10 +1,22 @@
 package hrpg.server.pen.resource;
 
+import hrpg.server.common.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
+import hrpg.server.common.resource.exception.ValidationCode;
+import hrpg.server.common.resource.exception.ValidationError;
+import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.creature.resource.CreatureController;
+import hrpg.server.creature.service.exception.CreatureInUseException;
+import hrpg.server.creature.service.exception.CreatureNotFoundException;
+import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.item.resource.ItemController;
+import hrpg.server.item.service.exception.ItemInUseException;
+import hrpg.server.item.service.exception.ItemNotFoundException;
+import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.pen.service.PenService;
+import hrpg.server.pen.service.exception.InvalidPenSizeException;
+import hrpg.server.pen.service.exception.PenNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,10 +27,13 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.hateoas.server.TypedEntityLinks;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -43,6 +58,44 @@ public class PenController {
         this.penService = penService;
         this.penResourceMapper = penResourceMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<Object> update(@PathVariable long id, @Valid @RequestBody PenRequest request) {
+        try {
+            PenResponse response = penResourceMapper.toResponse(penService.update(id, penResourceMapper.toDto(request)));
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
+        } catch (PenNotFoundException e) {
+            throw new ResourceNotFoundException();
+        } catch (CreatureNotFoundException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("creatures.id").code(ValidationCode.INVALID_VALUE.getCode())
+                            .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
+        } catch (MaxCreaturesException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("creatures").code(ValidationCode.MAX_SIZE.getCode()).build()));
+        } catch (CreatureInUseException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("creatures.id").code(ValidationCode.CONFLICT.getCode())
+                            .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
+        } catch (ItemNotFoundException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("items.id").code(ValidationCode.INVALID_VALUE.getCode())
+                            .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
+        } catch (MaxItemsException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("items").code(ValidationCode.MAX_SIZE.getCode()).build()));
+        } catch (ItemInUseException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("items.id").code(ValidationCode.CONFLICT.getCode())
+                            .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
+        } catch (InsufficientCoinsException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("size").code(ValidationCode.INSUFFICIENT_COINS.getCode()).build()));
+        } catch (InvalidPenSizeException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("size").code(ValidationCode.INVALID_VALUE.getCode()).build()));
+        }
     }
 
     @GetMapping("{id}")

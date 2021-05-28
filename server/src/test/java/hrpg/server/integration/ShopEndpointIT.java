@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class ShopSearchIT extends AbstractIntegrationTest {
+class ShopEndpointIT extends AbstractIntegrationTest {
 
     private static final String SHOP_URL = "/shop-items";
 

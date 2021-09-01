@@ -1,4 +1,6 @@
 export interface Item {
-  code: String;
+  id: number;
+  code: string;
   quality: number;
+  life: number;
 }

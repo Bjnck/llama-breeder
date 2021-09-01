@@ -1,20 +1,25 @@
 import {NgModule} from '@angular/core';
 
-import {BrowserModule} from "@angular/platform-browser";
-import {HeaderComponent} from "./header/header.component";
-import {UserResolve} from "./user/user.resolve";
-import {UserService} from "./user/user.service";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {RouterModule} from "@angular/router";
-import {AuthService} from "./auth/auth.service";
-import {HeaderService} from "./header/header.service";
-import {ItemService} from "./item/item.service";
+import {BrowserModule} from '@angular/platform-browser';
+import {HeaderComponent} from './header/header.component';
+import {UserResolve} from './user/user.resolve';
+import {UserService} from './user/user.service';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {RouterModule} from '@angular/router';
+import {AuthService} from './auth/auth.service';
+import {HeaderService} from './header/header.service';
+import {ItemService} from './item/item.service';
+import {ItemCountResolve} from './item/item-count.resolve';
+import {ItemNameComponent} from './item/item-name.component';
+import {ItemIconComponent} from './item/item-icon.component';
 
 @NgModule({
   declarations: [
-    HeaderComponent
+    HeaderComponent,
+    ItemNameComponent,
+    ItemIconComponent
   ],
   imports: [
     BrowserModule,
@@ -24,13 +29,16 @@ import {ItemService} from "./item/item.service";
     RouterModule
   ],
   exports: [
-    HeaderComponent
+    HeaderComponent,
+    ItemNameComponent,
+    ItemIconComponent
   ],
   providers: [
     HeaderService,
     UserResolve,
     UserService,
     ItemService,
+    ItemCountResolve,
     AuthService
   ]
 })

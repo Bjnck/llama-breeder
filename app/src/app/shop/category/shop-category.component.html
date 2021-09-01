@@ -1,38 +1,21 @@
 <div class="category">{{categoryName}}</div>
 <div class="no-items-message" *ngIf="user.level === 0">No items available</div>
 <div *ngFor="let shopItem of shopItems | shop_category:categoryCode">
-  <div class="shop-item mat-elevation-z1"
+  <div class="item mat-elevation-z1"
        *ngIf="(!bestOnly && shopItem.quality <= user.level) || (bestOnly && shopItem.quality == user.level)">
     <div class="details">
-      <mat-icon *ngIf="categoryCode==='nest'" class="image image-nest">grass</mat-icon>
-      <mat-icon *ngIf="categoryCode==='thirst'" class="image image-drink">local_drink</mat-icon>
-      <mat-icon *ngIf="categoryCode==='hunger'" class="image image-eat">lunch_dining</mat-icon>
-      <mat-icon *ngIf="categoryCode==='love'" class="image image-love">favorite</mat-icon>
+      <app-item-icon [code]="categoryCode"></app-item-icon>
       <div class="info">
         <div>
-          <span *ngIf="categoryCode==='nest' && shopItem.quality===1">Basic</span>
-          <span *ngIf="categoryCode==='nest' && shopItem.quality===2">Super</span>
-          <span *ngIf="categoryCode==='nest' && shopItem.quality===3">Mega</span>
-
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===1">Mediocre</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===2">Inferior</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===3">Unremarkable</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===4">Acceptable</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===5">Good</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===6">Superior</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===7">Superb</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===8">Splendid</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===9">Magnificent</span>
-          <span *ngIf="categoryCode!=='nest' && shopItem.quality===10">Glorious</span>
-
+          <app-item-name [code]="categoryCode" [quality]="shopItem.quality"></app-item-name>
           - lvl.{{shopItem.quality}}
         </div>
 
         <div>{{shopItem.coins}}$</div>
       </div>
     </div>
-    <button mat-stroked-button [disabled]="shopItem.coins > user.coins || countItem === undefined || countItem >= 100"
-            class="buy-btn" (click)="purchase(shopItem)">
+    <button mat-stroked-button [disabled]="shopItem.coins > user.coins || itemCount === undefined || itemCount >= 100"
+            (click)="purchase(shopItem)">
       <mat-icon>shopping_cart</mat-icon>
     </button>
   </div>

@@ -1,9 +1,8 @@
-import {Component} from "@angular/core";
-import {AuthService} from "../shared/auth/auth.service";
-import {HeaderService} from "../shared/header/header.service";
+import {Component} from '@angular/core';
+import {AuthService} from '../shared/auth/auth.service';
+import {HeaderService} from '../shared/header/header.service';
 
 @Component({
-  selector: 'login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.sass']
 })

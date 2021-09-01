@@ -12,7 +12,7 @@ import org.springframework.hateoas.server.core.Relation;
 @EqualsAndHashCode(callSuper = false)
 @Builder(toBuilder = true)
 @AllArgsConstructor
-@Relation(collectionRelation = "items")
+@Relation(collectionRelation = "shop-items")
 public class ShopItemResponse extends RepresentationModel<ShopItemResponse> {
     private ItemCode code;
     private int quality;

@@ -1,6 +1,6 @@
 package hrpg.server.pen.resource;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationCode;

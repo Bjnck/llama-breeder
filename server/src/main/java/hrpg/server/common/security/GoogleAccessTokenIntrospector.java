@@ -64,7 +64,9 @@ public class GoogleAccessTokenIntrospector implements OpaqueTokenIntrospector {
             HttpHeaders headers = requestHeaders();
             return new RequestEntity<>(headers, HttpMethod.POST,
                     UriComponentsBuilder.fromUri(introspectionUri)
-                            .queryParam("access_token", token).build().toUri());
+                            .queryParam("access_token", token)
+                            .queryParam("access_type", "offline")
+                            .build().toUri());
         };
     }
 

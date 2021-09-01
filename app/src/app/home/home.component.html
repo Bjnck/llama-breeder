@@ -1,8 +1,20 @@
-<div>
-  <login *ngIf="!isLoggedIn"></login>
-
-  <app-header *ngIf="isLoggedIn" [isHome]="true" [title]="'Llama Breeder'" [user]="user"></app-header>
-  <div *ngIf="isLoggedIn">
-    <a href="capture">Wild land</a>
+<div id="home-page">
+  <div id="menu">
+    <mat-grid-list cols="2" rowHeight="2:1" gutterSize="10px">
+      <mat-grid-tile>
+        <button mat-button class="menu-item inventory" routerLink="inventory">Inventory</button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-button class="menu-item shop" routerLink="shop">Shop</button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-button class="menu-item" routerLink="account">Wild Lands</button>
+      </mat-grid-tile>
+      <mat-grid-tile>
+        <button mat-button class="menu-item" routerLink="account">Pens</button>
+      </mat-grid-tile>
+    </mat-grid-list>
   </div>
 </div>
+
+

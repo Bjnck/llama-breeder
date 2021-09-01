@@ -104,7 +104,7 @@ public class CaptureServiceImpl implements CaptureService {
     }
 
     @Override
-    public Optional<CaptureDto> findById(Long id) {
+    public Optional<CaptureDto> findById(long id) {
         return captureRepository.findById(id).map(captureMapper::toDto);
     }
 

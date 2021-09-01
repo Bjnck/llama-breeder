@@ -69,11 +69,15 @@ public class PenEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.items[*].id", hasItem(item.getId().intValue())))
                 .andExpect(jsonPath("$.items[*]._links.self.href", hasItem(containsString(ITEM_URL + "/" + item.getId()))))
                 .andExpect(jsonPath("$._links.self.href", containsString(PEN_URL + "/" + pen.getId())));
+
+        //todo
+        //update pen
     }
 
     @Test
     @SneakyThrows
     void pen_updates() {
+        //todo move most of the test in scenario it
         //create pen
         Creature creature = givenCreature();
         Item item = givenItem();

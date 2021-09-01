@@ -1,6 +1,6 @@
 package hrpg.server.item.service;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.item.dao.Item;
 import hrpg.server.item.dao.ItemRepository;
@@ -13,6 +13,8 @@ import hrpg.server.shop.service.ShopItemDto;
 import hrpg.server.shop.service.ShopItemService;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserRepository;
+import hrpg.server.user.service.UserService;
+import hrpg.server.user.service.exception.InsufficientLevelException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,40 +31,48 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final ItemMapper itemMapper;
     private final ShopItemService shopItemService;
+    private final UserService userService;
     private final ParametersProperties parametersProperties;
 
     public ItemServiceImpl(ItemRepository itemRepository,
                            UserRepository userRepository,
                            ItemMapper itemMapper,
                            ShopItemService shopItemService,
+                           UserService userService,
                            ParametersProperties parametersProperties) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.itemMapper = itemMapper;
         this.shopItemService = shopItemService;
+        this.userService = userService;
         this.parametersProperties = parametersProperties;
     }
 
     @Transactional(rollbackFor = {
             ShopItemNotFoundException.class,
             InsufficientCoinsException.class,
+            InsufficientLevelException.class,
             MaxItemsException.class
     })
     @Override
     public ItemDto create(@NotNull ItemCode code, int quality)
-            throws ShopItemNotFoundException, InsufficientCoinsException, MaxItemsException {
+            throws ShopItemNotFoundException, InsufficientCoinsException, InsufficientLevelException, MaxItemsException {
         //validate shopItem exists
         ShopItemDto shopItemDto = shopItemService.findByCodeAndQuality(code, quality)
                 .orElseThrow(ShopItemNotFoundException::new);
 
         User user = userRepository.get();
 
-        //todo use userservice remove coins
+        //validate user has required level
+        if (user.getDetails().getLevel() < quality) {
+            throw new InsufficientLevelException();
+        }
+
         //validate user has enough coins
         if (shopItemDto.getCoins() > 0) {
             if (user.getDetails().getCoins() < shopItemDto.getCoins())
                 throw new InsufficientCoinsException();
-            user.getDetails().setCoins(user.getDetails().getCoins() - shopItemDto.getCoins());
+            userService.removeCoins(shopItemDto.getCoins());
         }
 
         //validate max number of items reached

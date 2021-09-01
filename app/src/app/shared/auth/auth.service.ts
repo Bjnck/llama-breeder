@@ -10,7 +10,7 @@ export class AccessToken {
 }
 
 @Injectable()
-export class LoginService {
+export class AuthService {
   private authUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
   private clientId = '932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com';
 
@@ -20,9 +20,12 @@ export class LoginService {
 
   login() {
     let redirectUri = window.location.href;
+    // console.log(redirectUri);
+    // let split = redirectUri.split('/');
+    // redirectUri = split[0] + '//' + split[1] + split[2];
     if (redirectUri.charAt(redirectUri.length-1) == '/')
       redirectUri = redirectUri.slice(0, redirectUri.length - 1);
-
+    // console.log(redirectUri);
     window.location.href =
       this.authUrl +
       '?response_type=token&scope=openid%20profile%20email' +
@@ -30,8 +33,10 @@ export class LoginService {
       '&redirect_uri=' + redirectUri;
   }
 
-  retrieveToken() {
-    let fragments = this.route.snapshot.fragment.split('&');
+  retrieveToken(url: string ) {
+    console.log(url);
+    let split = url.split("#");
+    let fragments = split[1].split('&');
     let accessToken = new AccessToken(
       fragments.find(fragment => fragment.startsWith("access_token")).slice("access_token".length + 1),
       Number(fragments.find(fragment => fragment.startsWith("expires_in")).slice("expires_in".length + 1))
@@ -45,12 +50,12 @@ export class LoginService {
     window.location.href = window.location.href.split('#')[0];
   }
 
-  checkCredentials() {
+  isLoggedIn() {
     return Cookie.check('access_token');
   }
 
   logout() {
     Cookie.delete('access_token');
-    window.location.reload();
+    window.location.href = '';
   }
 }

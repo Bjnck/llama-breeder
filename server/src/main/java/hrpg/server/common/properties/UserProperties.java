@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public class UserProperties {
   private int startCoins;
+  private int startLevel;
 }
 

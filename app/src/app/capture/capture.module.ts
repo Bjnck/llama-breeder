@@ -4,9 +4,9 @@ import {BrowserModule} from "@angular/platform-browser";
 import {CaptureComponent} from "./capture.component";
 import {CaptureHistoryComponent} from "./capture-history.component";
 import {NewCaptureComponent} from "./new-capture.component";
-import {CommonModule} from "../common/common.module";
 import {CaptureResolve} from "./capture.resolve";
 import {CaptureService} from "./capture.service";
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   declarations: [
@@ -16,7 +16,7 @@ import {CaptureService} from "./capture.service";
   ],
   imports: [
     BrowserModule,
-    CommonModule
+    SharedModule
   ],
   exports: [
     CaptureComponent,

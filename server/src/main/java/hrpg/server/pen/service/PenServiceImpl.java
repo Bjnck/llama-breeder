@@ -1,15 +1,18 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.properties.PensProperties;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
+import hrpg.server.creature.service.CreatureDto;
+import hrpg.server.creature.service.CreatureService;
 import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.item.dao.Item;
 import hrpg.server.item.dao.ItemRepository;
+import hrpg.server.item.service.ItemMapper;
 import hrpg.server.item.service.exception.ItemInUseException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 
 @Service
@@ -33,22 +37,28 @@ public class PenServiceImpl implements PenService {
 
     private final PenRepository penRepository;
     private final PenMapper penMapper;
+    private final ItemMapper itemMapper;
     private final CreatureRepository creatureRepository;
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final CreatureService creatureService;
     private final PensProperties pensProperties;
 
     public PenServiceImpl(PenRepository penRepository,
                           PenMapper penMapper,
+                          ItemMapper itemMapper,
                           CreatureRepository creatureRepository,
                           ItemRepository itemRepository,
                           UserService userService,
+                          CreatureService creatureService,
                           ParametersProperties parametersProperties) {
         this.penRepository = penRepository;
         this.penMapper = penMapper;
+        this.itemMapper = itemMapper;
         this.creatureRepository = creatureRepository;
         this.itemRepository = itemRepository;
         this.userService = userService;
+        this.creatureService = creatureService;
         pensProperties = parametersProperties.getPens();
     }
 
@@ -131,5 +141,50 @@ public class PenServiceImpl implements PenService {
             creatures.add(creature);
         }
         pen.setCreatures(creatures);
+    }
+
+    //todo penCalculator
+    //add last check time on pen
+    //for each passed minutes activate all items
+
+    @Transactional
+    @Override
+    public PenActivationDto activateItem(long id, long itemId) throws PenNotFoundException, ItemNotFoundException {
+        Pen pen = penRepository.findById(id).orElseThrow(PenNotFoundException::new);
+        if (pen.getItems().stream().noneMatch(item -> item.getId().equals(itemId)))
+            throw new ItemNotFoundException();
+        Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
+
+        Set<CreatureDto> creatures = new HashSet<>();
+        for (Creature creature : pen.getCreatures()) {
+            //item hits creature
+            if (new Random().nextInt(100) < pensProperties.getItemActivationChance()) {
+                //remove 1 life and delete if life ended
+                item.setLife(item.getLife() - 1);
+                if (item.getLife() <= 0)
+                    itemRepository.delete(item);
+                //hit creature
+                try {
+                    creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
+                } catch (CreatureNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+
+
+            }
+        }
+
+        //todo check stats and breed if
+//        for (CreatureDto creature1 : creatures) {
+//            for (CreatureDto creature2 : creatures) {
+//                if(CreatureUtil.isBreedable(creature1.getMaturity() && creature2.getLove()))
+//            }
+//        }
+
+        return PenActivationDto.builder()
+                .item(itemMapper.toDto(item))
+                .creatures(creatures)
+                .build();
     }
 }

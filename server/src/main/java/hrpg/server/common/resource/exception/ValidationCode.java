@@ -3,6 +3,7 @@ package hrpg.server.common.resource.exception;
 public enum ValidationCode {
     MAX_SIZE("maxSize"),
     INSUFFICIENT_COINS("insufficientCoins"),
+    INSUFFICIENT_LEVEL("insufficientLevel"),
     INVALID_VALUE("invalidValue"),
     CONFLICT("conflict");
 

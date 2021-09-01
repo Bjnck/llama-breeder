@@ -1,6 +1,6 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.creature.service.exception.MaxCreaturesException;
@@ -23,4 +23,6 @@ public interface PenService {
     PenDto update(long id, @NotNull PenDto penDto)
             throws PenNotFoundException, InvalidPenSizeException, InsufficientCoinsException, ItemInUseException,
             MaxItemsException, ItemNotFoundException, CreatureNotFoundException, MaxCreaturesException, CreatureInUseException;
+
+    PenActivationDto activateItem(long id, long itemId) throws PenNotFoundException, ItemNotFoundException;
 }

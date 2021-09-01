@@ -8,6 +8,8 @@ import java.util.Map;
 @Getter
 @Setter
 public class PensProperties {
+    private int itemActivationChance;
+
     private Map<String, Integer> price;
 }
 

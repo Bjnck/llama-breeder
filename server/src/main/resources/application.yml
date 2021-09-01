@@ -17,6 +17,7 @@ spring:
   jpa:
     generate-ddl: false
   datasource:
+    platform: mysql
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/llama"
     username: llama
     password: password
@@ -24,7 +25,8 @@ spring:
 
 parameters:
   user:
-    start-coins: 0
+    start-coins: 1000
+    start-level: 2
   items:
     max: 100
   captures:
@@ -59,6 +61,7 @@ parameters:
     special-chance-quality-2: 25
     special-chance-quality-3: 30
   pens:
+    item-activation-chance: 20
     price:
       size-4: 1
       size-5: 1

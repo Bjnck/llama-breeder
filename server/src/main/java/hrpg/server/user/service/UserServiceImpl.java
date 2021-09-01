@@ -1,6 +1,6 @@
 package hrpg.server.user.service;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserDetails;
@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         user.setDetails(UserDetails.builder()
                 .user(user)
                 .coins(parametersProperties.getUser().getStartCoins())
+                .level(parametersProperties.getUser().getStartLevel())
                 .build());
         return userMapper.toDto(userRepository.save(user));
     }

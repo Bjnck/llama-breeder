@@ -1,6 +1,6 @@
 package hrpg.server.user.service;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 
 import java.util.Optional;
 

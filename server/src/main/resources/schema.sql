@@ -28,7 +28,7 @@ create table if not exists item (
     user_id int not null,
     version bigint not null default 0,
     code enum('NEST', 'LOVE', 'HUNGER', 'THIRST') not null,
-    quality tinyint(1) not null default 10, check (quality between 1 and 10),
+    quality tinyint(1) not null, check (quality between 1 and 10),
     life int not null default 100, check (life between 1 and 100),
     primary key (id),
     foreign key (user_id) REFERENCES user(id)

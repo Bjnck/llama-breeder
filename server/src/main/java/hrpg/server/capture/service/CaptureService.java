@@ -12,7 +12,7 @@ public interface CaptureService {
 
     CaptureDto create(int quality, Integer baitLevel) throws NestUnavailableException, RunningCaptureException, BaitUnavailableException;
 
-    Optional<CaptureDto> findById(Long id);
+    Optional<CaptureDto> findById(long id);
 
     Page<CaptureDto> search(Pageable pageable);
 

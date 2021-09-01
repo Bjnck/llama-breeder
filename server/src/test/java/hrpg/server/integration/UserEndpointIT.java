@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class UserEndpointIT extends AbstractIntegrationTest {
@@ -22,7 +21,6 @@ class UserEndpointIT extends AbstractIntegrationTest {
     void user_endpoints() {
         //get new user (previously created in AbstractIntegrationTest.setUp())
         MvcResult userResult = get(USER_URL)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo("Breeder")))
                 .andExpect(jsonPath("$.level", equalTo(0)))
@@ -36,19 +34,19 @@ class UserEndpointIT extends AbstractIntegrationTest {
         //update user name
         String name = UUID.randomUUID().toString();
         String location = put(USER_URL, userResponse.toBuilder().name(name).build())
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
         assertThat(location, notNullValue());
         get(location)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(name)));
 
+        //todo
+        //update user name max size (fail)
+
         //delete user
         delete(USER_URL)
-                .andDo(print())
                 .andExpect(status().isNoContent());
     }
 }

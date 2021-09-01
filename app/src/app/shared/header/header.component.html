@@ -1,0 +1,18 @@
+<mat-toolbar *ngIf="data.display">
+  <button mat-icon-button *ngIf="data.isHome" (click)="logout()" aria-label="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+  <button mat-icon-button *ngIf="!data.isHome" routerLink="" aria-label="Home">
+    <mat-icon>west</mat-icon>
+  </button>
+  <span id="title">{{data.title}}</span>
+
+  <span class="spacer"></span>
+
+  <div *ngIf="user" id="account-data" routerLink="account">
+    lvl.{{user.level}}
+    <br/>
+    {{user.coins}}$
+  </div>
+</mat-toolbar>
+

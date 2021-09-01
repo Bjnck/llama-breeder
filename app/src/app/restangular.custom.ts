@@ -7,6 +7,11 @@ export function RestangularConfigFactory(RestangularProvider) {
   RestangularProvider.setBaseUrl('http://localhost:8080');
   RestangularProvider.setDefaultHeaders({'Authorization': 'Bearer ' + Cookie.get('access_token')});
   RestangularProvider.addResponseInterceptor((data, operation, what, url, response) => {
+    //this is a count
+    if (operation == 'get' && data.page && data.page.size === 1) {
+      return data.page;
+    }
+
     if (operation == 'getList') {
       if (!data._embedded)
         return [];

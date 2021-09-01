@@ -1,9 +1,9 @@
 package hrpg.server.integration.scenario;
 
-import hrpg.server.integration.AbstractIntegrationTest;
 import hrpg.server.capture.resource.CaptureRequest;
 import hrpg.server.capture.resource.CaptureResponse;
 import hrpg.server.creature.resource.CreatureResponse;
+import hrpg.server.integration.AbstractIntegrationTest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;

@@ -1,0 +1,27 @@
+<div class="page">
+
+  <div id="filter">
+    <button mat-flat-button *ngIf="bestOnly" color="accent" class="best-btn" (click)="toggleBestButton()">
+      <mat-icon>upgrade</mat-icon>
+    </button>
+    <button mat-stroked-button *ngIf="!bestOnly" color="accent" class="best-btn" (click)="toggleBestButton()">
+      <mat-icon>upgrade</mat-icon>
+    </button>
+    <div id="item-count">{{countItem}}/100</div>
+  </div>
+
+  <shop-category [shopItems]="shopItems" [user]="user" categoryCode="nest" categoryName="Nest" [bestOnly]="bestOnly"
+                 [countItem]="countItem" (countItemChangeEventEmitter)="updateCountItem($event)"></shop-category>
+  <shop-category [shopItems]="shopItems" [user]="user" categoryCode="thirst" categoryName="Drinking Trough"
+                 [bestOnly]="bestOnly" [countItem]="countItem"
+                 (countItemChangeEventEmitter)="updateCountItem($event)"></shop-category>
+  <shop-category [shopItems]="shopItems" [user]="user" categoryCode="hunger" categoryName="Eating Trough"
+                 [bestOnly]="bestOnly" [countItem]="countItem"
+                 (countItemChangeEventEmitter)="updateCountItem($event)"></shop-category>
+  <shop-category [shopItems]="shopItems" [user]="user" categoryCode="love" categoryName="Pheromone Dispenser"
+                 [bestOnly]="bestOnly" [countItem]="countItem"
+                 (countItemChangeEventEmitter)="updateCountItem($event)"></shop-category>
+
+</div>
+
+

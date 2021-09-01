@@ -10,7 +10,6 @@ import java.time.LocalDate;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,7 +32,6 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
 
         //get creature
         get(CREATURE_URL + "/" + creature.getId())
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(creature.getId().intValue())))
                 .andExpect(jsonPath("$.sex", equalTo(creature.getSex().name())))
@@ -48,7 +46,13 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.genes.gene1", equalTo(gene.getCode().name())))
                 .andExpect(jsonPath("$.genes.gene2").doesNotExist())
                 .andExpect(jsonPath("$._links.self.href", endsWith(CREATURE_URL + "/" + creature.getId())));
+
+        //todo delete creature
+//        delete(CREATURE_URL + "/" + creature.getId())
+//                .andExpect(status().isOk());
     }
+
+    //todo creature search
 
     private Creature givenCreature(Color color, Gene gene) {
         Creature creature = Creature.builder()

@@ -1,6 +1,6 @@
 package hrpg.server.item.resource;
 
-import hrpg.server.common.exception.InsufficientCoinsException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationCode;
@@ -10,6 +10,7 @@ import hrpg.server.item.service.ItemService;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
+import hrpg.server.user.service.exception.InsufficientLevelException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -64,6 +65,9 @@ public class ItemController {
         } catch (MaxItemsException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code(ValidationCode.MAX_SIZE.getCode()).build()));
+        } catch (InsufficientLevelException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("quality").code(ValidationCode.INSUFFICIENT_LEVEL.getCode()).build()));
         }
     }
 

@@ -1,9 +1,10 @@
 import {Component} from "@angular/core";
-import {LoginService} from "../home/login/login.service";
 import {ActivatedRoute} from "@angular/router";
-import {User} from "../common/user/user.interface";
+import {User} from "../shared/user/user.interface";
 import {Capture} from "./capture.interface";
 import {CaptureService} from "./capture.service";
+import {AuthService} from "../shared/auth/auth.service";
+import {HeaderService} from "../shared/header/header.service";
 
 @Component({
   selector: 'capture',
@@ -14,17 +15,20 @@ export class CaptureComponent {
   user: User;
   captures: Capture[];
 
-  constructor(private loginService: LoginService,
+  constructor(private headerService: HeaderService,
+
+    private authService: AuthService,
               private route: ActivatedRoute,
               private captureService: CaptureService) {
   }
 
   ngOnInit() {
+    this.headerService.showHeader("Wild Land", false);
     //todo il faut aussi gérer le cookie token (mettre le code de home dans un abstract)
     this.user = this.route.snapshot.data.user;
     this.captures = this.route.snapshot.data.captures;
-    if (!this.loginService.checkCredentials())
-      window.location.href = window.location.href.split('/')[0];
+    // if (!this.authService.isLoggedIn())
+    //   window.location.href = window.location.href.split('/')[0];
   }
 
   get activeCapture(): Capture {

@@ -18,13 +18,11 @@ class ItemEndpointIT extends AbstractIntegrationTest {
     void item_endpoints() {
         //get all items found 0
         get(ITEM_URL)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPathTotalElements(0));
 
         //create item
         String location = post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(2).build())
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
@@ -32,7 +30,6 @@ class ItemEndpointIT extends AbstractIntegrationTest {
 
         //get item
         get(location)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(location.substring(location.lastIndexOf("/")+1))))
                 .andExpect(jsonPath("$.code", equalTo(ItemCode.NEST.name())))
@@ -42,7 +39,6 @@ class ItemEndpointIT extends AbstractIntegrationTest {
 
         //get all items found 1
         get(ITEM_URL)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPathTotalElements(1))
                 .andExpect(jsonPath("$._embedded.items[*].id", hasItem(location.substring(location.lastIndexOf("/")+1))))
@@ -53,7 +49,6 @@ class ItemEndpointIT extends AbstractIntegrationTest {
 
         //delete item
         delete(location)
-                .andDo(print())
                 .andExpect(status().isNoContent());
         get(location)
                 .andDo(print())
@@ -65,35 +60,29 @@ class ItemEndpointIT extends AbstractIntegrationTest {
     void item_search() {
         //create 2 items
         post(ITEM_URL, ItemRequest.builder().code(ItemCode.THIRST).quality(1).build())
-                .andDo(print())
                 .andExpect(status().isCreated());
         post(ITEM_URL, ItemRequest.builder().code(ItemCode.HUNGER).quality(2).build())
-                .andDo(print())
                 .andExpect(status().isCreated());
 
         //list all items
         get(ITEM_URL)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPathTotalElements(2));
 
         //list items filtered by code
         get(ITEM_URL + "?code=" + ItemCode.THIRST.name())
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.items[*].code", hasItem(ItemCode.THIRST.name())))
                 .andExpect(jsonPathTotalElements(1));
 
         //list items filtered by quality
         get(ITEM_URL + "?quality=" + 1)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.items[*].quality", hasItem(1)))
                 .andExpect(jsonPathTotalElements(1));
 
         //list items filtered by code and quality
         get(ITEM_URL + "?" + "code=" + ItemCode.THIRST.name() + "&quality=" + 1)
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.items[*].code", hasItem(ItemCode.THIRST.name())))
                 .andExpect(jsonPath("$._embedded.items[*].quality", hasItem(1)))
@@ -101,7 +90,6 @@ class ItemEndpointIT extends AbstractIntegrationTest {
 
         //list items ordered by id asc, receive last created
         get(ITEM_URL + "?" + "sort=id,asc" + "&size=1")
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.items[*].code", hasItem(ItemCode.THIRST.name())))
                 .andExpect(jsonPath("$._embedded.items[*].quality", hasItem(1)));

@@ -44,6 +44,7 @@ public abstract class AbstractIntegrationTest {
     protected static final String CREATURE_URL = "/creatures";
     protected static final String ITEM_URL = "/items";
     protected static final String PEN_URL = "/pens";
+    protected static final String SHOP_URL = "/shop-items";
 
     private static final String AUTHORIZED_CLIENT_REGISTRATION_ID = "testRegistrationId";
 
@@ -68,6 +69,8 @@ public abstract class AbstractIntegrationTest {
         session.setAttribute(
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 new SecurityContextImpl(authentication));
+
+        //todo create a second user with data in all tables
     }
 
     private BearerTokenAuthentication buildPrincipal(String userSub, Integer userId) {

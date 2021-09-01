@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {Restangular} from "ngx-restangular";
 import {Capture} from "./capture.interface";
 import {REST_FULL_RESPONSE} from "../restangular.custom";
-import {flatMap, map} from "rxjs/operators";
+import {flatMap} from "rxjs/operators";
 
 @Injectable()
 export class CaptureService {

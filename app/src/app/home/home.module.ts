@@ -1,25 +1,24 @@
 import {NgModule} from '@angular/core';
 
-import {LoginComponent} from "./login/login.component";
 import {HomeComponent} from "./home.component";
-import {LoginService} from "./login/login.service";
-import {BrowserModule} from "@angular/platform-browser";
-import {CommonModule} from "../common/common.module";
+import {MatButtonModule} from "@angular/material/button";
+import {SharedModule} from "../shared/shared.module";
+import {RouterModule} from "@angular/router";
+import {MatGridListModule} from "@angular/material/grid-list";
 
 @NgModule({
   declarations: [
-    LoginComponent,
     HomeComponent
   ],
   imports: [
-    BrowserModule,
-    CommonModule
+    SharedModule,
+    MatButtonModule,
+    RouterModule,
+    MatGridListModule
   ],
   exports:[
   ],
-  providers: [
-    LoginService
-  ]
+  providers: []
 })
 export class HomeModule {
 }

@@ -1,0 +1,31 @@
+<div id="account-page">
+
+  <div class="form-group">
+    <label for="name">Name:</label>
+    <input type="text" class="form-control" id="name" required [(ngModel)]="user.name" name="name">
+  </div>
+
+  <div id="submit-message">
+    <span id="error-message" *ngIf="invalidSubmit">Invalid username</span>
+    <span *ngIf="validSubmit">Account updated</span>
+  </div>
+
+  <div id="submit">
+    <button mat-raised-button (click)="submit()">Update</button>
+  </div>
+
+  <div id="delete-account">
+    <button mat-raised-button color="warn" *ngIf="!showDeleteConfirmation" (click)="toggleDeleteConfirmation()">
+      Delete account
+    </button>
+
+    <div id="delete-confirmation" *ngIf="showDeleteConfirmation">
+      <div id="delete-confirmation-message">Are you sure that you want to delete your account ?</div>
+      <button mat-raised-button class="btn-confirmation" (click)="toggleDeleteConfirmation()">No</button>
+      <button mat-raised-button color="warn" class="btn-confirmation" (click)="delete()">Yes</button>
+    </div>
+
+  </div>
+
+
+</div>

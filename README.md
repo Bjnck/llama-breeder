@@ -1,9 +1,9 @@
-# Llama Breeder
-
 <p align="center">
   <img src="https://user-images.githubusercontent.com/52128443/132263867-66528af6-67db-42d6-8d28-adabdb06513d.png" alt="logo" style="width:150px;"/>
 </p>
 
+
+# Llama Breeder
 
 description du projet, lien vers le jeu.
 

@@ -6,7 +6,17 @@ This project is arcjitectured in 2 distincts applications:
 
 ## Server
 
-### model sql / schema
+### Sql schema
+The game's data is stored in a relational database (Mysql). The following schema defines several entities:
+- User: user account to which all other entities are linked.
+- Creature: the llama itself with all its characteristics.
+- Capture: 
+- Pen
+- Item
+
+
+![llama_breeder_db_diagram (1)](https://user-images.githubusercontent.com/52128443/132247734-c0f86f43-1bd6-4cc9-a357-5ed9c7fb2b27.png)
+
 
 ### application spring boot
 

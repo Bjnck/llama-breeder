@@ -30,4 +30,4 @@ It uses several other external librairies:
 - [ngx-restangular](https://ngx-restangular.com/) to manage all http calls.
 - [ngx-infinite-scroll](https://github.com/orizens/ngx-infinite-scroll) for list scrolling.
 
-The client manage security by using OAuth2 to call Google and genrate a token. This token will be forwarded to the server for account creation/authentication and resources access authorization.
+The client manage security by using OAuth2 to call Google and generate a token. This token will be forwarded to the server for account creation/authentication and resources access authorization.

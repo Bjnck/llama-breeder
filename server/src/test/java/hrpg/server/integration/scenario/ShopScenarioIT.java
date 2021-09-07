@@ -26,7 +26,7 @@ class ShopScenarioIT extends AbstractIntegrationTest {
                 .andReturn();
 
         //buy first item
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(1).build())
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(1).build())
                 .andExpect(status().isCreated());
 
         //check available coins
@@ -36,7 +36,7 @@ class ShopScenarioIT extends AbstractIntegrationTest {
                 .andReturn();
 
         //buy second item fail (insufficient coins)
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(1).build())
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(1).build())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[*].field", hasItem("code,quality")))
                 .andExpect(jsonPath("$[*].code", hasItem("insufficientCoins")));
@@ -70,7 +70,7 @@ class ShopScenarioIT extends AbstractIntegrationTest {
     @Test
     @SneakyThrows
     void bad_item_scenario() {
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(4).build())
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(4).build())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[*].field", hasItem("code,quality")))
                 .andExpect(jsonPath("$[*].code", hasItem("invalidValue")));

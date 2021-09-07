@@ -16,8 +16,19 @@ export class ItemService {
     return this.baseRest.post({code, quality});
   }
 
-  count(): Observable<Page> {
-    return this.baseRest.customGET('', {size: 1});
+  count(): Observable<Page>;
+  count(code: string, quality: number): Observable<Page>;
+
+  count(code?: string, quality?: number): Observable<Page> {
+    const params: any = {size: 1};
+    if (code) {
+      params.code = code;
+    }
+    if (quality) {
+      params.quality = quality;
+    }
+
+    return this.baseRest.customGET('', params);
   }
 
   list(size: number, page: number, code: string): Observable<Item[]> {

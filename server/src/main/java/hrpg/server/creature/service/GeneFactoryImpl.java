@@ -22,13 +22,13 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     @Override
-    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int nestQuality, Integer baitGeneration) {
+    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality, Integer baitGeneration) {
         //todo use bait for calcul
-        if (nestQuality == 0)
+        if (netQuality == 0)
             return Optional.empty();
 
         Gene gene = null;
-        if (new Random().nextInt(100) < getChance(nestQuality)) {
+        if (new Random().nextInt(100) < getChance(netQuality)) {
             //check get normal gene
             int random = new Random().nextInt(100);
             if (random < genesParameters.getChanceLove())
@@ -39,26 +39,29 @@ public class GeneFactoryImpl implements GeneFactory {
                 gene = Gene.THIRST;
             else
                 gene = Gene.FERTILE;
-        } else if (new Random().nextInt(100) < getSpecialChance(nestQuality)) {
+        } else if (new Random().nextInt(100) < getSpecialChance(netQuality)) {
             //check get special gene
         }
 
-        return Optional.ofNullable(gene).map(geneRepository::findByCode).orElseThrow();
+        if (gene != null)
+            return geneRepository.findByCode(gene);
+        else
+            return Optional.empty();
     }
 
-    private int getChance(int nestQuality) {
-        if (nestQuality == 1)
+    private int getChance(int netQuality) {
+        if (netQuality == 1)
             return genesParameters.getChanceQuality1();
-        else if (nestQuality == 2)
+        else if (netQuality == 2)
             return genesParameters.getChanceQuality2();
         else
             return genesParameters.getChanceQuality3();
     }
 
-    private int getSpecialChance(int nestQuality) {
-        if (nestQuality == 1)
+    private int getSpecialChance(int netQuality) {
+        if (netQuality == 1)
             return genesParameters.getSpecialChanceQuality1();
-        else if (nestQuality == 2)
+        else if (netQuality == 2)
             return genesParameters.getSpecialChanceQuality2();
         else
             return genesParameters.getSpecialChanceQuality3();

@@ -1,46 +1,51 @@
-import {Component} from "@angular/core";
-import {ActivatedRoute} from "@angular/router";
-import {User} from "../shared/user/user.interface";
-import {Capture} from "./capture.interface";
-import {CaptureService} from "./capture.service";
-import {AuthService} from "../shared/auth/auth.service";
-import {HeaderService} from "../shared/header/header.service";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {User} from '../shared/user/user.interface';
+import {Capture} from './capture.interface';
+import {CaptureService} from './capture.service';
+import {AuthService} from '../shared/auth/auth.service';
+import {HeaderService} from '../shared/header/header.service';
+import {CaptureCreature} from './capture-creature.interface';
 
 @Component({
-  selector: 'capture',
   templateUrl: './capture.component.html',
+  styleUrls: [
+    '../shared/shared-style.sass',
+    './capture.component.sass'
+  ]
 })
 
-export class CaptureComponent {
+export class CaptureComponent implements OnInit {
   user: User;
-  captures: Capture[];
+  captureCreaturePairs: CaptureCreature[];
 
   constructor(private headerService: HeaderService,
-
-    private authService: AuthService,
+              private authService: AuthService,
               private route: ActivatedRoute,
               private captureService: CaptureService) {
   }
 
   ngOnInit() {
-    this.headerService.showHeader("Wild Land", false);
-    //todo il faut aussi gérer le cookie token (mettre le code de home dans un abstract)
+    this.headerService.showHeader('Wild Lands', false);
     this.user = this.route.snapshot.data.user;
-    this.captures = this.route.snapshot.data.captures;
-    // if (!this.authService.isLoggedIn())
-    //   window.location.href = window.location.href.split('/')[0];
+    this.captureCreaturePairs = this.route.snapshot.data.captures;
+    // todo remove this when bait is managed by server
+    this.captureCreaturePairs.forEach(pair => pair.capture.bait = 0);
   }
 
   get activeCapture(): Capture {
-    return this.captures.find(capture => new Date(capture.endTime) >= new Date());
+    return this.captureCreaturePairs
+      .find(pair => new Date(pair.capture.endTime) >= new Date())?.capture;
   }
 
-  get history(): Capture[] {
-    return this.captures.filter(capture => new Date(capture.endTime) < new Date()).slice(0, 10);
+  get history(): CaptureCreature[] {
+    return this.captureCreaturePairs
+      .filter(pair => new Date(pair.capture.endTime) < new Date())
+      .slice(0, 10);
   }
 
   onCaptureFinished() {
-    console.log("finish");
-    this.captureService.listCaptures(11).subscribe(captures => this.captures = captures);
+    this.captureService.listCaptures(11)
+      .subscribe(pairs => this.captureCreaturePairs = pairs);
   }
 }

@@ -1,5 +1,5 @@
 package hrpg.server.item.type;
 
 public enum ItemCode {
-    NEST, LOVE, HUNGER, THIRST
+    NET, LOVE, HUNGER, THIRST
 }

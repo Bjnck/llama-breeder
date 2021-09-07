@@ -1,19 +1,14 @@
-<span *ngIf="code==='nest' && quality===1">Basic</span>
-<span *ngIf="code==='nest' && quality===2">Super</span>
-<span *ngIf="code==='nest' && quality===3">Mega</span>
+<span *ngIf="code.toLowerCase()==='net' && quality===1">Basic</span>
+<span *ngIf="code.toLowerCase()==='net' && quality===2">Super</span>
+<span *ngIf="code.toLowerCase()==='net' && quality===3">Mega</span>
 
-<span *ngIf="code!=='nest' && quality===1">Mediocre</span>
-<span *ngIf="code!=='nest' && quality===2">Inferior</span>
-<span *ngIf="code!=='nest' && quality===3">Unremarkable</span>
-<span *ngIf="code!=='nest' && quality===4">Acceptable</span>
-<span *ngIf="code!=='nest' && quality===5">Good</span>
-<span *ngIf="code!=='nest' && quality===6">Superior</span>
-<span *ngIf="code!=='nest' && quality===7">Superb</span>
-<span *ngIf="code!=='nest' && quality===8">Splendid</span>
-<span *ngIf="code!=='nest' && quality===9">Magnificent</span>
-<span *ngIf="code!=='nest' && quality===10">Glorious</span>
-
-
-
-
-
+<span *ngIf="code.toLowerCase()!=='net' && quality===1">Mediocre</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===2">Inferior</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===3">Unremarkable</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===4">Acceptable</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===5">Good</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===6">Superior</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===7">Superb</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===8">Splendid</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===9">Magnificent</span>
+<span *ngIf="code.toLowerCase()!=='net' && quality===10">Glorious</span>

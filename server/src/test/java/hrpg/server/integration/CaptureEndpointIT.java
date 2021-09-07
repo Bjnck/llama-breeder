@@ -21,7 +21,7 @@ class CaptureEndpointIT extends AbstractIntegrationTest {
                 .andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
         assertThat(location, notNullValue());
 
-        //get capture
+        //get capture in progress
         get(location)
                 .andExpect(status().isOk())
                 .andExpect(jsonPathIdFromLocation(location))

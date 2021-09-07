@@ -9,7 +9,7 @@ export class UserService {
 
   @Output() userChangeEventEmitter: EventEmitter<any> = new EventEmitter<any>();
 
-  private _user;
+  private user;
 
   constructor(private restangular: Restangular) {
   }
@@ -17,31 +17,31 @@ export class UserService {
   fetch(): Promise<User> {
     return this.restangular.one('user').get()
       .pipe(map(user => {
-        this._user = user;
-        this.userChangeEventEmitter.emit(this._user);
+        this.user = user;
+        this.userChangeEventEmitter.emit(this.user);
         return user;
       }))
       .toPromise();
   }
 
   get(): User {
-    return this._user;
+    return this.user;
   }
 
   update(user: any): Observable<User> {
-    this._user = user;
-    this.userChangeEventEmitter.emit(this._user);
+    this.user = user;
+    this.userChangeEventEmitter.emit(this.user);
     return user.put();
   }
 
   updateCoins(coins: number){
-    this._user.coins = coins;
-    this.userChangeEventEmitter.emit(this._user);
+    this.user.coins = coins;
+    this.userChangeEventEmitter.emit(this.user);
   }
 
   delete(user: any) {
-    this._user = null;
-    this.userChangeEventEmitter.emit(this._user);
+    this.user = null;
+    this.userChangeEventEmitter.emit(this.user);
     user.remove();
   }
 }

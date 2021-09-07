@@ -5,5 +5,5 @@ import hrpg.server.creature.dao.Gene;
 import java.util.Optional;
 
 public interface GeneFactory {
-    Optional<Gene> getForCapture(int nestQuality, Integer baitGeneration);
+    Optional<Gene> getForCapture(int netQuality, Integer baitGeneration);
 }

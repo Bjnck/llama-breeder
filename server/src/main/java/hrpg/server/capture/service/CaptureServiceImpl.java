@@ -3,7 +3,7 @@ package hrpg.server.capture.service;
 import hrpg.server.capture.dao.Capture;
 import hrpg.server.capture.dao.CaptureRepository;
 import hrpg.server.capture.service.exception.BaitUnavailableException;
-import hrpg.server.capture.service.exception.NestUnavailableException;
+import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.exception.ConflictException;
 import hrpg.server.common.properties.ParametersProperties;
@@ -50,21 +50,21 @@ public class CaptureServiceImpl implements CaptureService {
     }
 
     @Transactional(rollbackFor = {
-            NestUnavailableException.class,
+            NetUnavailableException.class,
             RunningCaptureException.class,
             BaitUnavailableException.class
     })
     @Override
     public CaptureDto create(int quality, Integer baitGeneration)
-            throws NestUnavailableException, RunningCaptureException, BaitUnavailableException {
-        //validate nest with quality is available and delete it
+            throws NetUnavailableException, RunningCaptureException, BaitUnavailableException {
+        //validate net with quality is available and delete it
         if (quality > 0) {
-            ItemDto nest = itemService.search(
-                    ItemSearch.builder().code(ItemCode.NEST).quality(quality).build(),
+            ItemDto net = itemService.search(
+                    ItemSearch.builder().code(ItemCode.NET).quality(quality).build(),
                     PageRequest.of(0, 1))
-                    .stream().findAny().orElseThrow(NestUnavailableException::new);
+                    .stream().findAny().orElseThrow(NetUnavailableException::new);
             try {
-                itemService.delete(nest.getId());
+                itemService.delete(net.getId());
             } catch (ItemNotFoundException e) {
                 //item found already deleted -> conflict with other operation
                 throw new ConflictException();

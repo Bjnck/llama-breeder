@@ -14,12 +14,15 @@ import {ItemService} from './item/item.service';
 import {ItemCountResolve} from './item/item-count.resolve';
 import {ItemNameComponent} from './item/item-name.component';
 import {ItemIconComponent} from './item/item-icon.component';
+import {CreatureService} from './creature/creature.service';
+import {LlamaComponent} from './creature/llama.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     ItemNameComponent,
-    ItemIconComponent
+    ItemIconComponent,
+    LlamaComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +34,8 @@ import {ItemIconComponent} from './item/item-icon.component';
   exports: [
     HeaderComponent,
     ItemNameComponent,
-    ItemIconComponent
+    ItemIconComponent,
+    LlamaComponent
   ],
   providers: [
     HeaderService,
@@ -39,6 +43,7 @@ import {ItemIconComponent} from './item/item-icon.component';
     UserService,
     ItemService,
     ItemCountResolve,
+    CreatureService,
     AuthService
   ]
 })

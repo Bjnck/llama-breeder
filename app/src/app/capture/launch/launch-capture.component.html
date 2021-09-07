@@ -1,0 +1,59 @@
+<div id="capture-launch">
+
+    <div id="buttons">
+      <div class="launch">
+        <button mat-raised-button class="launch-raised" *ngIf="!activeCapture" (click)="launch()">Capture</button>
+        <button mat-button disabled class="launch-stroked"
+                *ngIf="activeCapture">{{timeLeft | date:'HH:mm:ss':'UTC'}}</button>
+      </div>
+
+      <div>
+        <div>
+          <button mat-raised-button class="net net-raised" *ngIf="quality == 0"
+                  [disabled]="activeCapture != null ||
+                (netCount.quality_1 <= 0 && netCount.quality_2 <= 0 && netCount.quality_3 <= 0)"
+                  [matMenuTriggerFor]="menu">
+            <mat-icon svgIcon="net"></mat-icon>
+          </button>
+          <button mat-stroked-button class="net net-stroked" *ngIf="quality != 0" (click)="setNet(0)">
+            <mat-icon svgIcon="net"></mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item *ngIf="netCount.quality_1 > 0" (click)="setNet(1)">Basic ({{netCount.quality_1}})
+            </button>
+            <button mat-menu-item *ngIf="netCount.quality_2 > 0" (click)="setNet(2)">Super ({{netCount.quality_2}})
+            </button>
+            <button mat-menu-item *ngIf="netCount.quality_3 > 0" (click)="setNet(3)">Mega ({{netCount.quality_3}})
+            </button>
+          </mat-menu>
+        </div>
+
+        <div>
+          <button mat-raised-button disabled>
+            <mat-icon svgIcon="bait"></mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  <div id="info" class="mat-elevation-z1">
+    <div *ngIf="activeCapture == null">
+      <span *ngIf="quality == 0 && bait == 0">No items used for capture</span>
+      <span *ngIf="quality > 0 || bait > 0">
+      <span *ngIf="quality > 0"><app-item-name code="net" [quality]="quality"></app-item-name> net</span>
+      <span *ngIf="quality > 0 && bait > 0"> / </span>
+      <span *ngIf="bait > 0">xxx bait</span>
+    </span>
+    </div>
+
+    <div *ngIf="activeCapture != null">
+      <span *ngIf="activeCapture.quality == 0 && activeCapture.bait == 0">No items used for capture</span>
+      <span *ngIf="activeCapture.quality > 0 || activeCapture.bait > 0">
+      <span *ngIf="activeCapture.quality > 0">
+        <app-item-name code="net" [quality]="activeCapture.quality"></app-item-name> net</span>
+      <span *ngIf="activeCapture.quality > 0 && activeCapture.bait > 0"> / </span>
+      <span *ngIf="activeCapture.bait > 0">xxx bait</span>
+    </span>
+    </div>
+  </div>
+</div>

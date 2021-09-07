@@ -1,8 +1,7 @@
-import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, Resolve} from "@angular/router";
-import {User} from "./user.interface";
-import {UserService} from "./user.service";
-import {AuthService} from "../auth/auth.service";
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import {User} from './user.interface';
+import {UserService} from './user.service';
 
 @Injectable()
 export class UserResolve implements Resolve<User> {
@@ -11,10 +10,11 @@ export class UserResolve implements Resolve<User> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Promise<User> {
-    if (this.userService.get())
+    if (this.userService.get()) {
       return new Promise((resolve, reject) => {
         resolve(this.userService.get());
       });
+    }
 
     return this.userService.fetch();
   }

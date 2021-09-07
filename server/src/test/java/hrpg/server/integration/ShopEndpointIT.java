@@ -20,7 +20,7 @@ class ShopEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPathTotalElements(33));
 
         //list items filtered by code
-        get(SHOP_URL + "?code=" + ItemCode.NEST.name())
+        get(SHOP_URL + "?code=" + ItemCode.NET.name())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.shop-items[*].code", not(hasItem(ItemCode.LOVE.name()))))
                 .andExpect(jsonPathTotalElements(3));
@@ -32,7 +32,7 @@ class ShopEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPathTotalElements(4));
 
         //list items filtered by code and quality
-        get(SHOP_URL + "?" + "code=" + ItemCode.NEST.name() + "&quality=" + 1)
+        get(SHOP_URL + "?" + "code=" + ItemCode.NET.name() + "&quality=" + 1)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$._embedded.shop-items[*].code", not(hasItem(ItemCode.LOVE.name()))))
                 .andExpect(jsonPath("$._embedded.shop-items[*].quality", not(hasItem(2))))

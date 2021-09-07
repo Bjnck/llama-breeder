@@ -4,12 +4,13 @@ import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.capture.service.CaptureDto;
 import hrpg.server.capture.service.CaptureService;
 import hrpg.server.capture.service.exception.BaitUnavailableException;
-import hrpg.server.capture.service.exception.NestUnavailableException;
+import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
+import hrpg.server.creature.resource.CreatureController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(path = "captures")
@@ -65,7 +68,7 @@ public class CaptureController {
         } catch (RunningCaptureException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code("runningCapture").build()));
-        } catch (NestUnavailableException e) {
+        } catch (NetUnavailableException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("quality").code("unavailable").build()));
         } catch (BaitUnavailableException e) {
@@ -95,9 +98,8 @@ public class CaptureController {
         CaptureResponse response = captureResourceMapper.toResponse(captureDto);
         response.add(links.linkToItemResource(response));
 
-        //todo add link to creature if not null
-//        if(captureResponse.getCreatureId() != null)
-//            captureResponse.add(linkTo(CreatureController.class, captureResponse.getId()).withRel("creature"));
+        if(response.getCreatureId() != null)
+            response.add(linkTo(CreatureController.class).slash(response.getCreatureId()).withRel("creature"));
 
         return response;
     }

@@ -2,6 +2,7 @@ export interface Capture {
   id: string;
   startTime: string;
   endTime: string;
-  creatureId: string;
+  creatureId: number;
   quality: number;
+  bait: number;
 }

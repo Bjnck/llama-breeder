@@ -1,6 +1,6 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 1, 100);
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 2, 200) ;
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 3, 300) ;
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 100);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 200) ;
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 300) ;
 
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 1, 0) ;
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 10) ;

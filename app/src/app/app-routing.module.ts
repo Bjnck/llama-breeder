@@ -13,6 +13,10 @@ import {ShopItemResolve} from './shop/item/shop-item.resolve';
 import {InventoryComponent} from './inventory/inventory.component';
 import {ItemListResolve} from './inventory/item-list.resolve';
 import {ItemCountResolve} from './shared/item/item-count.resolve';
+import {NetCountResolve} from './capture/launch/net-count.resolve';
+import {BarnComponent} from './barn/barn.component';
+import {CreatureListResolve} from './barn/creature-list.resolve';
+import {CreatureCountResolve} from "./barn/creature-count.resolve";
 
 
 const routes: Routes = [
@@ -61,8 +65,20 @@ const routes: Routes = [
     component: CaptureComponent,
     resolve: {
       user: UserResolve,
-      captures: CaptureResolve
-    }
+      captures: CaptureResolve,
+      netCount: NetCountResolve
+    },
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'barn',
+    component: BarnComponent,
+    resolve: {
+      user: UserResolve,
+      creatures: CreatureListResolve,
+      creatureCount: CreatureCountResolve
+    },
+    canActivate: [AuthGuard]
   }
 ];
 

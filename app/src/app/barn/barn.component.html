@@ -1,0 +1,111 @@
+<div id="page">
+
+  <div id="space-top"></div>
+
+  <div id="filter">
+    <div>
+      <button mat-flat-button *ngIf="sex === 'M'" color="accent"
+              (click)="toggleSexFilter('F')">
+        <mat-icon>male</mat-icon>
+      </button>
+      <button mat-flat-button *ngIf="sex === 'F'" color="accent"
+              (click)="toggleSexFilter(null)">
+        <mat-icon>female</mat-icon>
+      </button>
+      <button mat-stroked-button *ngIf="!sex" color="accent"
+              (click)="toggleSexFilter('M')">
+        <mat-icon svgIcon="genders"></mat-icon>
+      </button>
+    </div>
+
+    <div id="item-count">{{creatureCount}}/250</div>
+  </div>
+
+
+  <div class="no-items-message" *ngIf="!creatures || creatures.length === 0">No llama in the barn</div>
+
+  <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
+       infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
+
+    <div id="list-content">
+
+      <div *ngFor="let creature of creatures">
+        <div class="creature mat-elevation-z1">
+          <div class="details">
+            <div class="image">
+              <app-llama [color1]="creature.colors.color1.code"
+                         [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+              </app-llama>
+            </div>
+
+            <div class="info">
+              <div class="line1">
+                <div class="sex-icon">
+                  <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+                  <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+                </div>
+                <div class="name">
+                  {{creature.name ? creature.name : 'Llama'}}
+                </div>
+                <div *ngIf="creature.wild" class="status-icon wild-icon">
+                  <mat-icon>grass</mat-icon>
+                </div>
+                <!--todo use maturity to show-->
+                <div class="status-icon baby-icon">
+                  <mat-icon svgIcon="baby"></mat-icon>
+                </div>
+                <div *ngIf="creature.pregnant" class="status-icon pregnant-icon">
+                  <mat-icon svgIcon="pregnant"></mat-icon>
+                </div>
+                <!--todo display if in a pen-->
+<!--                <div class="status-icon pen-icon">-->
+<!--                  <mat-icon>fence</mat-icon>-->
+<!--                </div>-->
+              </div>
+
+              <div class="line2">
+                <!--todo use statistics to show-->
+                <div class="energy">
+                  <div class="stat-icon">
+                    <mat-icon>bolt</mat-icon>
+                  </div>
+                  <div class="stat-value">100</div>
+                </div>
+                <div class="thirst">
+                  <div class="stat-icon">
+                    <mat-icon>local_drink</mat-icon>
+                  </div>
+                  <div class="stat-value">0</div>
+                </div>
+                <div class="hunger">
+                  <div class="stat-icon">
+                    <mat-icon svgIcon="hay"></mat-icon>
+                  </div>
+                  <div class="stat-value">0</div>
+                </div>
+                <div class="love">
+                  <div class="stat-icon">
+                    <mat-icon>favorite</mat-icon>
+                  </div>
+                  <div class="stat-value">0</div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+
+          <div class="button">
+            <button mat-stroked-button>
+              <mat-icon>read_more</mat-icon>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+

@@ -1,0 +1,4 @@
+
+docker build --tag=server:latest .
+
+docker save server:latest -o llama-breeder-server.tar

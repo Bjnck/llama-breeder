@@ -11,7 +11,6 @@ import org.springframework.security.authentication.AuthenticationManagerResolver
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.oauth2.server.resource.introspection.NimbusOpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,9 +25,12 @@ import java.util.Collections;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
+    private final SecurityProperties securityProperties;
 
-    public SecurityConfig(UserService userService) {
+    public SecurityConfig(UserService userService,
+                          SecurityProperties securityProperties) {
         this.userService = userService;
+        this.securityProperties = securityProperties;
     }
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -56,23 +58,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         };
     }
 
-    //todo client info in properties
     @Bean
     public OpaqueTokenIntrospector introspectorGoogle() {
         return new GoogleAccessTokenIntrospector(
-                "https://www.googleapis.com/oauth2/v3/tokeninfo",
-                "932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com",
-                "LyIRcUAqz77ZoslEhynVDTsW");
+                securityProperties.getGoogleUrl(),
+                securityProperties.getGoogleClientId(),
+                securityProperties.getGoogleSecretKey());
     }
 
     //    @Bean
-    public OpaqueTokenIntrospector introspectorGithub() {
-        String introspectionUri = "https://api.github.com/user";
-        NimbusOpaqueTokenIntrospector introspector = new NimbusOpaqueTokenIntrospector(
-                introspectionUri, "d0e40e1858a6ccf54357", "da78df6928ac20210b56e0e3d6eddbe110f5b9d8");
-        introspector.setRequestEntityConverter(githubRequestEntityConverter(URI.create(introspectionUri)));
-        return introspector;
-    }
+//    public OpaqueTokenIntrospector introspectorGithub() {
+//        String introspectionUri = "https://api.github.com/user";
+//        NimbusOpaqueTokenIntrospector introspector = new NimbusOpaqueTokenIntrospector(
+//                introspectionUri, "clientId", "clientSecret");
+//        introspector.setRequestEntityConverter(githubRequestEntityConverter(URI.create(introspectionUri)));
+//        return introspector;
+//    }
 
     private Converter<String, RequestEntity<?>> githubRequestEntityConverter(URI introspectionUri) {
         return token -> {

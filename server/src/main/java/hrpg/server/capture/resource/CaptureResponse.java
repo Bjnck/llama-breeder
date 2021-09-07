@@ -1,5 +1,7 @@
 package hrpg.server.capture.resource;
 
+import hrpg.server.creature.resource.Color;
+import hrpg.server.creature.type.Sex;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
@@ -19,6 +21,9 @@ public class CaptureResponse extends RepresentationModel<CaptureResponse> {
     private Integer bait;
 
     private Long creatureId;
+    private Sex sex;
+    private Color color;
+    private String gene;
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;

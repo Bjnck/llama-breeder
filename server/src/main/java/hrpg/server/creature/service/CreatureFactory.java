@@ -6,6 +6,6 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public interface CreatureFactory {
-    CreatureDto generateForCapture(int userLevel, int nestQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
+    CreatureDto generateForCapture(int userLevel, int netQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
             throws MaxCreaturesException;
 }

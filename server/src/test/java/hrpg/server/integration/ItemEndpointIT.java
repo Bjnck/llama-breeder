@@ -22,7 +22,7 @@ class ItemEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPathTotalElements(0));
 
         //create item
-        String location = post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(2).build())
+        String location = post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(2).build())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
                 .andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
@@ -32,7 +32,7 @@ class ItemEndpointIT extends AbstractIntegrationTest {
         get(location)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(location.substring(location.lastIndexOf("/")+1))))
-                .andExpect(jsonPath("$.code", equalTo(ItemCode.NEST.name())))
+                .andExpect(jsonPath("$.code", equalTo(ItemCode.NET.name())))
                 .andExpect(jsonPath("$.quality", equalTo(2)))
                 .andExpect(jsonPath("$.life", equalTo(100)))
                 .andExpect(jsonPath("$._links.self.href", equalTo(location)));
@@ -42,7 +42,7 @@ class ItemEndpointIT extends AbstractIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPathTotalElements(1))
                 .andExpect(jsonPath("$._embedded.items[*].id", hasItem(location.substring(location.lastIndexOf("/")+1))))
-                .andExpect(jsonPath("$._embedded.items[*].code", hasItem(ItemCode.NEST.name())))
+                .andExpect(jsonPath("$._embedded.items[*].code", hasItem(ItemCode.NET.name())))
                 .andExpect(jsonPath("$._embedded.items[*].quality", hasItem(2)))
                 .andExpect(jsonPath("$._embedded.items[*].life", hasItem(100)))
                 .andExpect(jsonPath("$._embedded.items[*]._links.self.href", hasItem(location)));

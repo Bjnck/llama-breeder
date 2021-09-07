@@ -26,10 +26,11 @@ public class CreatureSpecification implements Specification<Creature> {
             if (criteria.getGeneration() != null)
                 predicates.add(builder.equal(root.get("generation"), criteria.getGeneration()));
 
-            //todo color1/color2 with join on table color for code
-            //todo gene1/gene2 with join on table gene for code
+            //todo list of codes with join on table color for code
+            //todo list of genes with join on table gene for code
             //todo wild with join on details
             //todo pregnant with join on details
+            //todo is mature
 
             if (!predicates.isEmpty())
                 return builder.and(predicates.toArray(new Predicate[0]));

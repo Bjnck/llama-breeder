@@ -16,8 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,6 +26,36 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
 
     @Autowired
     private BaitRepository baitRepository;
+
+    @Test
+    @SneakyThrows
+    void captureCreature_scenario() {
+        //create first capture
+        String location = post(CAPTURE_URL, CaptureRequest.builder().build())
+                .andExpect(status().isCreated())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+                .andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+        assertThat(location, notNullValue());
+
+        //wait for first capture
+        CaptureResponse capture = objectMapper.readValue(get(location)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsByteArray(), CaptureResponse.class);
+        Thread.sleep(LocalDateTime.now().until(capture.getEndTime(), ChronoUnit.MILLIS));
+
+        //get capture
+        get(location)
+                .andExpect(status().isOk())
+                .andExpect(jsonPathIdFromLocation(location))
+                .andExpect(jsonPath("$.startTime", notNullValue()))
+                .andExpect(jsonPath("$.endTime", notNullValue()))
+                .andExpect(jsonPath("$.creatureId", notNullValue()))
+                .andExpect(jsonPath("$.._links.creature.href", notNullValue()))
+                .andExpect(jsonPath("$.quality", equalTo(0)))
+                .andExpect(jsonPath("$._links.self.href", equalTo(location)));
+    }
 
     @Test
     @SneakyThrows
@@ -67,15 +97,17 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
         //create third capture, limit capture exceeded (2), first capture should be deleted
         post(CAPTURE_URL, CaptureRequest.builder().build()).andExpect(status().isCreated());
         get(location1).andExpect(status().isNotFound());
+
+        //todo second capture should still be there
     }
 
     @Test
     @SneakyThrows
-    void nest_scenario() {
-        //shop nest
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(1).build()).andExpect(status().isCreated());
+    void net_scenario() {
+        //shop net
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(1).build()).andExpect(status().isCreated());
 
-        //create and wait for capture with available nest
+        //create and wait for capture with available net
         String location = post(CAPTURE_URL, CaptureRequest.builder().quality(1).build())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -87,7 +119,7 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
                 .getContentAsByteArray(), CaptureResponse.class);
         Thread.sleep(LocalDateTime.now().until(capture.getEndTime(), ChronoUnit.MILLIS));
 
-        //create capture with unavailable nest
+        //create capture with unavailable net
         post(CAPTURE_URL, CaptureRequest.builder().quality(1).build())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[*].field", hasItem("quality")))
@@ -97,7 +129,7 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
     @Test
     @SneakyThrows
     void bait_scenario() {
-        //create and wait for capture without nest but with bait, bait should be ignore
+        //create and wait for capture without net but with bait, bait should be ignore
         String location1 = post(CAPTURE_URL, CaptureRequest.builder().bait(1).build())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -110,13 +142,13 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
                 .getContentAsByteArray(), CaptureResponse.class);
         Thread.sleep(LocalDateTime.now().until(capture1.getEndTime(), ChronoUnit.MILLIS));
 
-        //shop 2 nests
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(1).build()).andExpect(status().isCreated());
-        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NEST).quality(1).build()).andExpect(status().isCreated());
+        //shop 2 nets
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(1).build()).andExpect(status().isCreated());
+        post(ITEM_URL, ItemRequest.builder().code(ItemCode.NET).quality(1).build()).andExpect(status().isCreated());
         //add bait
         addBait();
 
-        //create and wait for capture with available nest and bait
+        //create and wait for capture with available net and bait
         String location2 = post(CAPTURE_URL, CaptureRequest.builder().quality(1).bait(1).build())
                 .andExpect(status().isCreated())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -128,7 +160,7 @@ class CaptureScenarioIT extends AbstractIntegrationTest {
                 .getContentAsByteArray(), CaptureResponse.class);
         Thread.sleep(LocalDateTime.now().until(capture2.getEndTime(), ChronoUnit.MILLIS));
 
-        //create capture with available nest and unavailable bait
+        //create capture with available net and unavailable bait
         post(CAPTURE_URL, CaptureRequest.builder().quality(1).bait(1).build())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$[*].field", hasItem("bait")))

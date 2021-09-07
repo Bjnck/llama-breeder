@@ -1,6 +1,6 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 1, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 2, 200) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NEST', 3, 300) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 200) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 300) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
@@ -128,7 +128,3 @@ INSERT INTO color (name, generation, code, parent_code) VALUES (TRIM('Smoke	    
 INSERT INTO color (name, generation, code, parent_code) VALUES (TRIM('LavenderRed	            '), 8,TRIM('#FFF0F5'), null) ON DUPLICATE KEY UPDATE name=VALUES(name), generation=VALUES(generation), code=VALUES(code), parent_code=VALUES(parent_code);
 INSERT INTO color (name, generation, code, parent_code) VALUES (TRIM('Gainsboro	            '), 8,TRIM('#DCDCDC'), null) ON DUPLICATE KEY UPDATE name=VALUES(name), generation=VALUES(generation), code=VALUES(code), parent_code=VALUES(parent_code);
 INSERT INTO color (name, generation, code, parent_code) VALUES (TRIM('DarkSlate	            '), 8,TRIM('#2F4F4F'), null) ON DUPLICATE KEY UPDATE name=VALUES(name), generation=VALUES(generation), code=VALUES(code), parent_code=VALUES(parent_code);
-
--- REPLACE INTO color (name, generation, code, parent_code) VALUES (TRIM('
--- '), 8,TRIM('
--- '), null);

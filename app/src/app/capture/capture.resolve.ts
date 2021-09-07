@@ -1,21 +1,16 @@
-import {Injectable} from "@angular/core";
-import {ActivatedRouteSnapshot, Resolve} from "@angular/router";
-import {Observable} from "rxjs";
-import {Capture} from "./capture.interface";
-import {CaptureService} from "./capture.service";
-import {AuthService} from "../shared/auth/auth.service";
+import {Injectable} from '@angular/core';
+import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
+import {CaptureService} from './capture.service';
+import {CaptureCreature} from './capture-creature.interface';
+import {Observable} from 'rxjs';
 
 @Injectable()
-export class CaptureResolve implements Resolve<Capture[]> {
+export class CaptureResolve implements Resolve<CaptureCreature[]> {
 
-  constructor(private captureService: CaptureService,
-              private authService: AuthService) {
+  constructor(private captureService: CaptureService) {
   }
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Capture[]> {
-    if (this.authService.isLoggedIn())
-      return this.captureService.listCaptures(11);
-    else
-      return null;
+  resolve(route: ActivatedRouteSnapshot): Observable<CaptureCreature[]> {
+    return this.captureService.listCaptures(11);
   }
 }

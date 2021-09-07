@@ -1,28 +1,33 @@
-<div class="page">
+<div id="page">
+
+  <div id="space-top"></div>
 
   <div id="filter">
     <button mat-flat-button *ngIf="bestOnly" color="accent" class="best-btn" (click)="toggleBestButton()">
-      <mat-icon>upgrade</mat-icon>
+      <mat-icon svgIcon="best"></mat-icon>
     </button>
     <button mat-stroked-button *ngIf="!bestOnly" color="accent" class="best-btn" (click)="toggleBestButton()">
-      <mat-icon>upgrade</mat-icon>
+      <mat-icon svgIcon="best"></mat-icon>
     </button>
     <div id="item-count">{{itemCount}}/100</div>
   </div>
 
-  <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="nest" categoryName="Nest"
-                     [bestOnly]="bestOnly" [itemCount]="itemCount"
-                     (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
-  <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="thirst" categoryName="Drinking Trough"
-                     [bestOnly]="bestOnly" [itemCount]="itemCount"
-                     (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
-  <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="hunger" categoryName="Eating Trough"
-                     [bestOnly]="bestOnly" [itemCount]="itemCount"
-                     (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
-  <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="love" categoryName="Pheromone Dispenser"
-                     [bestOnly]="bestOnly" [itemCount]="itemCount"
-                     (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
-
+  <div id="list-wrapper">
+    <div id="list-content">
+      <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="net" categoryName="Net"
+                         [bestOnly]="bestOnly" [itemCount]="itemCount"
+                         (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
+      <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="thirst" categoryName="Drinking Trough"
+                         [bestOnly]="bestOnly" [itemCount]="itemCount"
+                         (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
+      <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="hunger" categoryName="Eating Trough"
+                         [bestOnly]="bestOnly" [itemCount]="itemCount"
+                         (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
+      <app-shop-category [shopItems]="shopItems" [user]="user" categoryCode="love" categoryName="Pheromone Dispenser"
+                         [bestOnly]="bestOnly" [itemCount]="itemCount"
+                         (countItemChangeEventEmitter)="updateCountItem($event)"></app-shop-category>
+    </div>
+  </div>
 </div>
 
 

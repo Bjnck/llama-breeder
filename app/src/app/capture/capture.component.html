@@ -1,6 +1,16 @@
-<!--<app-header [title]="'Wild land'" [user]="user"></app-header>-->
+<div id="page">
 
-<new-capture [activeCapture]="activeCapture" (captureFinishedEventEmitter)="onCaptureFinished()"></new-capture>
+  <div id="space-top"></div>
 
-<capture-history [captures]="history"></capture-history>
+  <app-launch-capture [activeCapture]="activeCapture"
+                      (captureFinishedEventEmitter)="onCaptureFinished()"></app-launch-capture>
 
+  <div id="history-title" *ngIf="history.length > 0"></div>
+
+  <div id="list-wrapper">
+    <div id="list-content">
+      <app-history-capture [captureCreaturePairs]="history" ></app-history-capture>
+    </div>
+  </div>
+
+</div>

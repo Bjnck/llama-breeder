@@ -1,4 +1,4 @@
-<div class="category">{{categoryName}}</div>
+<div class="category shop">{{categoryName}}</div>
 <div class="no-items-message" *ngIf="user.level === 0">No items available</div>
 <div *ngFor="let shopItem of shopItems | shop_category:categoryCode">
   <div class="item mat-elevation-z1"

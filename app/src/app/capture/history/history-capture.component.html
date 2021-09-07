@@ -1,0 +1,36 @@
+<div *ngFor="let pair of captureCreaturePairs" class="details mat-elevation-z1">
+  <div class="capture-details">
+    <div>{{pair.capture.endTime | date:'short'}}</div>
+    <div class="capture-items">
+      <div class="item-net">
+        <div *ngIf="pair.capture.quality > 0">
+          <mat-icon svgIcon="net"></mat-icon>
+        </div>
+        <app-item-name code="net" [quality]="pair.capture.quality" *ngIf="pair.capture.quality > 0"></app-item-name>
+      </div>
+      <div class="item-bait">
+        <div *ngIf="pair.capture.bait > 0">
+          <mat-icon svgIcon="bait"></mat-icon>
+        </div>
+        <div *ngIf="pair.capture.bait > 0">Mediocre</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="creature-details">
+    <app-llama [color1]="pair.creature.colors.color1.code"
+               [color2]="pair.creature.colors.color2 ? pair.creature.colors.color2.code : pair.creature.colors.color1.code">
+    </app-llama>
+
+    <div>
+      <div class="color">{{pair.creature.colors.color1.name}}</div>
+      <div class="creature-info">
+        <div class="sex-icon">
+          <mat-icon *ngIf="pair.creature.sex === 'M'" class="male">male</mat-icon>
+          <mat-icon *ngIf="pair.creature.sex === 'F'" class="female">female</mat-icon>
+        </div>
+        <div class="gene">{{pair.creature.genes.gene1}}</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,27 +1,17 @@
-#server.port=3000
-
 spring:
-  security:
-    oauth2:
-#      client:
-#        registration:
-#          google:
-#            clientId: 932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com
-#            clientSecret: LyIRcUAqz77ZoslEhynVDTsW
-      resourceserver:
-        jwt:
-          jwk-set-uri: https://api.github.com/user
-#          jwk-set-uri:
-#          issuer-uri: https://accounts.google.com
-
   jpa:
     generate-ddl: false
   datasource:
     platform: mysql
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/llama"
-    username: llama
-    password: password
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     initialization-mode: ALWAYS
+
+security:
+  google-url: "https://www.googleapis.com/oauth2/v3/tokeninfo"
+  google-client_id: ${GOOGLE_CLIENT_ID}
+  google-secret-key: ${GOOGLE_SECRET_KEY}
 
 parameters:
   user:
@@ -31,7 +21,7 @@ parameters:
     max: 100
   captures:
     time-unit: SECONDS
-    time-value: 10
+    time-value: 1
     max: 20
   creatures:
     max: 250
@@ -80,23 +70,3 @@ parameters:
       size-18: 1
       size-19: 1
       size-20: 1
-
-
-
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          test:
-#            clientId: d0e40e1858a6ccf54357
-#            clientSecret: da78df6928ac20210b56e0e3d6eddbe110f5b9d8
-#            userAuthorizationUri: "http://localhost:8080/github-authorize"
-#            accessTokenUri: https://github.com/login/oauth/access_token
-            #            userAuthorizationUri: https://github.com/login/oauth/authorize
-#            clientAuthenticationScheme: form
-#          github:
-#            clientId: d0e40e1858a6ccf54357
-#            clientSecret: da78df6928ac20210b56e0e3d6eddbe110f5b9d8
-#          google:
-#            clientId: 932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com
-#            clientSecret: LyIRcUAqz77ZoslEhynVDTsW

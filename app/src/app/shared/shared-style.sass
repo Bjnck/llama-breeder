@@ -1,6 +1,30 @@
-.page
-  margin-top: 20px
+#page
   margin-right: auto
   margin-left: auto
-  padding-bottom: 20px
+  padding-left: 10px
+  padding-right: 10px
   max-width: 500px
+  display: flex
+  flex-direction: column
+  height: 100vh
+
+#space-top
+  margin-top: 80px
+  @media (max-width: 599px)
+    margin-top: 70px
+
+#list-wrapper
+  flex: 1
+  position: relative
+  padding-bottom: 20px
+
+#list-content
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  overflow: auto
+
+::-webkit-scrollbar
+  width: 0

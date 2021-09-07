@@ -1,14 +1,16 @@
-<div class="page">
+<div id="page" class="inventory">
+
+  <div id="space-top"></div>
 
   <div id="filter">
     <div>
-      <button mat-flat-button *ngIf="filter === 'nest'" color="accent"
+      <button mat-flat-button *ngIf="filter === 'net'" color="accent"
               (click)="toggleFilter(null)">
-        <mat-icon>grass</mat-icon>
+        <mat-icon svgIcon="net"></mat-icon>
       </button>
-      <button mat-stroked-button *ngIf="filter !== 'nest'" color="accent"
-              (click)="toggleFilter('nest')">
-        <mat-icon>grass</mat-icon>
+      <button mat-stroked-button *ngIf="filter !== 'net'" color="accent"
+              (click)="toggleFilter('net')">
+        <mat-icon svgIcon="net"></mat-icon>
       </button>
 
       <button mat-flat-button *ngIf="filter === 'thirst'" color="accent" class="filter-margin"
@@ -22,11 +24,11 @@
 
       <button mat-flat-button *ngIf="filter === 'hunger'" color="accent" class="filter-margin"
               (click)="toggleFilter(null)">
-        <mat-icon>lunch_dining</mat-icon>
+        <mat-icon svgIcon="hay"></mat-icon>
       </button>
       <button mat-stroked-button *ngIf="filter !== 'hunger'" color="accent" class="filter-margin"
               (click)="toggleFilter('hunger')">
-        <mat-icon>lunch_dining</mat-icon>
+        <mat-icon svgIcon="hay"></mat-icon>
       </button>
 
       <button mat-flat-button *ngIf="filter === 'love'" color="accent" class="filter-margin"
@@ -44,23 +46,27 @@
 
   <div class="no-items-message" *ngIf="!items || items.length === 0">No items available</div>
 
-  <div infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
+  <div id="list-wrapper"  infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
+       infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
 
-    <div *ngFor="let item of items">
-      <div class="item mat-elevation-z1">
-        <div class="details">
-          <app-item-icon [code]="item.code"></app-item-icon>
-          <div class="info">
-            <div>
-              <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
-              - lvl.{{item.quality}}
+    <div id="list-content">
+
+      <div *ngFor="let item of items">
+        <div class="item mat-elevation-z1">
+          <div class="details">
+            <app-item-icon [code]="item.code"></app-item-icon>
+            <div class="info">
+              <div>
+                <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
+                - lvl.{{item.quality}}
+              </div>
+              <div>{{item.life}}/100</div>
             </div>
-            <div>{{item.life}}/100</div>
           </div>
+          <button mat-stroked-button color="warn" (click)="delete(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </div>
-        <button mat-stroked-button color="warn" (click)="delete(item)">
-          <mat-icon>delete</mat-icon>
-        </button>
       </div>
     </div>
   </div>

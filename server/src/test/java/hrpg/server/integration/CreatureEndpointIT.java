@@ -47,6 +47,8 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.genes.gene2").doesNotExist())
                 .andExpect(jsonPath("$._links.self.href", endsWith(CREATURE_URL + "/" + creature.getId())));
 
+        //todo test statistics returned
+
         //todo delete creature
 //        delete(CREATURE_URL + "/" + creature.getId())
 //                .andExpect(status().isOk());

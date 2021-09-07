@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class CaptureDto {
-    private String id;
+    private Long id;
 
-    private String creatureId;
+    private Long creatureId;
 
     private int quality;
     private Integer baitGeneration;

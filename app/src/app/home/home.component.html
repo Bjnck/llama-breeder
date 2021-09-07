@@ -1,17 +1,34 @@
-<div id="home-page">
+<div id="page">
+
+  <div id="space-top"></div>
+
   <div id="menu">
     <mat-grid-list cols="2" rowHeight="2:1" gutterSize="10px">
       <mat-grid-tile>
-        <button mat-button class="menu-item inventory" routerLink="inventory">Inventory</button>
+        <button mat-button class="menu-item capture" routerLink="capture">
+          <mat-icon>grass</mat-icon>
+          <br/>Wild Lands
+        </button>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <button mat-button class="menu-item barn" routerLink="barn">
+          <mat-icon svgIcon="barn"></mat-icon>
+          <br/>Barn
+        </button>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <button mat-button class="menu-item inventory" routerLink="inventory">
+          <mat-icon>backpack</mat-icon>
+          <br/>Inventory
+        </button>
       </mat-grid-tile>
       <mat-grid-tile>
-        <button mat-button class="menu-item shop" routerLink="shop">Shop</button>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <button mat-button class="menu-item" routerLink="account">Wild Lands</button>
-      </mat-grid-tile>
-      <mat-grid-tile>
-        <button mat-button class="menu-item" routerLink="account">Pens</button>
+        <button mat-button class="menu-item shop" routerLink="shop">
+          <mat-icon>storefront</mat-icon>
+          <br/>Shop
+        </button>
       </mat-grid-tile>
     </mat-grid-list>
   </div>

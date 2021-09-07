@@ -27,7 +27,7 @@ create table if not exists item (
     id bigint not null auto_increment,
     user_id int not null,
     version bigint not null default 0,
-    code enum('NEST', 'LOVE', 'HUNGER', 'THIRST') not null,
+    code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
     life int not null default 100, check (life between 1 and 100),
     primary key (id),
@@ -36,7 +36,7 @@ create table if not exists item (
 
 create table if not exists shop (
     id int not null auto_increment,
-    code enum('NEST', 'LOVE', 'HUNGER', 'THIRST') not null,
+    code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
     coins int not null, check (coins >= 0),
     primary key (id),

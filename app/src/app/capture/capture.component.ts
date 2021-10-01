@@ -6,6 +6,7 @@ import {CaptureService} from './capture.service';
 import {AuthService} from '../shared/auth/auth.service';
 import {HeaderService} from '../shared/header/header.service';
 import {CaptureCreature} from './capture-creature.interface';
+import {UserService} from '../shared/user/user.service';
 
 @Component({
   templateUrl: './capture.component.html',
@@ -22,7 +23,8 @@ export class CaptureComponent implements OnInit {
   constructor(private headerService: HeaderService,
               private authService: AuthService,
               private route: ActivatedRoute,
-              private captureService: CaptureService) {
+              private captureService: CaptureService,
+              private userService: UserService) {
   }
 
   ngOnInit() {
@@ -35,17 +37,24 @@ export class CaptureComponent implements OnInit {
 
   get activeCapture(): Capture {
     return this.captureCreaturePairs
-      .find(pair => new Date(pair.capture.endTime) >= new Date())?.capture;
+      .find(pair => !pair.capture.creatureId)?.capture;
   }
 
   get history(): CaptureCreature[] {
     return this.captureCreaturePairs
-      .filter(pair => new Date(pair.capture.endTime) < new Date())
+      .filter(pair => pair.capture.creatureId)
       .slice(0, 10);
   }
 
   onCaptureFinished() {
     this.captureService.listCaptures(11)
-      .subscribe(pairs => this.captureCreaturePairs = pairs);
+      .subscribe(pairs => {
+        this.captureCreaturePairs = pairs;
+
+        // update user level if tutorial ended
+        if (this.user.level <= 0) {
+          this.userService.fetch();
+        }
+      });
   }
 }

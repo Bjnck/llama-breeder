@@ -45,6 +45,7 @@
                   <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
                 </div>
                 <div class="name">
+                  <!--todo remove default when creature name use default in db-->
                   {{creature.name ? creature.name : 'Llama'}}
                 </div>
                 <div *ngIf="creature.wild" class="status-icon wild-icon">
@@ -96,7 +97,7 @@
           </div>
 
           <div class="button">
-            <button mat-stroked-button>
+            <button class="detailsButton" mat-stroked-button (click)="openDetails(creature)">
               <mat-icon>read_more</mat-icon>
             </button>
           </div>

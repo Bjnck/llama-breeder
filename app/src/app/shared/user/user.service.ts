@@ -24,17 +24,13 @@ export class UserService {
       .toPromise();
   }
 
-  get(): User {
-    return this.user;
-  }
-
   update(user: any): Observable<User> {
     this.user = user;
     this.userChangeEventEmitter.emit(this.user);
     return user.put();
   }
 
-  updateCoins(coins: number){
+  updateCoins(coins: number) {
     this.user.coins = coins;
     this.userChangeEventEmitter.emit(this.user);
   }

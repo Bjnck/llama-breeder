@@ -4,7 +4,7 @@ import hrpg.server.common.dao.WithUser;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -32,7 +32,7 @@ public class Capture extends WithUser {
     private Integer baitGeneration;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime startTime;
+    private ZonedDateTime startTime;
     @Column(nullable = false, updatable = false)
-    private LocalDateTime endTime;
+    private ZonedDateTime endTime;
 }

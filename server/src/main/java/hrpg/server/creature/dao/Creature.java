@@ -39,7 +39,9 @@ public class Creature extends WithUser {
     @Column(name = "parent_two_id", updatable = false)
     private Long parentId2;
 
-    private String name;
+    @Builder.Default
+    @Column(nullable = false)
+    private String name = "Llama";
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
     private Sex sex;

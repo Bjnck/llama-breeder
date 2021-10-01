@@ -11,12 +11,22 @@ import {NetCount} from './net-count.interface';
 })
 
 export class LaunchCaptureComponent implements OnInit {
-  @Input() activeCapture: Capture;
+
+  active: Capture;
+
+  @Input()
+  set activeCapture(capture: Capture) {
+    this.active = capture;
+    if (capture) {
+      this.maxCreatureReached = this.utc(new Date(capture.endTime)) < this.utc(new Date());
+    }
+  }
 
   @Output() captureFinishedEventEmitter: EventEmitter<void> = new EventEmitter<void>();
 
   netCount: NetCount;
 
+  maxCreatureReached = false;
   timeLeft: number;
   interval;
   quality = 0;
@@ -28,7 +38,7 @@ export class LaunchCaptureComponent implements OnInit {
 
   ngOnInit() {
     this.netCount = this.route.snapshot.data.netCount;
-    this.setTimer(this.activeCapture);
+    this.setTimer(this.active);
   }
 
   launch() {
@@ -53,16 +63,27 @@ export class LaunchCaptureComponent implements OnInit {
   }
 
   private setTimer(capture: Capture) {
-    if (capture) {
-      this.timeLeft = (new Date(capture.endTime).getTime() - new Date().getTime());
+    if (capture && this.utc(new Date(capture.endTime)) >= this.utc(new Date())) {
+      this.timeLeft = (this.utc(new Date(capture.endTime)).getTime() - this.utc(new Date()).getTime());
       this.interval = setInterval(() => {
         if (this.timeLeft > 0) {
-          this.timeLeft = this.timeLeft - 100;
+          if (this.timeLeft > 100) {
+            this.timeLeft = this.timeLeft - 100;
+          } else {
+            this.timeLeft = 0;
+          }
         } else {
           this.finish();
         }
       }, 100);
     }
+  }
+
+  private utc(date: Date): Date {
+    const utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
+      date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+
+    return new Date(utc);
   }
 
   finish() {

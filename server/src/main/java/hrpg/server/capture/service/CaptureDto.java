@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder(toBuilder = true)
@@ -17,6 +17,6 @@ public class CaptureDto {
     private int quality;
     private Integer baitGeneration;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private ZonedDateTime startTime;
+    private ZonedDateTime endTime;
 }

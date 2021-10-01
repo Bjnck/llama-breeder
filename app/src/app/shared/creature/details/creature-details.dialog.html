@@ -1,0 +1,70 @@
+<div mat-dialog-title class="title">
+
+  <div class="image">
+    <app-llama [color1]="creature.colors.color1.code"
+               [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+    </app-llama>
+  </div>
+  <input class="input" type="text" maxlength="15" [value]="name" (focusout)="onNameChange($event.target.value)">
+
+
+</div>
+
+<div mat-dialog-content>
+  <div>
+    <div>
+      <div class="sex-icon">
+        <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+        <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+      </div>
+      <div>
+        {{creature.colors.color1.name}} <span *ngIf="creature.colors.color2">- {{creature.colors.color2.name}}</span>
+      </div>
+    </div>
+
+    <div>
+      <div>
+        Gen. {{creature.generation}}
+      </div>
+      <div>
+        <div *ngIf="creature.wild" class="status-icon wild-icon">
+          <mat-icon>grass</mat-icon>
+        </div>
+        <!--todo use maturity to show-->
+        <div class="status-icon baby-icon">
+          <mat-icon svgIcon="baby"></mat-icon>
+        </div>
+        <div *ngIf="creature.pregnant" class="status-icon pregnant-icon">
+          <mat-icon svgIcon="pregnant"></mat-icon>
+        </div>
+        <!--todo display if in a pen-->
+        <!--    <div class="status-icon pen-icon">-->
+        <!--     <mat-icon>fence</mat-icon>-->
+        <!--    </div>-->
+      </div>
+    </div>
+
+    <div>
+      <div>
+        <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+      </div>
+      <div>
+        <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions class="buttons">
+  <div>
+    <button mat-stroked-button mat-dialog-close>
+      <mat-icon *ngIf="creature.generation > 1">attach_money</mat-icon>
+      <mat-icon *ngIf="creature.generation <= 1">delete</mat-icon>
+    </button>
+    <button mat-stroked-button class="buttonSpace" disabled>
+      <mat-icon>fence</mat-icon>
+    </button>
+  </div>
+
+  <button mat-button mat-dialog-close cdkFocusRegionstart>Close</button>
+</div>

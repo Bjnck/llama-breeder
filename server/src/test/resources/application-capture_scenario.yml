@@ -1,3 +1,5 @@
 parameters:
+  user:
+    start-level: 4
   captures:
     max: 2

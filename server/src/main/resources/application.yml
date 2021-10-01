@@ -15,13 +15,15 @@ security:
 
 parameters:
   user:
-    start-coins: 1000
-    start-level: 2
+    start-coins: 0
+    start-level: 0
   items:
     max: 100
   captures:
-    time-unit: SECONDS
-    time-value: 1
+    time-unit: MINUTES
+    time-value: 3
+    time-unit-first: SECONDS
+    time-value-first: 10
     max: 20
   creatures:
     max: 250
@@ -39,7 +41,8 @@ parameters:
       gen-10: 45
       gen-11: 50
   genes:
-    chance-quality-1: 1
+#    chance-quality-1: 1
+    chance-quality-1: 50
     chance-quality-2: 10
     chance-quality-3: 20
     chance-love: 30

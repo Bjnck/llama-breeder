@@ -5,6 +5,8 @@ import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
 import {Creature} from '../shared/creature/creature.interface';
 import {CreatureService} from '../shared/creature/creature.service';
+import {MatDialog} from '@angular/material/dialog';
+import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -29,6 +31,7 @@ export class BarnComponent implements OnInit {
   constructor(private headerService: HeaderService,
               private userService: UserService,
               private creatureService: CreatureService,
+              private dialog: MatDialog,
               private route: ActivatedRoute) {
     this.headerService.showHeader('Barn', false);
   }
@@ -57,6 +60,13 @@ export class BarnComponent implements OnInit {
       .subscribe((creatures: Creature[]) => {
         this.creatures.push(...creatures);
       });
+  }
+
+  openDetails(creature: Creature) {
+    this.dialog.open(CreatureDetailsDialogComponent, {
+      data: creature,
+      restoreFocus: false
+    });
   }
 
   delete(creature: Creature) {

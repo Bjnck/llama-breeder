@@ -8,7 +8,6 @@ import {MatButtonModule} from '@angular/material/button';
 import {BarnComponent} from './barn.component';
 import {CreatureListResolve} from './creature-list.resolve';
 import {CreatureCountResolve} from './creature-count.resolve';
-import {MatTooltipModule} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -19,11 +18,9 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     InfiniteScrollModule,
     CommonModule,
     MatIconModule,
-    MatButtonModule,
-    MatTooltipModule
+    MatButtonModule
   ],
-  exports: [
-  ],
+  exports: [],
   providers: [
     CreatureListResolve,
     CreatureCountResolve

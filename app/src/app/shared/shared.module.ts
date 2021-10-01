@@ -16,26 +16,36 @@ import {ItemNameComponent} from './item/item-name.component';
 import {ItemIconComponent} from './item/item-icon.component';
 import {CreatureService} from './creature/creature.service';
 import {LlamaComponent} from './creature/llama.component';
+import {CreatureDetailsDialogComponent} from './creature/details/creature-details.dialog';
+import {MatDialogModule} from '@angular/material/dialog';
+import {FormsModule} from '@angular/forms';
+import {CreatureGeneComponent} from './creature/creature-gene.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     ItemNameComponent,
     ItemIconComponent,
-    LlamaComponent
+    LlamaComponent,
+    CreatureDetailsDialogComponent,
+    CreatureGeneComponent
   ],
-  imports: [
-    BrowserModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    RouterModule
-  ],
+    imports: [
+        BrowserModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        RouterModule,
+        MatDialogModule,
+        FormsModule
+    ],
   exports: [
     HeaderComponent,
     ItemNameComponent,
     ItemIconComponent,
-    LlamaComponent
+    LlamaComponent,
+    CreatureDetailsDialogComponent,
+    CreatureGeneComponent
   ],
   providers: [
     HeaderService,

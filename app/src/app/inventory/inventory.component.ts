@@ -5,6 +5,8 @@ import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
+import {ItemDeleteDialogComponent} from './item-delete.dialog';
+import {MatDialog} from '@angular/material/dialog';
 
 @Component({
   templateUrl: './inventory.component.html',
@@ -30,7 +32,8 @@ export class InventoryComponent implements OnInit {
   constructor(private headerService: HeaderService,
               private userService: UserService,
               private itemService: ItemService,
-              private route: ActivatedRoute) {
+              private route: ActivatedRoute,
+              private dialog: MatDialog) {
     this.headerService.showHeader('Inventory', false);
   }
 
@@ -58,6 +61,17 @@ export class InventoryComponent implements OnInit {
       .subscribe((items: Item[]) => {
         this.items = items;
       });
+  }
+
+  onDelete(item: Item) {
+    this.dialog.open(ItemDeleteDialogComponent, {
+      data: item,
+      restoreFocus: false
+    }).afterClosed().subscribe(result => {
+      if (result) {
+        this.delete(result);
+      }
+    });
   }
 
   delete(item: Item) {

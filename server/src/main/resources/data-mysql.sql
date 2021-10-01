@@ -1,4 +1,4 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 200) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 300) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 

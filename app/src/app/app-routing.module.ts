@@ -16,7 +16,7 @@ import {ItemCountResolve} from './shared/item/item-count.resolve';
 import {NetCountResolve} from './capture/launch/net-count.resolve';
 import {BarnComponent} from './barn/barn.component';
 import {CreatureListResolve} from './barn/creature-list.resolve';
-import {CreatureCountResolve} from "./barn/creature-count.resolve";
+import {CreatureCountResolve} from './barn/creature-count.resolve';
 
 
 const routes: Routes = [

@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+
+  serverUrl: 'http://localhost:8080',
+
+  googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+  googleClientId: '932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com'
 };
 
 /*

@@ -30,6 +30,10 @@ export class CreatureService {
     return this.baseRest.getList(param);
   }
 
+  update(creature: any): Observable<any> {
+    return creature.put();
+  }
+
   delete(creature: any): Observable<any> {
     return creature.remove();
   }

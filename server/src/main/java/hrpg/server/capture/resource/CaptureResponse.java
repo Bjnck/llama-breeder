@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -25,6 +25,6 @@ public class CaptureResponse extends RepresentationModel<CaptureResponse> {
     private Color color;
     private String gene;
 
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private ZonedDateTime startTime;
+    private ZonedDateTime endTime;
 }

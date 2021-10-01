@@ -10,7 +10,7 @@ import hrpg.server.user.dao.UserRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Component
 public class CaptureComputorImpl implements CaptureComputor {
@@ -40,7 +40,7 @@ public class CaptureComputorImpl implements CaptureComputor {
     @Override
     public void compute(Long id) {
         //find ended capture without creature (can get more than one result if capture created at the same time as another ended)
-        captureRepository.findByCreatureIdIsNullAndEndTimeLessThanEqual(LocalDateTime.now()).forEach(capture -> {
+        captureRepository.findByCreatureIdIsNullAndEndTimeLessThanEqual(ZonedDateTime.now()).forEach(capture -> {
             if (id == null || id.equals(capture.getId())) {
                 User user = userRepository.get();
 

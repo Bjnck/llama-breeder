@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Service
@@ -85,21 +85,30 @@ public class CaptureServiceImpl implements CaptureService {
         //delete oldest capture if max reached
         long captureCount = captureRepository.count();
         if (captureCount >= parametersProperties.getCaptures().getMax())
-            captureRepository.findAll(PageRequest.of(0, Math.toIntExact(captureCount), Sort.by("id").ascending()))
+            captureRepository.findAll(PageRequest.of(1,
+                    parametersProperties.getCaptures().getMax() - 1, Sort.by("id").descending()))
                     .stream().forEach(captureRepository::delete);
 
         //create new capture
         User user = userRepository.get();
         user.getDetails().setLastCapture(Instant.now());
 
-        LocalDateTime current = LocalDateTime.now();
+        ZonedDateTime current = ZonedDateTime.now();
+        ZonedDateTime endTime;
+        if(user.getDetails().getLevel() <= 0)
+            endTime = current.plus(
+                    parametersProperties.getCaptures().getTimeValueFirst(),
+                    parametersProperties.getCaptures().getTimeUnitFirst());
+        else
+            endTime = current.plus(
+                    parametersProperties.getCaptures().getTimeValue(),
+                    parametersProperties.getCaptures().getTimeUnit());
+
         return captureMapper.toDto(captureRepository.save(Capture.builder()
                 .quality(quality)
                 .baitGeneration(baitGeneration)
                 .startTime(current)
-                .endTime(current.plus(
-                        parametersProperties.getCaptures().getTimeValue(),
-                        parametersProperties.getCaptures().getTimeUnit()))
+                .endTime(endTime)
                 .build()));
     }
 
@@ -115,7 +124,6 @@ public class CaptureServiceImpl implements CaptureService {
 
     @Override
     public boolean hasRunningCapture() {
-        LocalDateTime current = LocalDateTime.now();
-        return captureRepository.countByEndTimeGreaterThan(current) > 0;
+        return captureRepository.countByCreatureIdIsNull() > 0;
     }
 }

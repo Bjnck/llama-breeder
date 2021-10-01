@@ -1,6 +1,7 @@
 export interface Creature {
   id: string;
   name: string;
+  generation: number;
   colors: Colors;
   sex: string;
   genes: Genes;

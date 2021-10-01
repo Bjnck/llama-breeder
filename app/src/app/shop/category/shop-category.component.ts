@@ -37,13 +37,13 @@ export class ShopCategoryComponent implements OnDestroy {
   purchase(shopItem: ShopItem) {
     this.purchaseSubscription = this.itemService.add(shopItem.code, shopItem.quality)
       .subscribe(
-        (user: any) => {
+        (resp: any) => {
           this.itemCount++;
           this.countItemChangeEventEmitter.emit(this.itemCount);
           this.userService.updateCoins(this.user.coins - shopItem.coins);
         },
         err => {
-          console.log('error');
+          console.log(err);
         });
   }
 }

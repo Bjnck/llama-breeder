@@ -46,7 +46,7 @@
 
   <div class="no-items-message" *ngIf="!items || items.length === 0">No items available</div>
 
-  <div id="list-wrapper"  infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
+  <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
        infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
 
     <div id="list-content">
@@ -60,12 +60,17 @@
                 <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
                 - lvl.{{item.quality}}
               </div>
-              <div>{{item.life}}/100</div>
+              <div *ngIf="item.code.toLowerCase() !== 'net'">{{item.life}}/100</div>
             </div>
           </div>
-          <button mat-stroked-button color="warn" (click)="delete(item)">
-            <mat-icon>delete</mat-icon>
-          </button>
+          <div class="button">
+            <button class="buttonSpace" mat-stroked-button disabled>
+              <mat-icon>fence</mat-icon>
+            </button>
+            <button mat-stroked-button (click)="onDelete(item)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
         </div>
       </div>
     </div>

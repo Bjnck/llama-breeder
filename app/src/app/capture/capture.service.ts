@@ -25,21 +25,28 @@ export class CaptureService {
   listCaptures(size: number): Observable<CaptureCreature[]> {
     return this.baseRest.getList({size})
       .pipe(
-        switchMap((captures: Capture[]) =>
-          forkJoin(
-            captures.map((capture: Capture) => {
-              if (capture.creatureId) {
-                return this.creatureService.get(capture.creatureId)
-                  .pipe(map((creature: Creature) => CaptureService.getPair(capture, creature)));
-              } else {
-                return new Observable<CaptureCreature>(observer => {
-                  observer.next(CaptureService.getPair(capture, null));
-                  observer.complete();
-                });
-              }
-            })
-          )
-        )
+        switchMap((captures: Capture[]) => {
+          if (captures.length <= 0) {
+            return new Observable<CaptureCreature[]>(observer => {
+              observer.next([]);
+              observer.complete();
+            });
+          } else {
+            return forkJoin(
+              captures.map((capture: Capture) => {
+                if (capture.creatureId) {
+                  return this.creatureService.get(capture.creatureId)
+                    .pipe(map((creature: Creature) => CaptureService.getPair(capture, creature)));
+                } else {
+                  return new Observable<CaptureCreature>(observer => {
+                    observer.next(CaptureService.getPair(capture, null));
+                    observer.complete();
+                  });
+                }
+              })
+            );
+          }
+        })
       );
   }
 

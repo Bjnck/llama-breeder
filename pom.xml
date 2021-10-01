@@ -13,7 +13,7 @@
     </parent>
     <groupId>com.bjnck</groupId>
     <artifactId>hrpg</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>hrpg</name>
     <description>Demo project for Spring Boot</description>
@@ -59,12 +59,14 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--todo only in dev context, not prod-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

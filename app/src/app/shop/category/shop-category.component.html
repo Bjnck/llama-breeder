@@ -1,4 +1,16 @@
-<div class="category shop">{{categoryName}}</div>
+<div class="category" [ngClass]="{'first-category': categoryCode.toLowerCase() === 'net'}">
+  <div class="category-title">
+    {{categoryName}}
+  </div>
+  <div class="category-comment">
+    <span *ngIf="categoryCode.toLowerCase() === 'net'">Increases the chances to capture a llama with a special feature</span>
+    <span *ngIf="categoryCode.toLowerCase() === 'thirst'">Used in a pen to increase thirst level</span>
+    <span *ngIf="categoryCode.toLowerCase() === 'hunger'">Used in a pen to increase hunger level</span>
+    <span *ngIf="categoryCode.toLowerCase() === 'love'">Used in a pen to increase love level</span>
+  </div>
+</div>
+
+
 <div class="no-items-message" *ngIf="user.level === 0">No items available</div>
 <div *ngFor="let shopItem of shopItems | shop_category:categoryCode">
   <div class="item mat-elevation-z1"

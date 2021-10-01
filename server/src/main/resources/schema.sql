@@ -1,6 +1,6 @@
 create table if not exists user (
     id int not null auto_increment,
-    name varchar(100) not null default 'Breeder',
+    name varchar(15) not null default 'Breeder',
     primary key (id)
 );
 
@@ -66,7 +66,7 @@ create table if not exists creature (
     generation tinyint(1) not null default 1, check (generation between 1 and 8),
     parent_one_id bigint,
     parent_two_id bigint,
-    name varchar(255),
+    name varchar(15) not null default 'Llama',
     sex enum('M', 'F') not null,
     color_one_id int not null,
     color_two_id int,
@@ -89,6 +89,7 @@ create table if not exists creature_details (
     version bigint not null default 0,
     wild boolean not null,
     pregnant boolean not null default 0,
+    pregnancy_count tinyint(1) not null default 0, check (pregnancy_count between 0 and 10),
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,
     energy tinyint(1) not null default 100, check (energy between 0 and 100),

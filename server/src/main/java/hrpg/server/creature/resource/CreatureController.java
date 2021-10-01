@@ -1,5 +1,6 @@
 package hrpg.server.creature.resource;
 
+import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.creature.service.CreatureService;
@@ -28,17 +29,22 @@ public class CreatureController {
 
     private final CreatureService creatureService;
     private final CreatureResourceMapper creatureResourceMapper;
+    private final CaptureComputor captureComputor;
 
     public CreatureController(EntityLinks entityLinks,
                               PagedResourcesAssembler<CreatureResponse> pagedResourcesAssembler,
                               CreatureService creatureService,
-                              CreatureResourceMapper creatureResourceMapper) {
+                              CreatureResourceMapper creatureResourceMapper,
+                              CaptureComputor captureComputor) {
         this.links = entityLinks.forType(CreatureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.creatureService = creatureService;
         this.creatureResourceMapper = creatureResourceMapper;
+        this.captureComputor = captureComputor;
     }
+
+    //todo add put for update creature name
 
     @GetMapping("{id}")
     public CreatureResponse get(@PathVariable long id) {
@@ -52,6 +58,10 @@ public class CreatureController {
     @SortValues(values = {"id"})
     public PagedModel<EntityModel<CreatureResponse>> search(CreatureQueryParams queryParams,
                                                             @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        //fixme because front call this endpoints twice to get the size. Front should only call it once and this condition should be removed
+        if(pageable.getPageSize() > 1)
+            captureComputor.compute();
+
         Page<CreatureResponse> responses = creatureService.search(creatureResourceMapper.toSearch(queryParams), pageable)
                 .map(creatureResourceMapper::toResponse)
                 .map(response -> response.add(links.linkToItemResource(response)));

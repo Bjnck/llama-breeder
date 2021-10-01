@@ -20,6 +20,8 @@ parameters:
   captures:
     time-unit: SECONDS
     time-value: 1
+    time-unit-first: SECONDS
+    time-value-first: 1
   items:
     max: 100
   pens:

@@ -1,4 +1,6 @@
+mvn clean install -U
 
-docker build --tag=server:latest .
+docker build --tag=llama-breeder:latest .
 
-docker save server:latest -o llama-breeder-server.tar
+docker save llama-breeder:latest -o target/llama-breeder.tar
+

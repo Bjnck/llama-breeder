@@ -6,12 +6,12 @@
   max-width: 500px
   display: flex
   flex-direction: column
-  height: 100vh
+  height: calc(100% - 64px)
+  @media (max-width: 599px)
+    height: calc(100% - 56px)
 
 #space-top
-  margin-top: 80px
-  @media (max-width: 599px)
-    margin-top: 70px
+  margin-top: 20px
 
 #list-wrapper
   flex: 1

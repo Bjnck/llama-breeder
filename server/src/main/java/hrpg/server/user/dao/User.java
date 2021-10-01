@@ -29,8 +29,4 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserDetails details;
-
-//    @Builder.Default
-//    @Column(name = "is_in_capture", nullable = false)
-//    private boolean capture = false;
 }

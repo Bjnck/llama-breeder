@@ -1,0 +1,19 @@
+<div class="pen-items">
+
+  <mat-grid-list cols="2" rowHeight="2:1" gutterSize="10px">
+    <mat-grid-tile *ngFor="let item of items">
+      <button mat-raised-button class="item-button" [ngClass]="item.code.toLowerCase()" (click)="onActivation(item)">
+        <mat-icon *ngIf="item.code.toLowerCase()==='thirst'">local_drink</mat-icon>
+        <mat-icon *ngIf="item.code.toLowerCase()==='hunger'" svgIcon="hay"></mat-icon>
+        <mat-icon *ngIf="item.code.toLowerCase()==='love'">favorite</mat-icon>
+        <br/>
+        <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
+        (lvl.{{item.quality}})
+        <br/>{{item.life}}/100
+      </button>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+</div>
+
+

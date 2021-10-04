@@ -75,6 +75,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
         creature.setDetails(CreatureDetails.builder()
                 .creature(creature)
                 .wild(true)
+                .maturity(100)
                 .build());
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }

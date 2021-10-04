@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @ToString(exclude = "creature")
@@ -34,6 +35,10 @@ public class CreatureDetails {
     private boolean pregnant = false;
     private LocalDateTime pregnancyStartTime;
     private LocalDateTime pregnancyEndTime;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private ZonedDateTime energyUpdateTime = ZonedDateTime.now();
 
     @Builder.Default
     @Column(nullable = false)

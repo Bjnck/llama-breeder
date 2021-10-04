@@ -46,6 +46,7 @@ public class PenEndpointIT extends AbstractIntegrationTest {
     @Test
     @SneakyThrows
     void pen_endpoints() {
+        //todo create is unnecessary because always created with user
         //create pen
         Creature creature = givenCreature();
         Item item = givenItem();

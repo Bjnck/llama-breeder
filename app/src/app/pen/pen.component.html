@@ -1,0 +1,15 @@
+<div id="page" class="pen">
+
+  <app-pen-field [pen]="pen" [updatedCreatures]="updatedCreatures"></app-pen-field>
+
+  <div id="list-wrapper">
+    <div id="list-content">
+      <app-pen-items [pen]="pen"
+                     (creatureUpdate)="onCreatureUpdate($event)"
+                     (creaturesUpdate)="onCreaturesUpdate($event)"></app-pen-items>
+    </div>
+  </div>
+
+</div>
+
+

@@ -12,6 +12,10 @@ export class ItemService {
   constructor(private restangular: Restangular) {
   }
 
+  get(id: string): Observable<Item> {
+    return this.restangular.one('items', id).get();
+  }
+
   add(code: string, quality: number): Observable<any> {
     return this.baseRest.post({code, quality});
   }

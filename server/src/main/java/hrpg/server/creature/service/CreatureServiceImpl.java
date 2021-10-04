@@ -84,6 +84,7 @@ public class CreatureServiceImpl implements CreatureService {
             //remove 1 energy
             creature.getDetails().setEnergy(creature.getDetails().getEnergy() - 1);
             //check item quality is valid for creature generation
+            //todo if quality > gen then increase stat more than 1
             if (creature.getGeneration() <= itemQuality) {
                 //increase stats
                 int stat;
@@ -106,7 +107,6 @@ public class CreatureServiceImpl implements CreatureService {
                 }
             }
         }
-
 
         return creatureMapper.toDto(creature, userService);
     }

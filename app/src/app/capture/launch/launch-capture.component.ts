@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Capture} from '../capture.interface';
 import {CaptureService} from '../capture.service';
 import {ActivatedRoute} from '@angular/router';
@@ -10,7 +10,7 @@ import {NetCount} from './net-count.interface';
   styleUrls: ['./launch-capture.component.sass']
 })
 
-export class LaunchCaptureComponent implements OnInit {
+export class LaunchCaptureComponent implements OnInit, OnDestroy {
 
   active: Capture;
 
@@ -39,6 +39,10 @@ export class LaunchCaptureComponent implements OnInit {
   ngOnInit() {
     this.netCount = this.route.snapshot.data.netCount;
     this.setTimer(this.active);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 
   launch() {

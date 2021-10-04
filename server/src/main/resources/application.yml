@@ -28,6 +28,8 @@ parameters:
   creatures:
     max: 250
     chance-female: 50
+    energy-time-unit: SECONDS
+    energy-time-value: 3
     price:
       gen-1: 1
       gen-2: 5
@@ -54,7 +56,8 @@ parameters:
     special-chance-quality-2: 25
     special-chance-quality-3: 30
   pens:
-    item-activation-chance: 20
+#    item-activation-chance: 20
+    item-activation-chance: 50
     price:
       size-4: 1
       size-5: 1

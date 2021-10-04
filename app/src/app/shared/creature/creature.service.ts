@@ -12,7 +12,7 @@ export class CreatureService {
   constructor(private restangular: Restangular) {
   }
 
-  get(id: number): Observable<Creature> {
+  get(id: string): Observable<Creature> {
     return this.restangular.one('creatures', id).get();
   }
 

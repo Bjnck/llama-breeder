@@ -3,6 +3,7 @@ package hrpg.server.creature.resource;
 import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
+import hrpg.server.creature.service.CreatureComputor;
 import hrpg.server.creature.service.CreatureService;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import org.springframework.data.domain.Page;
@@ -30,24 +31,28 @@ public class CreatureController {
     private final CreatureService creatureService;
     private final CreatureResourceMapper creatureResourceMapper;
     private final CaptureComputor captureComputor;
+    private final CreatureComputor creatureComputor;
 
     public CreatureController(EntityLinks entityLinks,
                               PagedResourcesAssembler<CreatureResponse> pagedResourcesAssembler,
                               CreatureService creatureService,
                               CreatureResourceMapper creatureResourceMapper,
-                              CaptureComputor captureComputor) {
+                              CaptureComputor captureComputor,
+                              CreatureComputor creatureComputor) {
         this.links = entityLinks.forType(CreatureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.creatureService = creatureService;
         this.creatureResourceMapper = creatureResourceMapper;
         this.captureComputor = captureComputor;
+        this.creatureComputor = creatureComputor;
     }
 
     //todo add put for update creature name
 
     @GetMapping("{id}")
     public CreatureResponse get(@PathVariable long id) {
+        creatureComputor.compute(id);
         return creatureService.findById(id)
                 .map(creatureResourceMapper::toResponse)
                 .map(response -> response.add(links.linkToItemResource(response)))
@@ -59,8 +64,10 @@ public class CreatureController {
     public PagedModel<EntityModel<CreatureResponse>> search(CreatureQueryParams queryParams,
                                                             @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         //fixme because front call this endpoints twice to get the size. Front should only call it once and this condition should be removed
-        if(pageable.getPageSize() > 1)
+        if(pageable.getPageSize() > 1) {
+            creatureComputor.compute();
             captureComputor.compute();
+        }
 
         Page<CreatureResponse> responses = creatureService.search(creatureResourceMapper.toSearch(queryParams), pageable)
                 .map(creatureResourceMapper::toResponse)

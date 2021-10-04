@@ -30,6 +30,7 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
         Gene gene = geneRepository.findByCode(hrpg.server.creature.type.Gene.FERTILE).orElseThrow();
         Creature creature = givenCreature(color, gene);
 
+        //todo check statitisc default values
         //get creature
         get(CREATURE_URL + "/" + creature.getId())
                 .andExpect(status().isOk())

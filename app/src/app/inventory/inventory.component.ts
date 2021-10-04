@@ -5,8 +5,8 @@ import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
-import {ItemDeleteDialogComponent} from './item-delete.dialog';
-import {MatDialog} from '@angular/material/dialog';
+import {Pen} from '../pen/pen.interface';
+import {PenService} from '../pen/pen.service';
 
 @Component({
   templateUrl: './inventory.component.html',
@@ -21,6 +21,8 @@ export class InventoryComponent implements OnInit {
   user: User;
   items: Item[];
   itemCount: number;
+  pen: Pen;
+  itemsInPen: string[];
 
   filter: string;
 
@@ -32,8 +34,8 @@ export class InventoryComponent implements OnInit {
   constructor(private headerService: HeaderService,
               private userService: UserService,
               private itemService: ItemService,
-              private route: ActivatedRoute,
-              private dialog: MatDialog) {
+              private penService: PenService,
+              private route: ActivatedRoute) {
     this.headerService.showHeader('Inventory', false);
   }
 
@@ -41,6 +43,8 @@ export class InventoryComponent implements OnInit {
     this.user = this.route.snapshot.data.user;
     this.items = this.route.snapshot.data.items;
     this.itemCount = this.route.snapshot.data.itemCount.totalElements;
+    this.pen = this.route.snapshot.data.pens[0];
+    this.itemsInPen = this.pen.items.map(item => item.id.toString());
   }
 
   toggleFilter(value: string) {
@@ -63,17 +67,6 @@ export class InventoryComponent implements OnInit {
       });
   }
 
-  onDelete(item: Item) {
-    this.dialog.open(ItemDeleteDialogComponent, {
-      data: item,
-      restoreFocus: false
-    }).afterClosed().subscribe(result => {
-      if (result) {
-        this.delete(result);
-      }
-    });
-  }
-
   delete(item: Item) {
     this.itemService.delete(item).subscribe((resp: any) => {
       this.itemCount--;
@@ -85,5 +78,37 @@ export class InventoryComponent implements OnInit {
           }
         });
     });
+  }
+
+  addToPen(item: Item) {
+    this.pen.items.push({id: item.id});
+    this.itemsInPen.push(item.id);
+    this.penService.update(this.pen).subscribe(
+      pen => {
+      },
+      error => {
+        this.removeItem(item);
+      });
+  }
+
+  removeFromPen(item: Item) {
+    this.removeItem(item);
+    this.penService.update(this.pen).subscribe(
+      pen => {
+      },
+      error => {
+        this.pen.items.push({id: item.id});
+        this.itemsInPen.push(item.id);
+      });
+  }
+
+  private removeItem(item: Item) {
+    this.pen.items.forEach((i, index) => {
+      if (i.id === item.id) {
+        this.pen.items.splice(index, 1);
+      }
+    });
+
+    this.itemsInPen.splice(this.itemsInPen.indexOf(item.id), 1);
   }
 }

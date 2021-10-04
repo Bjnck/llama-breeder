@@ -1,6 +1,5 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.properties.PensProperties;
 import hrpg.server.creature.dao.Creature;
@@ -21,16 +20,15 @@ import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
 import hrpg.server.user.service.UserService;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Service
 public class PenServiceImpl implements PenService {
@@ -140,6 +138,14 @@ public class PenServiceImpl implements PenService {
                 throw new CreatureInUseException(creatureId);
             creatures.add(creature);
         }
+
+        //set barnDateTime to removed creatures
+        final Collection<Long> finalCreatureIds = Collections.unmodifiableCollection(creaturesIds);
+        pen.getCreatures().stream()
+                .filter(creature -> !finalCreatureIds.contains(creature.getId()))
+                .forEach(creature -> creature.getDetails().setEnergyUpdateTime(ZonedDateTime.now()));
+
+        //update creatures
         pen.setCreatures(creatures);
     }
 
@@ -161,17 +167,16 @@ public class PenServiceImpl implements PenService {
             if (new Random().nextInt(100) < pensProperties.getItemActivationChance()) {
                 //remove 1 life and delete if life ended
                 item.setLife(item.getLife() - 1);
-                if (item.getLife() <= 0)
+                if (item.getLife() <= 0) {
+                    pen.getItems().removeIf(i -> i.getId().equals(item.getId()));
                     itemRepository.delete(item);
+                }
                 //hit creature
                 try {
                     creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
                 } catch (CreatureNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
-
-
             }
         }
 

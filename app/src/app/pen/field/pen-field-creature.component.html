@@ -1,0 +1,24 @@
+<div class="pen-field-creature">
+  <div class="pen-field-creature-exists mat-elevation-z1" *ngIf="creature" matRipple [matRippleDisabled]="true"
+       (click)="openDetails(creature)">
+    <div class="image" [ngClass]="{'baby': creature.statistics.maturity < 100}">
+      <app-llama [color1]="creature.colors.color1.code"
+                 [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+      </app-llama>
+    </div>
+
+    <div class="stats">
+      <div class="stats-details" [ngClass]="{'stats-thirst': creature.statistics.thirst >= 100}"></div>
+      <div class="stats-details" [ngClass]="{'stats-hunger': creature.statistics.hunger >= 100}"></div>
+      <div class="stats-details" [ngClass]="{'stats-love': creature.statistics.love >= 100}"></div>
+    </div>
+
+    <div class="stats-energy-wrapper">
+      <div class="stats-energy" [style.width.%]="creature.statistics.energy"></div>
+    </div>
+
+
+  </div>
+</div>
+
+

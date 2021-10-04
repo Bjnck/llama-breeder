@@ -92,6 +92,7 @@ create table if not exists creature_details (
     pregnancy_count tinyint(1) not null default 0, check (pregnancy_count between 0 and 10),
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,
+    energy_update_time datetime not null,
     energy tinyint(1) not null default 100, check (energy between 0 and 100),
     love tinyint(1) not null default 0, check (love between 0 and 100),
     thirst tinyint(1) not null default 0, check (thirst between 0 and 100),

@@ -20,6 +20,7 @@ import {CreatureDetailsDialogComponent} from './creature/details/creature-detail
 import {MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@angular/forms';
 import {CreatureGeneComponent} from './creature/creature-gene.component';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import {CreatureGeneComponent} from './creature/creature-gene.component';
         MatButtonModule,
         RouterModule,
         MatDialogModule,
-        FormsModule
+        FormsModule,
+        MatMenuModule
     ],
   exports: [
     HeaderComponent,

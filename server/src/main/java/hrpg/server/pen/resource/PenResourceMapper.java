@@ -1,11 +1,18 @@
 package hrpg.server.pen.resource;
 
 import hrpg.server.common.mapper.SpringBaseMapperConfig;
+import hrpg.server.creature.resource.CreatureResourceMapper;
+import hrpg.server.item.resource.ItemResourceMapper;
+import hrpg.server.pen.service.PenActivationDto;
 import hrpg.server.pen.service.PenDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(config = SpringBaseMapperConfig.class)
+@Mapper(config = SpringBaseMapperConfig.class,
+        uses = {
+                ItemResourceMapper.class,
+                CreatureResourceMapper.class
+        })
 public interface PenResourceMapper {
     @Mapping(target = "creatureIds", source = "creatures")
     @Mapping(target = "itemIds", source = "items")
@@ -30,4 +37,6 @@ public interface PenResourceMapper {
     default PenItemResponse toItem(Long id) {
         return PenItemResponse.builder().id(id).build();
     }
+
+    PenActivationResponse toResponse(PenActivationDto dto);
 }

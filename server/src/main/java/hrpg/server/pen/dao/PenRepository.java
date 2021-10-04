@@ -10,4 +10,6 @@ public interface PenRepository extends WithUserRepository<Pen, Long> {
     boolean existsByItemsContainingAndIdNot(Item item, long id);
 
     boolean existsByCreaturesContainingAndIdNot(Creature creature, long id);
+
+    boolean existsByCreaturesContaining(Creature creature);
 }

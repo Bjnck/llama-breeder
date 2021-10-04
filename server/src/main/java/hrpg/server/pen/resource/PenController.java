@@ -122,6 +122,15 @@ public class PenController {
         return pagedResourcesAssembler.toModel(responses);
     }
 
+    @PostMapping("{id}/action/activate-item/{itemId}")
+    public PenActivationResponse activateItem(@PathVariable long id, @PathVariable long itemId) {
+        try {
+            return penResourceMapper.toResponse(penService.activateItem(id, itemId));
+        } catch (ItemNotFoundException | PenNotFoundException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
+
     private void addLinkToSetElt(PenResponse response) {
         response.getCreatures().forEach(creature ->
                 creature.add(linkTo(CreatureController.class).slash(creature.getId()).withSelfRel()));

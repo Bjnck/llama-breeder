@@ -45,50 +45,46 @@
                   <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
                 </div>
                 <div class="name">
-                  <!--todo remove default when creature name use default in db-->
-                  {{creature.name ? creature.name : 'Llama'}}
+                  {{creature.name}}
                 </div>
-                <div *ngIf="creature.wild" class="status-icon wild-icon">
+                <div class="status-icon wild-icon" *ngIf="creature.wild">
                   <mat-icon>grass</mat-icon>
                 </div>
-                <!--todo use maturity to show-->
-                <div class="status-icon baby-icon">
+                <div class="status-icon baby-icon" *ngIf="creature.statistics.maturity < 100">
                   <mat-icon svgIcon="baby"></mat-icon>
                 </div>
-                <div *ngIf="creature.pregnant" class="status-icon pregnant-icon">
+                <div class="status-icon pregnant-icon" *ngIf="creature.pregnant">
                   <mat-icon svgIcon="pregnant"></mat-icon>
                 </div>
-                <!--todo display if in a pen-->
-<!--                <div class="status-icon pen-icon">-->
-<!--                  <mat-icon>fence</mat-icon>-->
-<!--                </div>-->
+                <div class="status-icon pen-icon" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
+                  <mat-icon>fence</mat-icon>
+                </div>
               </div>
 
               <div class="line2">
-                <!--todo use statistics to show-->
                 <div class="energy">
                   <div class="stat-icon">
                     <mat-icon>bolt</mat-icon>
                   </div>
-                  <div class="stat-value">100</div>
+                  <div class="stat-value">{{creature.statistics.energy}}</div>
                 </div>
                 <div class="thirst">
                   <div class="stat-icon">
                     <mat-icon>local_drink</mat-icon>
                   </div>
-                  <div class="stat-value">0</div>
+                  <div class="stat-value">{{creature.statistics.thirst}}</div>
                 </div>
                 <div class="hunger">
                   <div class="stat-icon">
                     <mat-icon svgIcon="hay"></mat-icon>
                   </div>
-                  <div class="stat-value">0</div>
+                  <div class="stat-value">{{creature.statistics.hunger}}</div>
                 </div>
                 <div class="love">
                   <div class="stat-icon">
                     <mat-icon>favorite</mat-icon>
                   </div>
-                  <div class="stat-value">0</div>
+                  <div class="stat-value">{{creature.statistics.love}}</div>
                 </div>
               </div>
 

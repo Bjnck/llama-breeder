@@ -7,6 +7,7 @@ import {Creature} from '../shared/creature/creature.interface';
 import {CreatureService} from '../shared/creature/creature.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
+import {Pen} from '../pen/pen.interface';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -20,6 +21,8 @@ export class BarnComponent implements OnInit {
   user: User;
   creatures: Creature[];
   creatureCount: number;
+  pen: Pen;
+  creaturesInPen: string[];
 
   sex: string;
 
@@ -40,6 +43,8 @@ export class BarnComponent implements OnInit {
     this.user = this.route.snapshot.data.user;
     this.creatures = this.route.snapshot.data.creatures;
     this.creatureCount = this.route.snapshot.data.creatureCount.totalElements;
+    this.pen = this.route.snapshot.data.pens[0];
+    this.creaturesInPen = this.pen.creatures.map(creature => creature.id);
   }
 
   toggleSexFilter(sex: string) {
@@ -64,7 +69,8 @@ export class BarnComponent implements OnInit {
 
   openDetails(creature: Creature) {
     this.dialog.open(CreatureDetailsDialogComponent, {
-      data: creature,
+      data: {creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
+      position: {top: '25%'},
       restoreFocus: false
     });
   }

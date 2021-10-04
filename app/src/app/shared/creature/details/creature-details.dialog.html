@@ -61,9 +61,23 @@
       <mat-icon *ngIf="creature.generation > 1">attach_money</mat-icon>
       <mat-icon *ngIf="creature.generation <= 1">delete</mat-icon>
     </button>
-    <button mat-stroked-button class="buttonSpace" disabled>
+
+    <button mat-stroked-button [matMenuTriggerFor]="menu_pen_add"
+            *ngIf="creaturesIdInPen.indexOf(creature.id) === -1">
       <mat-icon>fence</mat-icon>
     </button>
+    <mat-menu #menu_pen_add="matMenu">
+      <button mat-menu-item (click)="addToPen(creature)">Add to pen ({{pen.creatures.length}}/{{pen.size}})</button>
+    </mat-menu>
+
+    <button mat-flat-button [matMenuTriggerFor]="menu_pen_remove" class="button-space"
+            *ngIf="creaturesIdInPen.indexOf(creature.id) > -1">
+      <mat-icon>fence</mat-icon>
+    </button>
+    <mat-menu #menu_pen_remove="matMenu">
+      <button mat-menu-item (click)="removeFromPen(creature)" *ngIf="closeOnRemove" mat-dialog-close>Remove</button>
+      <button mat-menu-item (click)="removeFromPen(creature)" *ngIf="!closeOnRemove">Remove</button>
+    </mat-menu>
   </div>
 
   <button mat-button mat-dialog-close cdkFocusRegionstart>Close</button>

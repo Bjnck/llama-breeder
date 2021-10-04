@@ -25,7 +25,7 @@ public class WithUserAspect {
     @Around("savePointCut()")
     public Object onSave(ProceedingJoinPoint point) throws Throwable {
         WithUser withUser = (WithUser) point.getArgs()[0];
-        if (withUser.getUserId() == null)
+        if (withUser.getUserId() == null && OAuthUserUtil.getUserId() != null)
             withUser.setUserId(OAuthUserUtil.getUserId());
         return point.proceed();
     }

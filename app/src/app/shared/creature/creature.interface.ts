@@ -8,6 +8,8 @@ export interface Creature {
   statistics: Statistics;
   wild: boolean;
   pregnant: boolean;
+  pregnancyStartTime: string;
+  pregnancyEndTime: string;
 }
 
 export interface Colors {

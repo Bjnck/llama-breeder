@@ -14,6 +14,7 @@ public interface CreatureResourceMapper {
     @Mapping(target = "colors", source = "dto")
     @Mapping(target = "genes", source = "dto")
     @Mapping(target = "parents", source = "dto")
+    @Mapping(target = "statistics", source = "dto")
     CreatureResponse toResponse(CreatureDto dto);
 
     Colors toColors(CreatureDto dto);
@@ -29,6 +30,8 @@ public interface CreatureResourceMapper {
     }
 
     Parents toParents(CreatureDto dto);
+
+    Statistics toStatistics(CreatureDto dto);
 
     CreatureSearch toSearch(CreatureQueryParams params);
 }

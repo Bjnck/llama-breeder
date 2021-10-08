@@ -17,6 +17,7 @@ public interface CreatureMapper {
     @Mapping(target = "gene2", source = "gene2.code")
     @Mapping(target = "wild", source = "details.wild")
     @Mapping(target = "pregnant", source = "details.pregnant")
+    @Mapping(target = "breedingCount", source = "details.breedingCount")
     @Mapping(target = "pregnancyStartTime", source = "details.pregnancyStartTime")
     @Mapping(target = "pregnancyEndTime", source = "details.pregnancyEndTime")
     @Mapping(target = "energy", source = "details.energy")

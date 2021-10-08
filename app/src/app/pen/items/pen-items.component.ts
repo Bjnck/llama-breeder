@@ -18,6 +18,7 @@ export class PenItemsComponent {
 
   @Output() creatureUpdate: EventEmitter<Creature> = new EventEmitter<Creature>();
   @Output() creaturesUpdate: EventEmitter<Creature[]> = new EventEmitter<Creature[]>();
+  @Output() itemDelete: EventEmitter<Item> = new EventEmitter<Item>();
 
   constructor(private penService: PenService) {
   }
@@ -34,11 +35,7 @@ export class PenItemsComponent {
           next: (penActivation) => {
             const itemToUpdate = this.pen.items.find(i => i.id === penActivation.item.id);
             if (itemToUpdate) {
-              if (penActivation.item.life <= 0) {
-                this.pen.items.splice(this.pen.items.findIndex(i => i.id === item.id), 1);
-              } else {
-                itemToUpdate.life = penActivation.item.life;
-              }
+              itemToUpdate.life = penActivation.item.life;
             }
             this.creaturesUpdate.emit(penActivation.creatures);
             penActivation.creatures.forEach(creature => this.creatureUpdate.emit(creature));
@@ -48,4 +45,10 @@ export class PenItemsComponent {
     }
   }
 
+  delete(item: Item) {
+    console.log(item)
+    if (item.life <= 0) {
+      this.itemDelete.emit(item);
+    }
+  }
 }

@@ -29,7 +29,8 @@ create table if not exists item (
     version bigint not null default 0,
     code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
-    life int not null default 100, check (life between 1 and 100),
+    life int not null default 100, check (life between 0 and 100),
+    pen_activation_time datetime,
     primary key (id),
     foreign key (user_id) REFERENCES user(id)
 );
@@ -88,18 +89,21 @@ create table if not exists creature_details (
     creature_id bigint not null,
     version bigint not null default 0,
     wild boolean not null,
+    pen_activation_time datetime,
     pregnant boolean not null default 0,
-    pregnancy_count tinyint(1) not null default 0, check (pregnancy_count between 0 and 10),
+    breeding_count tinyint(1) not null default 0, check (breeding_count between 0 and 10),
+    pregnancy_male_id bigint,
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,
     energy_update_time datetime not null,
-    energy tinyint(1) not null default 100, check (energy between 0 and 100),
+    energy int not null default 1000, check (energy between 0 and 1000),
     love tinyint(1) not null default 0, check (love between 0 and 100),
     thirst tinyint(1) not null default 0, check (thirst between 0 and 100),
     hunger tinyint(1) not null default 0, check (hunger between 0 and 100),
-    maturity tinyint(1) not null default 0, check (maturity between 0 and 100),
+    maturity int not null default 0, check (maturity between 0 and 1000),
     primary key (creature_id),
-    foreign key (creature_id) REFERENCES creature(id)
+    foreign key (creature_id) REFERENCES creature(id),
+    foreign key (pregnancy_male_id) REFERENCES creature(id)
 );
 
 create table if not exists capture (

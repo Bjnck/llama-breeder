@@ -11,6 +11,6 @@ export class CreatureCountResolve implements Resolve<Page> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Page> {
-    return this.creatureService.count();
+    return this.creatureService.count(false);
   }
 }

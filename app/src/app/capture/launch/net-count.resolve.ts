@@ -14,13 +14,13 @@ export class NetCountResolve implements Resolve<NetCount> {
     const netCount: NetCount = {quality_1: 0, quality_2: 0, quality_3: 0};
 
     const promises: Promise<any>[] = [];
-    promises.push(this.itemService.count('net', 1)
+    promises.push(this.itemService.count('net', 1, false)
       .toPromise()
       .then(page => netCount.quality_1 = page.totalElements));
-    promises.push(this.itemService.count('net', 2)
+    promises.push(this.itemService.count('net', 2, false)
       .toPromise()
       .then(page => netCount.quality_2 = page.totalElements));
-    promises.push(this.itemService.count('net', 3)
+    promises.push(this.itemService.count('net', 3, false)
       .toPromise()
       .then(page => netCount.quality_3 = page.totalElements));
 

@@ -3,7 +3,8 @@
     {{categoryName}}
   </div>
   <div class="category-comment">
-    <span *ngIf="categoryCode.toLowerCase() === 'net'">Increases the chances to capture a llama with a special feature</span>
+    <span
+      *ngIf="categoryCode.toLowerCase() === 'net'">Increases the chances to capture a llama with a special feature</span>
     <span *ngIf="categoryCode.toLowerCase() === 'thirst'">Used in a pen to increase thirst level</span>
     <span *ngIf="categoryCode.toLowerCase() === 'hunger'">Used in a pen to increase hunger level</span>
     <span *ngIf="categoryCode.toLowerCase() === 'love'">Used in a pen to increase love level</span>
@@ -23,7 +24,10 @@
           - lvl.{{shopItem.quality}}
         </div>
 
-        <div>{{shopItem.coins}}$</div>
+        <div>
+          <span *ngIf="shopItem.coins > 0">{{shopItem.coins}}$</span>
+          <span *ngIf="shopItem.coins === 0">Free</span>
+        </div>
       </div>
     </div>
     <button mat-stroked-button [disabled]="shopItem.coins > user.coins || itemCount === undefined || itemCount >= 100"

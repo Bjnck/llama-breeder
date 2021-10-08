@@ -6,7 +6,10 @@ import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.exception.ConflictException;
+import hrpg.server.common.properties.CapturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
+import hrpg.server.creature.service.CreatureService;
+import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.item.service.ItemDto;
 import hrpg.server.item.service.ItemSearch;
 import hrpg.server.item.service.ItemService;
@@ -33,20 +36,23 @@ public class CaptureServiceImpl implements CaptureService {
     private final CaptureMapper captureMapper;
     private final ItemService itemService;
     private final BaitService baitService;
-    private final ParametersProperties parametersProperties;
+    private final CreatureService creatureService;
+    private final CapturesProperties capturesProperties;
 
     public CaptureServiceImpl(CaptureRepository captureRepository,
                               UserRepository userRepository,
                               CaptureMapper captureMapper,
                               ItemService itemService,
                               BaitService baitService,
+                              CreatureService creatureService,
                               ParametersProperties parametersProperties) {
         this.captureRepository = captureRepository;
         this.userRepository = userRepository;
         this.captureMapper = captureMapper;
         this.itemService = itemService;
         this.baitService = baitService;
-        this.parametersProperties = parametersProperties;
+        this.creatureService = creatureService;
+        this.capturesProperties = parametersProperties.getCaptures();
     }
 
     @Transactional(rollbackFor = {
@@ -84,10 +90,10 @@ public class CaptureServiceImpl implements CaptureService {
 
         //delete oldest capture if max reached
         long captureCount = captureRepository.count();
-        if (captureCount >= parametersProperties.getCaptures().getMax())
+        if (captureCount >= capturesProperties.getMax())
             captureRepository.findAll(PageRequest.of(1,
-                    parametersProperties.getCaptures().getMax() - 1, Sort.by("id").descending()))
-                    .stream().forEach(captureRepository::delete);
+                    capturesProperties.getMax() - 1, Sort.by("id").descending()))
+                    .stream().forEach(this::delete);
 
         //create new capture
         User user = userRepository.get();
@@ -95,14 +101,13 @@ public class CaptureServiceImpl implements CaptureService {
 
         ZonedDateTime current = ZonedDateTime.now();
         ZonedDateTime endTime;
-        if(user.getDetails().getLevel() <= 0)
-            endTime = current.plus(
-                    parametersProperties.getCaptures().getTimeValueFirst(),
-                    parametersProperties.getCaptures().getTimeUnitFirst());
-        else
-            endTime = current.plus(
-                    parametersProperties.getCaptures().getTimeValue(),
-                    parametersProperties.getCaptures().getTimeUnit());
+        if (user.getDetails().getLevel() <= 0)
+            endTime = current.plus(capturesProperties.getTimeValueFirst(), capturesProperties.getTimeUnitFirst());
+        else {
+            //capture twice as long if net used
+            int timeValue = quality > 0 ? capturesProperties.getTimeValue() * 2 : capturesProperties.getTimeValue();
+            endTime = current.plus(timeValue, capturesProperties.getTimeUnit());
+        }
 
         return captureMapper.toDto(captureRepository.save(Capture.builder()
                 .quality(quality)
@@ -110,6 +115,19 @@ public class CaptureServiceImpl implements CaptureService {
                 .startTime(current)
                 .endTime(endTime)
                 .build()));
+    }
+
+    private void delete(Capture capture) {
+        //todo if creature has no details, delete creature
+        Long creatureId = capture.getCreatureId();
+        captureRepository.delete(capture);
+        if (creatureId != null) {
+            try {
+                creatureService.deletePartial(creatureId);
+            } catch (CreatureNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override

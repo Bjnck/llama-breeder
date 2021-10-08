@@ -22,7 +22,7 @@
   </div>
 
 
-  <div class="no-items-message" *ngIf="!creatures || creatures.length === 0">No llama in the barn</div>
+  <div class="no-creatures-message" *ngIf="!creatures || creatures.length === 0">No llamas in the barn</div>
 
   <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
        infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
@@ -40,23 +40,23 @@
 
             <div class="info">
               <div class="line1">
-                <div class="sex-icon">
+                <div class="sex-icon-barn">
                   <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
                   <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
                 </div>
                 <div class="name">
                   {{creature.name}}
                 </div>
-                <div class="status-icon wild-icon" *ngIf="creature.wild">
+                <div class="status-icon-barn wild-icon" *ngIf="creature.wild">
                   <mat-icon>grass</mat-icon>
                 </div>
-                <div class="status-icon baby-icon" *ngIf="creature.statistics.maturity < 100">
+                <div class="status-icon-barn baby-icon" *ngIf="creature.statistics.maturity < 1000">
                   <mat-icon svgIcon="baby"></mat-icon>
                 </div>
-                <div class="status-icon pregnant-icon" *ngIf="creature.pregnant">
+                <div class="status-icon-barn pregnant-icon" *ngIf="creature.pregnant">
                   <mat-icon svgIcon="pregnant"></mat-icon>
                 </div>
-                <div class="status-icon pen-icon" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
+                <div class="status-icon-barn pen-icon" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
                   <mat-icon>fence</mat-icon>
                 </div>
               </div>
@@ -66,7 +66,7 @@
                   <div class="stat-icon">
                     <mat-icon>bolt</mat-icon>
                   </div>
-                  <div class="stat-value">{{creature.statistics.energy}}</div>
+                  <div class="stat-value">{{creature.statistics.energy / 10}}</div>
                 </div>
                 <div class="thirst">
                   <div class="stat-icon">

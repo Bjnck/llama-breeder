@@ -7,6 +7,7 @@ export interface Creature {
   genes: Genes;
   statistics: Statistics;
   wild: boolean;
+  breedingCount: number;
   pregnant: boolean;
   pregnancyStartTime: string;
   pregnancyEndTime: string;

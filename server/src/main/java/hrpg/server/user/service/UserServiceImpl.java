@@ -78,6 +78,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public void updateLevel(int level) {
+        User user = userRepository.get();
+        if (user.getDetails().getLevel() < level)
+            user.getDetails().setLevel(level);
+    }
+
+    @Transactional
+    @Override
     public void addCoins(int coins) {
         User user = userRepository.get();
         user.getDetails().setCoins(user.getDetails().getCoins() + coins);

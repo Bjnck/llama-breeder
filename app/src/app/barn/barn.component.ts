@@ -8,6 +8,7 @@ import {CreatureService} from '../shared/creature/creature.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
 import {Pen} from '../pen/pen.interface';
+import {Item} from "../shared/item/item.interface";
 
 @Component({
   templateUrl: './barn.component.html',
@@ -54,14 +55,14 @@ export class BarnComponent implements OnInit {
 
   resetList() {
     this.page = 0;
-    this.creatureService.list(this.size, this.page, this.sex)
+    this.creatureService.list(this.size, this.page, false, this.sex)
       .subscribe((creatures: Creature[]) => {
         this.creatures = creatures;
       });
   }
 
   onScroll() {
-    this.creatureService.list(this.size, ++this.page, this.sex)
+    this.creatureService.list(this.size, ++this.page, false, this.sex)
       .subscribe((creatures: Creature[]) => {
         this.creatures.push(...creatures);
       });
@@ -69,22 +70,25 @@ export class BarnComponent implements OnInit {
 
   openDetails(creature: Creature) {
     this.dialog.open(CreatureDetailsDialogComponent, {
-      data: {creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
+      data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
       position: {top: '25%'},
       restoreFocus: false
-    });
-  }
-
-  delete(creature: Creature) {
-    this.creatureService.delete(creature).subscribe((resp: any) => {
-      this.creatureCount--;
-      this.creatures.splice(this.creatures.findIndex(i => i.id === creature.id), 1);
-      this.creatureService.list(1, this.creatures.length, this.sex)
-        .subscribe((creatures: Creature[]) => {
-          if (creatures && creatures.length > 0 && !this.creatures.find((i: Creature) => i.id === creatures[0].id)) {
-            this.creatures.push(...creatures);
-          }
-        });
+    }).afterClosed().subscribe({
+      next: resp => {
+        console.log(resp)
+        if (resp.delete != null) {
+          this.creatureCount--;
+          this.creatures.splice(this.creatures.findIndex(
+            i => i.id.toString() === resp.delete.id.toString()), 1);
+          this.creatureService.list(1, this.creatures.length, false)
+            .subscribe((creatures: Creature[]) => {
+              if (creatures && creatures.length > 0 && !this.creatures.find(
+                (i: Creature) => i.id.toString() === creatures[0].id.toString())) {
+                this.creatures.push(...creatures);
+              }
+            });
+        }
+      }
     });
   }
 }

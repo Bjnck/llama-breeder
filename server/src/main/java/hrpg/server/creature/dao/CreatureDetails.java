@@ -3,7 +3,6 @@ package hrpg.server.creature.dao;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Data
@@ -27,14 +26,21 @@ public class CreatureDetails {
     @Version
     private long version = 0;
 
+    @Builder.Default
     @Column(nullable = false, updatable = false)
-    private boolean wild;
+    private boolean wild = false;
+
+    private ZonedDateTime penActivationTime;
 
     @Builder.Default
     @Column(nullable = false)
     private boolean pregnant = false;
-    private LocalDateTime pregnancyStartTime;
-    private LocalDateTime pregnancyEndTime;
+    @Builder.Default
+    @Column(nullable = false)
+    private int breedingCount = 0;
+    private ZonedDateTime pregnancyStartTime;
+    private ZonedDateTime pregnancyEndTime;
+    private Long pregnancyMaleId;
 
     @Builder.Default
     @Column(nullable = false)
@@ -42,7 +48,7 @@ public class CreatureDetails {
 
     @Builder.Default
     @Column(nullable = false)
-    private int energy = 100;
+    private int energy = 1000;
     @Builder.Default
     @Column(nullable = false)
     private int love = 0;

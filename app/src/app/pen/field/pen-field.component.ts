@@ -31,8 +31,7 @@ export class PenFieldComponent {
         creaturesIdInPen: this.pen.creatures.map(c => c.id),
         closeOnRemove: true
       },
-      position: {top: '25%'},
-      restoreFocus: false
+      position: {top: '25%'}
     });
   }
 }

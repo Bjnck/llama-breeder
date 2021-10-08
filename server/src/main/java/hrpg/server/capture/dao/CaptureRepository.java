@@ -11,4 +11,6 @@ public interface CaptureRepository extends WithUserRepository<Capture, Long> {
     long countByCreatureIdIsNull();
 
     List<Capture> findByCreatureIdIsNullAndEndTimeLessThanEqual(ZonedDateTime endTime);
+
+    boolean existsByCreatureId(long creatureId);
 }

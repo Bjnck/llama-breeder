@@ -32,6 +32,7 @@ public class CreatureDto {
 
     private boolean wild;
 
+    private int breedingCount;
     private boolean pregnant;
     private LocalDateTime pregnancyStartTime;
     private LocalDateTime pregnancyEndTime;

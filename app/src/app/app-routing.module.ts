@@ -18,8 +18,8 @@ import {BarnComponent} from './barn/barn.component';
 import {CreatureListResolve} from './barn/creature-list.resolve';
 import {CreatureCountResolve} from './barn/creature-count.resolve';
 import {PenComponent} from './pen/pen.component';
-import {PenListResolve} from "./pen/pen-list.resolve";
-import {PenListContentResolve} from "./pen/pen-list-content.resolve";
+import {PenListResolve} from './pen/pen-list.resolve';
+import {PenListContentResolve} from './pen/pen-list-content.resolve';
 
 
 const routes: Routes = [

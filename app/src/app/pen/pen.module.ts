@@ -13,6 +13,9 @@ import {PenListResolve} from './pen-list.resolve';
 import {PenListContentResolve} from './pen-list-content.resolve';
 import {MatRippleModule} from "@angular/material/core";
 import {PenFieldCreatureComponent} from "./field/pen-field-creature.component";
+import {MatMenuModule} from "@angular/material/menu";
+import {RouterModule} from "@angular/router";
+import {MatBadgeModule} from "@angular/material/badge";
 
 @NgModule({
   declarations: [
@@ -21,14 +24,17 @@ import {PenFieldCreatureComponent} from "./field/pen-field-creature.component";
     PenFieldCreatureComponent,
     PenItemsComponent
   ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatGridListModule,
-    MatRippleModule
-  ],
+    imports: [
+        SharedModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatGridListModule,
+        MatRippleModule,
+        MatMenuModule,
+        RouterModule,
+        MatBadgeModule
+    ],
   exports: [
   ],
   providers: [

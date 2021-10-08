@@ -39,8 +39,8 @@ export class PenService {
         switchMap((pen: Pen) => this.withContent(pen)));
   }
 
-  list(): Observable<Pen[]> {
-    return this.baseRest.getList();
+  list(compute: boolean = true): Observable<Pen[]> {
+    return this.baseRest.getList({compute});
   }
 
   listWithContent(): Observable<PenWithContent[]> {
@@ -65,7 +65,7 @@ export class PenService {
     const items: Item[] = [];
     pen.items.map((content: PenContent) => {
       promises.push(
-        this.itemService.get(content.id)
+        this.itemService.get(content.id, false)
           .pipe(
             map((item: Item) => items.push(item)))
           .toPromise());
@@ -74,7 +74,7 @@ export class PenService {
     const creatures: Creature[] = [];
     pen.creatures.map((content: PenContent) => {
       promises.push(
-        this.creatureService.get(content.id)
+        this.creatureService.get(content.id, false)
           .pipe(
             map((creature: Creature) => creatures.push(creature)))
           .toPromise());

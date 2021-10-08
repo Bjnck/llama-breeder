@@ -11,6 +11,6 @@ export class ItemCountResolve implements Resolve<Page> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Page> {
-    return this.itemService.count();
+    return this.itemService.count(null, null, false);
   }
 }

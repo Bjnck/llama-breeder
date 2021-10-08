@@ -5,6 +5,8 @@ import {ActivatedRoute} from '@angular/router';
 import {PenWithContent} from './pen-with-content.interface';
 import {Creature} from '../shared/creature/creature.interface';
 import {PenService} from './pen.service';
+import {Item} from '../shared/item/item.interface';
+import {ItemService} from '../shared/item/item.service';
 
 @Component({
   templateUrl: './pen.component.html',
@@ -21,7 +23,8 @@ export class PenComponent implements OnInit, OnDestroy {
 
   constructor(private headerService: HeaderService,
               private route: ActivatedRoute,
-              private penService: PenService) {
+              private penService: PenService,
+              private itemService: ItemService) {
     this.headerService.showHeader('Pen', false);
   }
 
@@ -36,6 +39,7 @@ export class PenComponent implements OnInit, OnDestroy {
 
   private setTimer() {
     this.interval = setInterval(() => {
+      console.log(this.pen.items)
       this.penService.getWithContent(this.pen.pen.id).subscribe({
         next: pen => this.pen = pen
       });
@@ -43,7 +47,7 @@ export class PenComponent implements OnInit, OnDestroy {
   }
 
   onCreatureUpdate(creature: Creature) {
-    const creatureToUpdate = this.pen.creatures.find(c => c.id === creature.id);
+    const creatureToUpdate = this.pen.creatures.find(c => c.id.toString() === creature.id.toString());
     if (creatureToUpdate) {
       creatureToUpdate.pregnant = creature.pregnant;
       creatureToUpdate.pregnancyStartTime = creature.pregnancyStartTime;
@@ -58,5 +62,13 @@ export class PenComponent implements OnInit, OnDestroy {
 
   onCreaturesUpdate(creatures: Creature[]) {
     this.updatedCreatures = creatures;
+  }
+
+  onItemDelete(item: Item) {
+    this.pen.items.splice(this.pen.items.findIndex(i => i.id.toString() === item.id.toString()), 1);
+    this.pen.pen.items.splice(this.pen.pen.items.findIndex(i => i.id.toString() === item.id.toString()), 1);
+    this.penService.update(this.pen.pen).subscribe({
+      next: value => this.itemService.delete(item)
+    });
   }
 }

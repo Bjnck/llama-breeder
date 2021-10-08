@@ -35,7 +35,7 @@ export class CaptureService {
             return forkJoin(
               captures.map((capture: Capture) => {
                 if (capture.creatureId) {
-                  return this.creatureService.get(capture.creatureId)
+                  return this.creatureService.get(capture.creatureId, false)
                     .pipe(map((creature: Creature) => CaptureService.getPair(capture, creature)));
                 } else {
                   return new Observable<CaptureCreature>(observer => {

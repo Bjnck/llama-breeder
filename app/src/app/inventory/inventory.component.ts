@@ -53,7 +53,7 @@ export class InventoryComponent implements OnInit {
   }
 
   onScroll() {
-    this.itemService.list(this.size, ++this.page, this.filter)
+    this.itemService.list(this.size, ++this.page, this.filter, false)
       .subscribe((items: Item[]) => {
         this.items.push(...items);
       });
@@ -61,7 +61,7 @@ export class InventoryComponent implements OnInit {
 
   resetList() {
     this.page = 0;
-    this.itemService.list(this.size, this.page, this.filter)
+    this.itemService.list(this.size, this.page, this.filter, false)
       .subscribe((items: Item[]) => {
         this.items = items;
       });
@@ -71,7 +71,7 @@ export class InventoryComponent implements OnInit {
     this.itemService.delete(item).subscribe((resp: any) => {
       this.itemCount--;
       this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
-      this.itemService.list(1, this.items.length, this.filter)
+      this.itemService.list(1, this.items.length, this.filter, false)
         .subscribe((items: Item[]) => {
           if (items && items.length > 0 && !this.items.find((i: Item) => i.id === items[0].id)) {
             this.items.push(...items);
@@ -103,12 +103,7 @@ export class InventoryComponent implements OnInit {
   }
 
   private removeItem(item: Item) {
-    this.pen.items.forEach((i, index) => {
-      if (i.id === item.id) {
-        this.pen.items.splice(index, 1);
-      }
-    });
-
-    this.itemsInPen.splice(this.itemsInPen.indexOf(item.id), 1);
+    this.pen.items.splice(this.pen.items.findIndex(i => i.id.toString() === item.id.toString()), 1);
+    this.itemsInPen.splice(this.itemsInPen.indexOf(item.id.toString()), 1);
   }
 }

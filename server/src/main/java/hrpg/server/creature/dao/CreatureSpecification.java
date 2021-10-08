@@ -20,6 +20,8 @@ public class CreatureSpecification implements Specification<Creature> {
     @Override
     public Predicate toPredicate(Root<Creature> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         List<Predicate> predicates = new ArrayList<>();
+        predicates.add(builder.isNotNull(root.get("details").get("creatureId")));
+
         if (criteria != null) {
             if (criteria.getSex() != null)
                 predicates.add(builder.equal(root.get("sex"), criteria.getSex()));
@@ -31,10 +33,8 @@ public class CreatureSpecification implements Specification<Creature> {
             //todo wild with join on details
             //todo pregnant with join on details
             //todo is mature
-
-            if (!predicates.isEmpty())
-                return builder.and(predicates.toArray(new Predicate[0]));
         }
-        return null;
+
+        return builder.and(predicates.toArray(new Predicate[0]));
     }
 }

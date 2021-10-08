@@ -4,10 +4,11 @@ import hrpg.server.common.properties.GenesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.creature.dao.GeneRepository;
 import hrpg.server.creature.type.Gene;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class GeneFactoryImpl implements GeneFactory {
@@ -24,8 +25,6 @@ public class GeneFactoryImpl implements GeneFactory {
     @Override
     public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality, Integer baitGeneration) {
         //todo use bait for calcul
-        if (netQuality == 0)
-            return Optional.empty();
 
         Gene gene = null;
         if (new Random().nextInt(100) < getChance(netQuality)) {
@@ -50,7 +49,9 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     private int getChance(int netQuality) {
-        if (netQuality == 1)
+        if (netQuality == 0)
+            return genesParameters.getChanceQuality0();
+        else if (netQuality == 1)
             return genesParameters.getChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getChanceQuality2();
@@ -59,11 +60,37 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     private int getSpecialChance(int netQuality) {
-        if (netQuality == 1)
+        if (netQuality == 0)
+            return 0;
+        else if (netQuality == 1)
             return genesParameters.getSpecialChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getSpecialChanceQuality2();
         else
             return genesParameters.getSpecialChanceQuality3();
+    }
+
+    @Override
+    public Pair<Optional<hrpg.server.creature.dao.Gene>, Optional<hrpg.server.creature.dao.Gene>> getForBirth(
+            hrpg.server.creature.dao.Gene parent1Gene1, hrpg.server.creature.dao.Gene parent1Gene2,
+            hrpg.server.creature.dao.Gene parent2Gene1, hrpg.server.creature.dao.Gene parent2Gene2) {
+        List<hrpg.server.creature.dao.Gene> genes = new ArrayList<>();
+
+        if (parent1Gene1 != null && chanceOfGene()) genes.add(parent1Gene1);
+        else if (parent1Gene2 != null && chanceOfGene()) genes.add(parent1Gene2);
+        if (parent2Gene1 != null && chanceOfGene()) genes.add(parent2Gene1);
+        else if (parent2Gene2 != null && chanceOfGene()) genes.add(parent2Gene2);
+
+        genes = genes.stream()
+                .sorted(Comparator.comparingLong(hrpg.server.creature.dao.Gene::getId))
+                .collect(Collectors.toList());
+
+        return Pair.of(
+                genes.size() >= 1 ? Optional.of(genes.get(0)) : Optional.empty(),
+                genes.size() >= 2 ? Optional.of(genes.get(1)) : Optional.empty());
+    }
+
+    private boolean chanceOfGene() {
+        return new Random().nextInt(100) < 50;
     }
 }

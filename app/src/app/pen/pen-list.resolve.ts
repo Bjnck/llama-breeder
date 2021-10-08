@@ -11,6 +11,6 @@ export class PenListResolve implements Resolve<Pen[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Pen[]> {
-    return this.penService.list();
+    return this.penService.list(false);
   }
 }

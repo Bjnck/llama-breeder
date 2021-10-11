@@ -12,10 +12,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.bjnck</groupId>
-    <artifactId>hrpg</artifactId>
+    <artifactId>llama-breeder</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
-    <name>hrpg</name>
+    <name>llama-breeder</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -73,9 +73,6 @@
     <profiles>
         <profile>
             <id>dev</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
             </properties>

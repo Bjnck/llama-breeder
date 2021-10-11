@@ -19,8 +19,11 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.hateoas.server.TypedEntityLinks;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -51,7 +54,15 @@ public class CreatureController {
         this.creatureComputor = creatureComputor;
     }
 
-    //todo add put for update creature name
+    @PutMapping("{id}")
+    public ResponseEntity<Object> update(@PathVariable long id, @Valid @RequestBody CreatureRequest request) {
+        try {
+            CreatureResponse response = creatureResourceMapper.toResponse(creatureService.update(id, creatureResourceMapper.toDto(request)));
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
+        } catch (CreatureNotFoundException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
 
     @GetMapping("{id}")
     public CreatureResponse get(@PathVariable long id, @RequestParam(defaultValue = "true") boolean compute) {

@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
-@Builder(toBuilder = true)
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Parents {
-    private Parent parent1;
-    private Parent parent2;
+public class CreatureRequest {
+    @NotNull
+    @Size(max = 15)
+    private String name;
 }

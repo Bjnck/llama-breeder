@@ -10,11 +10,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 @Mapper(config = SpringBaseMapperConfig.class,
-        uses = ColorMapper.class)
+        uses = {
+                CreatureInfoMapper.class,
+                ColorMapper.class
+        })
 public interface CreatureMapper {
 
-    @Mapping(target = "gene1", source = "gene1.code")
-    @Mapping(target = "gene2", source = "gene2.code")
     @Mapping(target = "wild", source = "details.wild")
     @Mapping(target = "pregnant", source = "details.pregnant")
     @Mapping(target = "breedingCount", source = "details.breedingCount")

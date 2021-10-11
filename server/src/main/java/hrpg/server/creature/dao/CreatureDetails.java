@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
+import static hrpg.server.creature.type.CreatureConstant.ENERGY_MAX;
+
 @Data
 @ToString(exclude = "creature")
 @EqualsAndHashCode(exclude = "creature")
@@ -48,7 +50,7 @@ public class CreatureDetails {
 
     @Builder.Default
     @Column(nullable = false)
-    private int energy = 1000;
+    private int energy = ENERGY_MAX;
     @Builder.Default
     @Column(nullable = false)
     private int love = 0;

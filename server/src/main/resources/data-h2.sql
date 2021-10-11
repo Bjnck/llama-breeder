@@ -1,39 +1,41 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 50);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 10);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 100) ;
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 200) ;
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 1000) ;
+
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 1, 0);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 1);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 3, 10);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 4, 20);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 5, 40);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 6, 80);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 7, 160);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 8, 320);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 9, 640);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 10, 2000);
+
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 1, 0);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 2, 1);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 3, 10);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 4, 20) ;
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 5, 40);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 6, 80) ;
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 7, 160) ;
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 8, 320);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 9, 640) ;
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 10, 2000) ;
 
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 1, 0) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 10) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 3, 15) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 4, 20) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 5, 25) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 6, 30) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 7, 35) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 8, 40) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 45) ;
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 50) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 2);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 3, 20) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 4, 40) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 5, 80);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 6, 160);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 7, 320) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 8, 640) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 1280) ;
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 4000) ;
 
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 1, 0) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 10) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 3, 15) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 4, 20) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 5, 25) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 6, 30) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 7, 35) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 8, 40) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 9, 45) ;
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 10, 50) ;
 
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 1, 0) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 2, 10) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 3, 15) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 4, 20) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 5, 25) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 6, 30) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 7, 35) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 8, 40) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 9, 45) ;
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 10, 50) ;
 
 
 INSERT INTO gene (code) VALUES ('FERTILE') ;;
@@ -47,7 +49,7 @@ INSERT INTO color (name, generation, code, parent_code) VALUES ('Cornflower', 1,
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Forest', 1, '#228B22', '#228B22') ;
 
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Orange', 2, '#FFA500', '#23F4987') ;
-INSERT INTO color (name, generation, code, parent_code) VALUES ('Violet', 2, '#9400D3', '#163354B') ;
+INSERT INTO color (name, generation, code, parent_code) VALUES ('Violet', 2, '#9400D3', '#1C7CB38') ;
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Olive', 2, '#808000', '#185C06D') ;
 
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Midnight', 3, '#191970', '#2A826A6') ;

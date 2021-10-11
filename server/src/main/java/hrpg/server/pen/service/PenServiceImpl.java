@@ -1,6 +1,5 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.common.properties.CreaturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.properties.PensProperties;
 import hrpg.server.creature.dao.Creature;
@@ -11,7 +10,6 @@ import hrpg.server.creature.service.CreatureUtil;
 import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.creature.service.exception.MaxCreaturesException;
-import hrpg.server.creature.type.Sex;
 import hrpg.server.item.dao.Item;
 import hrpg.server.item.dao.ItemRepository;
 import hrpg.server.item.service.ItemMapper;
@@ -32,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class PenServiceImpl implements PenService {
@@ -45,7 +42,6 @@ public class PenServiceImpl implements PenService {
     private final UserService userService;
     private final CreatureService creatureService;
     private final PensProperties pensProperties;
-    private final CreaturesProperties creaturesProperties;
 
     public PenServiceImpl(PenRepository penRepository,
                           PenMapper penMapper,
@@ -63,7 +59,6 @@ public class PenServiceImpl implements PenService {
         this.userService = userService;
         this.creatureService = creatureService;
         this.pensProperties = parametersProperties.getPens();
-        this.creaturesProperties = parametersProperties.getCreatures();
     }
 
     @Override
@@ -140,7 +135,7 @@ public class PenServiceImpl implements PenService {
 
         Set<Creature> creatures = new HashSet<>();
         for (Long creatureId : creaturesIds) {
-            Creature creature = creatureRepository.findByIdAlive(creatureId)
+            Creature creature = creatureRepository.findById(creatureId)
                     .orElseThrow(() -> new CreatureNotFoundException(creatureId));
             if (penRepository.existsByCreaturesContainingAndIdNot(creature, pen.getId()))
                 throw new CreatureInUseException(creatureId);
@@ -199,54 +194,5 @@ public class PenServiceImpl implements PenService {
     private int getActivationChance(int creatureGeneration) {
         //activation chance are lower by generation
         return pensProperties.getItemActivationChance() / creatureGeneration;
-    }
-
-    @Transactional(rollbackFor = PenNotFoundException.class)
-    @Override
-    public void breed(long id, ZonedDateTime breedingDate) throws PenNotFoundException {
-        Pen pen = penRepository.findById(id).orElseThrow(PenNotFoundException::new);
-
-        List<Creature> breedableCreatures = pen.getCreatures().stream()
-                .filter(CreatureUtil::isBreedable)
-                .collect(Collectors.toList());
-
-        List<Creature> females = breedableCreatures.stream()
-                .filter(creature -> creature.getSex().equals(Sex.F))
-                .collect(Collectors.toList());
-        Collections.shuffle(females);
-        List<Creature> males = breedableCreatures.stream()
-                .filter(creature -> creature.getSex().equals(Sex.M))
-                .collect(Collectors.toList());
-        Collections.shuffle(males);
-
-        int maxBreedings = Math.min(females.size(), males.size());
-        for (int i = 0; i < maxBreedings; i++) {
-            breed(males.get(i), females.get(i), breedingDate);
-        }
-    }
-
-    private void breed(Creature male, Creature female, ZonedDateTime breedingDate) {
-        //update stats
-        male.getDetails().setEnergy(0);
-        female.getDetails().setEnergy(0);
-        male.getDetails().setThirst(0);
-        female.getDetails().setThirst(0);
-        male.getDetails().setHunger(0);
-        female.getDetails().setHunger(0);
-        male.getDetails().setLove(0);
-        female.getDetails().setLove(0);
-
-        //increase count breeding
-        male.getDetails().setBreedingCount(male.getDetails().getBreedingCount() + 1);
-        female.getDetails().setBreedingCount(female.getDetails().getBreedingCount() + 1);
-
-        //set pregnant
-        female.getDetails().setPregnant(true);
-        female.getDetails().setPregnancyMaleId(male.getId());
-        female.getDetails().setPregnancyStartTime(breedingDate);
-        //female generation has an impact on the pregnancy time
-        female.getDetails().setPregnancyEndTime(
-                breedingDate.plus(creaturesProperties.getPregnancyTimeValue() * female.getGeneration(),
-                        creaturesProperties.getPregnancyTimeUnit()));
     }
 }

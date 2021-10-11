@@ -6,44 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.ZonedDateTime;
-import java.util.Optional;
+
+import static hrpg.server.creature.type.CreatureConstant.ENERGY_MAX;
 
 @Repository
 public interface CreatureRepository extends WithUserRepository<Creature, Long> {
-    Optional<Creature> findByIdAndDetailsNotNull(Long id);
-
-    default Optional<Creature> findByIdAlive(Long id) {
-        return findByIdAndDetailsNotNull(id);
-    }
-
-    Page<Creature> findAllByDetailsNotNull(Pageable pageable);
-
-    default Page<Creature> findAllAlive(Pageable pageable) {
-        return findAllByDetailsNotNull(pageable);
-    }
-
-    long countByDetailsNotNull();
-
-    default long countAlive() {
-        return countByDetailsNotNull();
-    }
-
-    Page<Creature> findAllByDetailsNotNullAndDetails_EnergyLessThan(int energy, Pageable pageable);
+    Page<Creature> findAllByDetails_EnergyLessThan(int energy, Pageable pageable);
 
     default Page<Creature> findAllByEnergyNotFull(Pageable pageable) {
-        return findAllByDetailsNotNullAndDetails_EnergyLessThan(100, pageable);
+        return findAllByDetails_EnergyLessThan(ENERGY_MAX, pageable);
     }
 
-    Page<Creature> findAllByDetailsNotNullAndDetails_PregnancyEndTimeLessThanEqual(ZonedDateTime pregnancyEndTime, Pageable pageable);
-
-    default Page<Creature> findAllByDetails_PregnancyEndTimeLessThanEqual(ZonedDateTime pregnancyEndTime, Pageable pageable) {
-        return findAllByDetailsNotNullAndDetails_PregnancyEndTimeLessThanEqual(pregnancyEndTime, pageable);
-    }
-
-    //todo do not comply with userAspect if creature can be shared between users
-    long countByDetailsNotNullAndParentId1OrParentId2(long parentId1, long parentId2);
-
-    default long countByParentId1OrParentId2(long parentId1, long parentId2) {
-        return countByDetailsNotNullAndParentId1OrParentId2(parentId1, parentId2);
-    }
+    Page<Creature> findAllByDetails_PregnancyEndTimeLessThanEqual(ZonedDateTime pregnancyEndTime, Pageable pageable);
 }

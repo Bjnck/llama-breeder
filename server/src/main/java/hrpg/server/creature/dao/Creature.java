@@ -1,7 +1,6 @@
 package hrpg.server.creature.dao;
 
 import hrpg.server.common.dao.WithUser;
-import hrpg.server.creature.type.Sex;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,31 +33,20 @@ public class Creature extends WithUser {
     @Column(nullable = false, updatable = false)
     private int generation = 1;
 
-    @Column(name = "parent_one_id", updatable = false)
-    private Long parentId1;
-    @Column(name = "parent_two_id", updatable = false)
-    private Long parentId2;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "info_id", updatable = false)
+    private CreatureInfo info;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "parent_one_info_id", updatable = false)
+    private CreatureInfo parentInfo1;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "parent_two_info_id", updatable = false)
+    private CreatureInfo parentInfo2;
 
     @Builder.Default
     @Column(nullable = false)
     private String name = "Llama";
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, updatable = false)
-    private Sex sex;
-
-    @OneToOne(optional = false)
-    @JoinColumn(name = "color_one_id", nullable = false, updatable = false)
-    private Color color1;
-    @OneToOne
-    @JoinColumn(name = "color_two_id", updatable = false)
-    private Color color2;
-
-    @OneToOne
-    @JoinColumn(name = "gene_one_id", updatable = false)
-    private Gene gene1;
-    @OneToOne
-    @JoinColumn(name = "gene_two_id", updatable = false)
-    private Gene gene2;
 
     @OneToOne(mappedBy = "creature", cascade = CascadeType.ALL, orphanRemoval = true)
     private CreatureDetails details;

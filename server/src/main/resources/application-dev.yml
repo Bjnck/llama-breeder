@@ -1,0 +1,16 @@
+parameters:
+  captures:
+    time-unit: SECONDS
+    time-value: 5
+    time-unit-net: SECONDS
+    time-value-net: 10
+  creatures:
+    energy-time-unit: MILLIS
+    energy-time-value: 1
+    pregnancy-time-unit: SECONDS
+    pregnancy-time-value: 10
+  genes:
+    chance-quality-0: 50
+  pens:
+    activation-time-unit: MILLIS
+    activation-time-value: 100

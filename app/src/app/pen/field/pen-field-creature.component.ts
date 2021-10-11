@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewCh
 import {Creature} from '../../shared/creature/creature.interface';
 import {Pen} from '../pen.interface';
 import {MatRipple} from '@angular/material/core';
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-pen-field-creature',
@@ -11,6 +12,12 @@ import {MatRipple} from '@angular/material/core';
   ]
 })
 export class PenFieldCreatureComponent implements OnChanges {
+  maturityMax = environment.maturityMax;
+  maturityDivider = environment.maturityDivider;
+  energyDivider = environment.energyDivider;
+  statsMax = environment.statsMax;
+  statsLoveRequirement = environment.statsLoveRequirement;
+
   @Input() pen: Pen;
   @Input() creature: Creature;
   @Input() updatedCreatures: Creature[];

@@ -69,7 +69,9 @@
               <mat-icon>fence</mat-icon>
             </button>
             <mat-menu #menu_pen_add="matMenu">
-              <button mat-menu-item (click)="addToPen(item)">Add to pen ({{pen.items.length}}/{{pen.size}})</button>
+              <button mat-menu-item (click)="addToPen(item)" [disabled]="pen.items.length >= pen.size">
+                Add to pen ({{pen.items.length}}/{{pen.size}})
+              </button>
             </mat-menu>
 
             <button class="buttonSpace button-in-pen" mat-flat-button (click)="removeFromPen(item)"
@@ -82,7 +84,7 @@
               <mat-icon>delete</mat-icon>
             </button>
             <mat-menu #menu_delete="matMenu">
-              <button mat-menu-item (click)="delete(item)">Delete item</button>
+              <button mat-menu-item (click)="delete(item)">Delete</button>
             </mat-menu>
           </div>
         </div>

@@ -152,7 +152,7 @@ public class PenEndpointIT extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$[*].value", hasItem(Long.toString(creature.getId() + 100))));
         //update creatures remove existing and add new
         Creature creature2 = givenCreature();
-         location = put(PEN_URL + "/" + pen.getId(),
+        location = put(PEN_URL + "/" + pen.getId(),
                 PenRequest.builder().size(3).creatures(Collections.singleton(PenCreatureRequest.builder().id(creature2.getId()).build())).build())
                 .andExpect(status().isOk())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
@@ -237,9 +237,11 @@ public class PenEndpointIT extends AbstractIntegrationTest {
         Creature creature = Creature.builder()
                 .originalUserId(userDto.getId())
                 .createDate(LocalDate.now())
-                .sex(Sex.F)
-                .color1(color)
-                .gene1(gene)
+                .info(CreatureInfo.builder()
+                        .sex(Sex.F)
+                        .color1(color)
+                        .gene1(gene)
+                        .build())
                 .build();
         creature.setUserId(userDto.getId());
         creature.setDetails(CreatureDetails.builder()

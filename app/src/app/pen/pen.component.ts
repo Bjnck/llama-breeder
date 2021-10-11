@@ -41,7 +41,11 @@ export class PenComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       console.log(this.pen.items)
       this.penService.getWithContent(this.pen.pen.id).subscribe({
-        next: pen => this.pen = pen
+        next: pen => {
+          this.pen.pen = pen.pen;
+          pen.creatures.forEach(creature => this.onCreatureUpdate(creature));
+          this.pen.items = pen.items;
+        }
       });
     }, 10000);
   }

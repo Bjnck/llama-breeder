@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static hrpg.server.creature.type.CreatureConstant.ENERGY_MAX;
+
 @Component
 public class CreatureComputorImpl implements CreatureComputor {
 
@@ -85,7 +87,7 @@ public class CreatureComputorImpl implements CreatureComputor {
 
     @Override
     public void compute(long id) {
-        creatureRepository.findByIdAlive(id).ifPresent(creature -> {
+        creatureRepository.findById(id).ifPresent(creature -> {
             Optional<Pen> pen = penRepository.findByCreaturesContaining(creature);
 
             //if creature in pen, update stats with items in pen
@@ -95,7 +97,7 @@ public class CreatureComputorImpl implements CreatureComputor {
             //if creature not in pen
             else {
                 //update energy
-                if (creature.getDetails().getEnergy() < 1000) {
+                if (creature.getDetails().getEnergy() < ENERGY_MAX) {
                     try {
                         creatureService.calculateEnergy(Collections.singletonList(creature.getId()));
                     } catch (CreatureNotFoundException e) {
@@ -103,7 +105,8 @@ public class CreatureComputorImpl implements CreatureComputor {
                     }
                 }
                 //update birth
-                if (creature.getDetails().getPregnancyEndTime().isBefore(ZonedDateTime.now())) {
+                if (creature.getDetails().getPregnancyEndTime() != null &&
+                        creature.getDetails().getPregnancyEndTime().isBefore(ZonedDateTime.now())) {
                     try {
                         creatureService.calculateBirth(Collections.singletonList(creature.getId()));
                     } catch (CreatureNotFoundException e) {

@@ -22,12 +22,12 @@
 
 .line1
   display: flex
+  overflow: hidden
 
 .male
   color: lightblue
 .female
   color: pink
-
 .sex-icon-barn
   height: 20px
   margin-right: 5px
@@ -35,50 +35,103 @@
   height: 20px
   font-size: 20px
 
-.name
-  margin-right: 20px
-
+.status
+  display: flex
 .status-icon-barn
   height: 20px
+  width: 20px
 .status-icon-barn mat-icon
   font-size: 18px
   height: 18px
 ::ng-deep .status-icon-barn mat-icon svg
   height: 14px
 
+.name
+  margin-right: 10px
+  width: 260px
+  overflow: hidden
+@media only screen and (max-width: 350px)
+  .name
+    width: 90px
+@media only screen and (min-width: 350px) and (max-width: 360px)
+  .name
+    width: 100px
+@media only screen and (min-width: 360px) and (max-width: 370px)
+  .name
+    width: 110px
+@media only screen and (min-width: 370px) and (max-width: 380px)
+  .name
+    width: 120px
+@media only screen and (min-width: 380px) and (max-width: 390px)
+  .name
+    width: 130px
+@media only screen and (min-width: 390px) and (max-width: 400px)
+  .name
+    width: 140px
+@media only screen and (min-width: 400px) and (max-width: 410px)
+  .name
+    width: 150px
+@media only screen and (min-width: 410px) and (max-width: 420px)
+  .name
+    width: 160px
+@media only screen and (min-width: 420px) and (max-width: 430px)
+  .name
+    width: 180px
+@media only screen and (min-width: 430px) and (max-width: 440px)
+  .name
+    width: 190px
+@media only screen and (min-width: 440px) and (max-width: 450px)
+  .name
+    width: 200px
+@media only screen and (min-width: 450px) and (max-width: 460px)
+  .name
+    width: 210px
+@media only screen and (min-width: 460px) and (max-width: 470px)
+  .name
+    width: 220px
+@media only screen and (min-width: 470px) and (max-width: 480px)
+  .name
+    width: 230px
+@media only screen and (min-width: 480px) and (max-width: 490px)
+  .name
+    width: 240px
+@media only screen and (min-width: 490px) and (max-width: 500px)
+  .name
+    width: 250px
+
 .line2
   display: flex
-  font-size: 10px
+  font-size: 12px
   height: 20px
 
-.energy, .thirst, .hunger, .love
+.energy, .thirst, .hunger, .love, .maturity
   display: flex
-  margin-right: 5px
   width: 35px
-
 .energy
   color: lightyellow
+.maturity
+  color: skyblue
 .thirst
   color: cornflowerblue
 .hunger
   color: sandybrown
 .love
   color: palevioletred
-
 .energy mat-icon, .thirst mat-icon, .love mat-icon
   font-size: 12px
   width: 12px
   height: 12px
   margin-top: 3px
-
-.hunger mat-icon
+.hunger mat-icon, .maturity mat-icon
   height: 12px
   width: 12px
   margin-top: 2px
   margin-right: 2px
-
 .thirst .stat-icon, .love .stat-icon
   margin-right: 2px
+
+.genes
+  margin-left: 10px
 
 
 .button button
@@ -86,6 +139,5 @@
   width: 40px
   min-width: 0
   padding: 0
-
 .buttonSpace
   margin-right: 5px

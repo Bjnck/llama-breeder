@@ -20,10 +20,10 @@ parameters:
   items:
     max: 100
   captures:
-#    time-unit: HOURS
-#    time-value: 3
-    time-unit: SECONDS
+    time-unit: MINUTES
     time-value: 5
+    time-unit-net: HOURS
+    time-value-net: 4
     time-unit-first: SECONDS
     time-value-first: 5
     max: 20
@@ -32,27 +32,57 @@ parameters:
     chance-female: 50
     chance-cross-breed: 20
     chance-bi-color: 50
-    max-babies: 3
-#    energy-time-unit: MINUTES
-#    energy-time-value: 1
-    energy-time-unit: SECONDS
+    max-babies: 2
+    energy-time-unit: MINUTES
     energy-time-value: 1
-#    pregnancy-time-unit: HOURS
-#    pregnancy-time-value: 3
-    pregnancy-time-unit: SECONDS
-    pregnancy-time-value: 10
-    price:
-      gen-1: 1
-      gen-2: 5
+    pregnancy-time-unit: MINUTES
+    pregnancy-time-values:
+      gen-1: 5
+      gen-2: 60
+      gen-3: 120
+      gen-4: 180
+      gen-5: 300
+      gen-6: 480
+      gen-7: 720
+      gen-8: 1440
+    maturity-increments:
+      gen-1: 2000
+      gen-2: 100
+      gen-3: 50
+      gen-4: 25
+      gen-5: 12
+      gen-6: 8
+      gen-7: 5
+      gen-8: 4
+    energy-increments:
+      gen-1: 200
+      gen-2: 20
       gen-3: 10
-      gen-4: 15
-      gen-5: 20
-      gen-6: 25
-      gen-7: 30
-      gen-8: 35
+      gen-4: 5
+      gen-5: 5
+      gen-6: 4
+      gen-7: 3
+      gen-8: 2
+    stats-increments:
+      gen-1: 5
+      gen-2: 3
+      gen-3: 3
+      gen-4: 3
+      gen-5: 2
+      gen-6: 2
+      gen-7: 2
+      gen-8: 2
+    prices:
+      gen-1: 1
+      gen-2: 10
+      gen-3: 20
+      gen-4: 40
+      gen-5: 80
+      gen-6: 160
+      gen-7: 320
+      gen-8: 640
   genes:
-#    chance-quality-0: 1
-    chance-quality-0: 50
+    chance-quality-0: 0
     chance-quality-1: 5
     chance-quality-2: 10
     chance-quality-3: 20
@@ -64,10 +94,8 @@ parameters:
     special-chance-quality-2: 25
     special-chance-quality-3: 30
   pens:
-#    activation-time-unit: MINUTES
-#    activation-time-value: 1
-    activation-time-unit: MILLIS
-    activation-time-value: 100
+    activation-time-unit: MINUTES
+    activation-time-value: 1
     item-activation-chance: 100
     price:
       size-4: 1

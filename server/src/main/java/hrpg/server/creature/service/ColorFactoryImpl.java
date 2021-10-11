@@ -56,7 +56,9 @@ public class ColorFactoryImpl implements ColorFactory {
             }
         }
 
-        List<Color> colors = Arrays.asList(parent1Color1, parent2Color1);
+        List<Color> colors = new ArrayList<>();
+        colors.add(parent1Color1);
+        colors.add(parent2Color1);
         if (parent1Color2 != null) colors.add(parent1Color2);
         if (parent2Color2 != null) colors.add(parent2Color2);
         Collections.shuffle(colors);

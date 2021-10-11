@@ -18,8 +18,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static hrpg.server.creature.type.CreatureConstant.*;
+import static hrpg.server.item.type.ItemConstant.LIFE_MIN;
 
 @Component
 public class PenComputorImpl implements PenComputor {
@@ -63,21 +69,21 @@ public class PenComputorImpl implements PenComputor {
             for (int i = 0; i < totalLoop; i++) {
                 //stop loop if nothing to calculate
                 Set<ItemCode> itemsCodes = pen.getItems().stream()
-                        .filter(item -> item.getLife() > 0).map(Item::getCode).collect(Collectors.toSet());
+                        .filter(item -> item.getLife() > LIFE_MIN).map(Item::getCode).collect(Collectors.toSet());
                 long hittable = pen.getCreatures().stream()
                         .filter(creature -> CreatureUtil.isHittable(creature, itemsCodes)).count();
                 long breedableMale = pen.getCreatures().stream()
                         .filter(CreatureUtil::isBreedable)
-                        .filter(creature -> Sex.M.equals(creature.getSex()))
+                        .filter(creature -> Sex.M.equals(creature.getInfo().getSex()))
                         .count();
                 long breedableFemale = pen.getCreatures().stream()
                         .filter(CreatureUtil::isBreedable)
-                        .filter(creature -> Sex.F.equals(creature.getSex()))
+                        .filter(creature -> Sex.F.equals(creature.getInfo().getSex()))
                         .count();
                 boolean adultPresent = pen.getCreatures().stream()
-                        .anyMatch(creature -> creature.getDetails().getMaturity() >= 1000);
+                        .anyMatch(creature -> creature.getDetails().getMaturity() >= MATURITY_MAX);
                 long babies = pen.getCreatures().stream()
-                        .filter(creature -> creature.getDetails().getMaturity() < 1000).count();
+                        .filter(creature -> creature.getDetails().getMaturity() < MATURITY_MAX).count();
                 if (hittable == 0 && (breedableMale == 0 || breedableFemale == 0) && (babies == 0 || !adultPresent))
                     break;
 
@@ -100,7 +106,7 @@ public class PenComputorImpl implements PenComputor {
 
     private void hit(Pen pen, ZonedDateTime activationTime) {
         Set<Item> items = pen.getItems().stream()
-                .filter(item -> item.getLife() > 0)
+                .filter(item -> item.getLife() > LIFE_MIN)
                 .filter(item -> item.getPenActivationTime().isBefore(activationTime))
                 .collect(Collectors.toSet());
         items.forEach(item -> {
@@ -114,16 +120,19 @@ public class PenComputorImpl implements PenComputor {
 
     private void increaseMaturity(Pen pen, ZonedDateTime activationTime) {
         //verify if adult in pen
-        boolean adultPresent = pen.getCreatures().stream().anyMatch(creature -> creature.getDetails().getMaturity() >= 1000);
+        boolean adultPresent = pen.getCreatures().stream().anyMatch(creature -> creature.getDetails().getMaturity() >= MATURITY_MAX);
         if (adultPresent) {
             //get all babies for activationTime
             Set<Creature> creatures = pen.getCreatures().stream()
-                    .filter(creature -> creature.getDetails().getMaturity() < 1000)
+                    .filter(creature -> creature.getDetails().getMaturity() < MATURITY_MAX)
                     .filter(creature -> creature.getDetails().getPenActivationTime().isBefore(activationTime))
                     .collect(Collectors.toSet());
             //increase maturity
-            creatures.forEach(creature ->
-                    creature.getDetails().setMaturity(creature.getDetails().getMaturity() + (11 - creature.getGeneration())));
+            creatures.forEach(creature -> {
+                int increment = creaturesProperties.getMaturityIncrement(creature.getGeneration());
+                int maturity = creature.getDetails().getMaturity() + increment;
+                creature.getDetails().setMaturity(Math.min(maturity, MATURITY_MAX));
+            });
         }
     }
 
@@ -134,11 +143,11 @@ public class PenComputorImpl implements PenComputor {
                 .collect(Collectors.toSet());
 
         List<Creature> females = breedableCreatures.stream()
-                .filter(creature -> creature.getSex().equals(Sex.F))
+                .filter(creature -> creature.getInfo().getSex().equals(Sex.F))
                 .collect(Collectors.toList());
         Collections.shuffle(females);
         List<Creature> males = breedableCreatures.stream()
-                .filter(creature -> creature.getSex().equals(Sex.M))
+                .filter(creature -> creature.getInfo().getSex().equals(Sex.M))
                 .collect(Collectors.toList());
         Collections.shuffle(males);
 
@@ -150,14 +159,14 @@ public class PenComputorImpl implements PenComputor {
 
     private void breed(Creature male, Creature female, ZonedDateTime activationTime) {
         //update stats
-        male.getDetails().setEnergy(0);
-        female.getDetails().setEnergy(0);
-        male.getDetails().setThirst(0);
-        female.getDetails().setThirst(0);
-        male.getDetails().setHunger(0);
-        female.getDetails().setHunger(0);
-        male.getDetails().setLove(0);
-        female.getDetails().setLove(0);
+        male.getDetails().setEnergy(ENERGY_MIN);
+        female.getDetails().setEnergy(ENERGY_MIN);
+        male.getDetails().setThirst(STATS_MIN);
+        female.getDetails().setThirst(STATS_MIN);
+        male.getDetails().setHunger(STATS_MIN);
+        female.getDetails().setHunger(STATS_MIN);
+        male.getDetails().setLove(STATS_MIN);
+        female.getDetails().setLove(STATS_MIN);
 
         //increase count breeding
         male.getDetails().setBreedingCount(male.getDetails().getBreedingCount() + 1);
@@ -169,7 +178,8 @@ public class PenComputorImpl implements PenComputor {
         female.getDetails().setPregnancyStartTime(activationTime);
         //female generation has an impact on the pregnancy time
         female.getDetails().setPregnancyEndTime(
-                activationTime.plus(creaturesProperties.getPregnancyTimeValue() * female.getGeneration(),
+                activationTime.plus(
+                        creaturesProperties.getPregnancyTimeValue(Math.max(female.getGeneration(), male.getGeneration())),
                         creaturesProperties.getPregnancyTimeUnit()));
     }
 }

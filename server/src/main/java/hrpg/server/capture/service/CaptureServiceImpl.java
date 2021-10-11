@@ -8,8 +8,6 @@ import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.exception.ConflictException;
 import hrpg.server.common.properties.CapturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
-import hrpg.server.creature.service.CreatureService;
-import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.item.service.ItemDto;
 import hrpg.server.item.service.ItemSearch;
 import hrpg.server.item.service.ItemService;
@@ -36,7 +34,6 @@ public class CaptureServiceImpl implements CaptureService {
     private final CaptureMapper captureMapper;
     private final ItemService itemService;
     private final BaitService baitService;
-    private final CreatureService creatureService;
     private final CapturesProperties capturesProperties;
 
     public CaptureServiceImpl(CaptureRepository captureRepository,
@@ -44,14 +41,12 @@ public class CaptureServiceImpl implements CaptureService {
                               CaptureMapper captureMapper,
                               ItemService itemService,
                               BaitService baitService,
-                              CreatureService creatureService,
                               ParametersProperties parametersProperties) {
         this.captureRepository = captureRepository;
         this.userRepository = userRepository;
         this.captureMapper = captureMapper;
         this.itemService = itemService;
         this.baitService = baitService;
-        this.creatureService = creatureService;
         this.capturesProperties = parametersProperties.getCaptures();
     }
 
@@ -93,7 +88,7 @@ public class CaptureServiceImpl implements CaptureService {
         if (captureCount >= capturesProperties.getMax())
             captureRepository.findAll(PageRequest.of(1,
                     capturesProperties.getMax() - 1, Sort.by("id").descending()))
-                    .stream().forEach(this::delete);
+                    .stream().forEach(captureRepository::delete);
 
         //create new capture
         User user = userRepository.get();
@@ -104,9 +99,8 @@ public class CaptureServiceImpl implements CaptureService {
         if (user.getDetails().getLevel() <= 0)
             endTime = current.plus(capturesProperties.getTimeValueFirst(), capturesProperties.getTimeUnitFirst());
         else {
-            //capture twice as long if net used
-            int timeValue = quality > 0 ? capturesProperties.getTimeValue() * 2 : capturesProperties.getTimeValue();
-            endTime = current.plus(timeValue, capturesProperties.getTimeUnit());
+            endTime = current.plus(quality > 0 ? capturesProperties.getTimeValueNet() : capturesProperties.getTimeValue(),
+                    quality > 0 ? capturesProperties.getTimeUnitNet() : capturesProperties.getTimeUnit());
         }
 
         return captureMapper.toDto(captureRepository.save(Capture.builder()
@@ -115,19 +109,6 @@ public class CaptureServiceImpl implements CaptureService {
                 .startTime(current)
                 .endTime(endTime)
                 .build()));
-    }
-
-    private void delete(Capture capture) {
-        //todo if creature has no details, delete creature
-        Long creatureId = capture.getCreatureId();
-        captureRepository.delete(capture);
-        if (creatureId != null) {
-            try {
-                creatureService.deletePartial(creatureId);
-            } catch (CreatureNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     @Override
@@ -142,6 +123,6 @@ public class CaptureServiceImpl implements CaptureService {
 
     @Override
     public boolean hasRunningCapture() {
-        return captureRepository.countByCreatureIdIsNull() > 0;
+        return captureRepository.countByCreatureInfoIsNull() > 0;
     }
 }

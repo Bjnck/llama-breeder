@@ -11,6 +11,7 @@ export interface Creature {
   pregnant: boolean;
   pregnancyStartTime: string;
   pregnancyEndTime: string;
+  parents: Parents;
 }
 
 export interface Colors {
@@ -34,6 +35,17 @@ export interface Statistics {
   thirst: number;
   hunger: number;
   maturity: number;
+}
+
+export interface Parents {
+  parent1: Parent;
+  parent2: Parent;
+}
+
+export interface Parent {
+  sex: string;
+  colors: Colors;
+  genes: Genes;
 }
 
 

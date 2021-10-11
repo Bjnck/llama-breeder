@@ -28,10 +28,11 @@ export class PenFieldComponent {
         creature,
         pen: this.pen.pen,
         creaturesInPen: this.pen.creatures,
-        creaturesIdInPen: this.pen.creatures.map(c => c.id),
-        closeOnRemove: true
+        creaturesIdInPen: this.pen.creatures.map(c => c.id)
       },
-      position: {top: '25%'}
+      position: {top: '100px'},
+      minWidth: '272px',
+      maxWidth: '90%'
     });
   }
 }

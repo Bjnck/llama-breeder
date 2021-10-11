@@ -1,5 +1,6 @@
 package hrpg.server.capture.service;
 
+import hrpg.server.creature.service.CreatureInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,7 @@ import java.time.ZonedDateTime;
 public class CaptureDto {
     private Long id;
 
-    private Long creatureId;
+    private CreatureInfoDto creatureInfo;
 
     private int quality;
     private Integer baitGeneration;

@@ -5,31 +5,33 @@ import hrpg.server.item.type.ItemCode;
 
 import java.util.Set;
 
+import static hrpg.server.creature.type.CreatureConstant.*;
+
 public class CreatureUtil {
 
     public static boolean isBreedable(Creature creature) {
-        return creature.getDetails().getMaturity() >= 1000 &&
-                creature.getDetails().getLove() >= 100 &&
-                creature.getDetails().getBreedingCount() < 10 &&
+        return creature.getDetails().getMaturity() >= MATURITY_MAX &&
+                creature.getDetails().getLove() >= STATS_MAX &&
+                creature.getDetails().getBreedingCount() < BREEDING_MAX &&
                 !creature.getDetails().isPregnant();
     }
 
     public static boolean isHittable(Creature creature, ItemCode itemCode) {
-        if (creature.getDetails().getEnergy() <= 0) return false;
-        if (creature.getDetails().getMaturity() < 1000) return false;
+        if (creature.getDetails().getEnergy() <= ENERGY_MIN) return false;
+        if (creature.getDetails().getMaturity() < MATURITY_MAX) return false;
         if (creature.getDetails().isPregnant()) return false;
 
         switch (itemCode) {
             case HUNGER:
-                if (creature.getDetails().getHunger() >= 100) return false;
+                if (creature.getDetails().getHunger() >= STATS_MAX) return false;
                 break;
             case THIRST:
-                if (creature.getDetails().getThirst() >= 100) return false;
+                if (creature.getDetails().getThirst() >= STATS_MAX) return false;
                 break;
             case LOVE:
-                if (creature.getDetails().getLove() >= 100 ||
-                        creature.getDetails().getThirst() < 75 ||
-                        creature.getDetails().getHunger() < 75) return false;
+                if (creature.getDetails().getLove() >= STATS_MAX ||
+                        creature.getDetails().getThirst() < STATS_LOVE_REQUIREMENT ||
+                        creature.getDetails().getHunger() < STATS_LOVE_REQUIREMENT) return false;
                 break;
         }
 

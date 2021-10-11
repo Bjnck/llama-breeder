@@ -1,5 +1,6 @@
 package hrpg.server.creature.resource;
 
+import hrpg.server.creature.type.Sex;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Parents {
-    private Parent parent1;
-    private Parent parent2;
+public class Parent {
+    private Sex sex;
+    private Colors colors;
+    private Genes genes;
 }

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static hrpg.server.creature.type.CreatureConstant.MATURITY_MAX;
+
 @Component
 public class CreatureFactoryImpl implements CreatureFactory {
 
@@ -53,24 +55,27 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
         //tutorial - always get female then male of different color, no gene
         if (userLevel == 0) {
-            if (creatureRepository.countAlive() == 0) {
+            if (creatureRepository.count() == 0) {
                 //if first creature
-                creatureBuilder
+                creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.F)
-                        .color1(colorFactory.getForCapture(null));
+                        .color1(colorFactory.getForCapture(null))
+                        .build());
             } else {
                 //second creature
-                Creature creature = creatureRepository.findAllAlive(PageRequest.of(0, 1))
+                Creature creature = creatureRepository.findAll(PageRequest.of(0, 1))
                         .stream().findFirst().orElseThrow();
-                creatureBuilder
+                creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.M)
-                        .color1(colorFactory.getForCapture(creature.getColor1().getCode()));
+                        .color1(colorFactory.getForCapture(creature.getInfo().getColor1().getCode()))
+                        .build());
             }
         } else {
-            creatureBuilder
+            creatureBuilder.info(CreatureInfo.builder()
                     .sex(randomSex())
                     .color1(colorFactory.getForCapture(null))
-                    .gene1(geneFactory.getForCapture(netQuality, baitGeneration).orElse(null));
+                    .gene1(geneFactory.getForCapture(netQuality, baitGeneration).orElse(null))
+                    .build());
         }
 
         //set creature parameters for capture and save
@@ -81,7 +86,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
         creature.setDetails(CreatureDetails.builder()
                 .creature(creature)
                 .wild(true)
-                .maturity(1000)
+                .maturity(MATURITY_MAX)
                 .build());
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }
@@ -93,12 +98,12 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
         //calculate max possible babies
         int maxBabies = getNumberOfBabies();
-        int spaceAvailable = creaturesProperties.getMax() - ((Long) creatureRepository.countAlive()).intValue();
+        int spaceAvailable = creaturesProperties.getMax() - ((Long) creatureRepository.count()).intValue();
         if (maxBabies > spaceAvailable)
             maxBabies = spaceAvailable;
 
         //get parents
-        Creature mother = creatureRepository.findByIdAlive(id).orElseThrow(CreatureNotFoundException::new);
+        Creature mother = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
         Creature father = creatureRepository.findById(mother.getDetails().getPregnancyMaleId())
                 .orElseThrow(CreatureNotFoundException::new);
 
@@ -106,22 +111,38 @@ public class CreatureFactoryImpl implements CreatureFactory {
         List<CreatureDto> babies = new ArrayList<>();
         for (int i = 0; i < maxBabies; i++) {
             Pair<Color, Optional<Color>> colors = colorFactory.getForBirth(
-                    mother.getColor1(), mother.getColor2(), father.getColor1(), father.getColor2());
+                    mother.getInfo().getColor1(), mother.getInfo().getColor2(),
+                    father.getInfo().getColor1(), father.getInfo().getColor2());
             Pair<Optional<Gene>, Optional<Gene>> genes = geneFactory.getForBirth(
-                    mother.getGene1(), mother.getGene2(), father.getGene1(), father.getGene2());
+                    mother.getInfo().getGene1(), mother.getInfo().getGene2(),
+                    father.getInfo().getGene1(), father.getInfo().getGene2());
 
             Creature baby = Creature.builder()
                     .originalUserId(OAuthUserUtil.getUserId())
                     .createDate(mother.getDetails().getPregnancyEndTime().toLocalDate())
                     .generation(Math.max(colors.getFirst().getGeneration(),
                             colors.getSecond().map(Color::getGeneration).orElse(0)))
-                    .sex(randomSex())
-                    .color1(colors.getFirst())
-                    .color2(colors.getSecond().orElse(null))
-                    .gene1(genes.getFirst().orElse(null))
-                    .gene2(genes.getSecond().orElse(null))
-                    .parentId1(mother.getParentId1())
-                    .parentId2(mother.getParentId2())
+                    .info(CreatureInfo.builder()
+                            .sex(randomSex())
+                            .color1(colors.getFirst())
+                            .color2(colors.getSecond().orElse(null))
+                            .gene1(genes.getFirst().orElse(null))
+                            .gene2(genes.getSecond().orElse(null))
+                            .build())
+                    .parentInfo1(CreatureInfo.builder()
+                            .sex(mother.getInfo().getSex())
+                            .color1(mother.getInfo().getColor1())
+                            .color2(mother.getInfo().getColor2())
+                            .gene1(mother.getInfo().getGene1())
+                            .gene2(mother.getInfo().getGene2())
+                            .build())
+                    .parentInfo2(CreatureInfo.builder()
+                            .sex(father.getInfo().getSex())
+                            .color1(father.getInfo().getColor1())
+                            .color2(father.getInfo().getColor2())
+                            .gene1(father.getInfo().getGene1())
+                            .gene2(father.getInfo().getGene2())
+                            .build())
                     .build();
             baby.setDetails(CreatureDetails.builder()
                     .creature(baby)
@@ -139,7 +160,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
     }
 
     private void validateMaxCreaturesReached() throws MaxCreaturesException {
-        if (creatureRepository.countAlive() >= creaturesProperties.getMax())
+        if (creatureRepository.count() >= creaturesProperties.getMax())
             throw new MaxCreaturesException();
     }
 

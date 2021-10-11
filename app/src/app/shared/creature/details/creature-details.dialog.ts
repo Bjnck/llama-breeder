@@ -8,6 +8,7 @@ import {PenService} from '../../../pen/pen.service';
 import {TimerUtil} from '../../timer/timer.util';
 import {UserService} from '../../user/user.service';
 import {User} from '../../user/user.interface';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   templateUrl: './creature-details.dialog.html',
@@ -16,6 +17,12 @@ import {User} from '../../user/user.interface';
   ]
 })
 export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
+  maturityMax = environment.maturityMax;
+  maturityDivider = environment.maturityDivider;
+  energyDivider = environment.energyDivider;
+  statsLoveRequirement = environment.statsLoveRequirement;
+  breedingMax = environment.breedingMax;
+
   user: User;
   creature: Creature;
   pen: Pen;
@@ -51,8 +58,7 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
     if (value !== this.name) {
       this.name = value;
       this.creature.name = value;
-      // todo not yet available
-      // this.creatureService.update(this.creature);
+      this.creatureService.update(this.creature);
     }
   }
 

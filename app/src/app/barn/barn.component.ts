@@ -8,7 +8,7 @@ import {CreatureService} from '../shared/creature/creature.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
 import {Pen} from '../pen/pen.interface';
-import {Item} from "../shared/item/item.interface";
+import {environment} from '../../environments/environment';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -19,6 +19,10 @@ import {Item} from "../shared/item/item.interface";
   ]
 })
 export class BarnComponent implements OnInit {
+  maturityMax = environment.maturityMax;
+  maturityDivider = environment.maturityDivider;
+  energyDivider = environment.energyDivider;
+
   user: User;
   creatures: Creature[];
   creatureCount: number;
@@ -71,12 +75,13 @@ export class BarnComponent implements OnInit {
   openDetails(creature: Creature) {
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
-      position: {top: '25%'},
+      position: {top: '100px'},
+      minWidth: '272px',
+      maxWidth: '90%',
       restoreFocus: false
     }).afterClosed().subscribe({
       next: resp => {
-        console.log(resp)
-        if (resp.delete != null) {
+        if (resp != null && resp.delete != null) {
           this.creatureCount--;
           this.creatures.splice(this.creatures.findIndex(
             i => i.id.toString() === resp.delete.id.toString()), 1);

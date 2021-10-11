@@ -6,6 +6,7 @@ import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.exception.ConflictException;
+import hrpg.server.common.properties.CapturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.item.service.ItemDto;
 import hrpg.server.item.service.ItemSearch;
@@ -33,7 +34,7 @@ public class CaptureServiceImpl implements CaptureService {
     private final CaptureMapper captureMapper;
     private final ItemService itemService;
     private final BaitService baitService;
-    private final ParametersProperties parametersProperties;
+    private final CapturesProperties capturesProperties;
 
     public CaptureServiceImpl(CaptureRepository captureRepository,
                               UserRepository userRepository,
@@ -46,7 +47,7 @@ public class CaptureServiceImpl implements CaptureService {
         this.captureMapper = captureMapper;
         this.itemService = itemService;
         this.baitService = baitService;
-        this.parametersProperties = parametersProperties;
+        this.capturesProperties = parametersProperties.getCaptures();
     }
 
     @Transactional(rollbackFor = {
@@ -84,9 +85,9 @@ public class CaptureServiceImpl implements CaptureService {
 
         //delete oldest capture if max reached
         long captureCount = captureRepository.count();
-        if (captureCount >= parametersProperties.getCaptures().getMax())
+        if (captureCount >= capturesProperties.getMax())
             captureRepository.findAll(PageRequest.of(1,
-                    parametersProperties.getCaptures().getMax() - 1, Sort.by("id").descending()))
+                    capturesProperties.getMax() - 1, Sort.by("id").descending()))
                     .stream().forEach(captureRepository::delete);
 
         //create new capture
@@ -95,14 +96,12 @@ public class CaptureServiceImpl implements CaptureService {
 
         ZonedDateTime current = ZonedDateTime.now();
         ZonedDateTime endTime;
-        if(user.getDetails().getLevel() <= 0)
-            endTime = current.plus(
-                    parametersProperties.getCaptures().getTimeValueFirst(),
-                    parametersProperties.getCaptures().getTimeUnitFirst());
-        else
-            endTime = current.plus(
-                    parametersProperties.getCaptures().getTimeValue(),
-                    parametersProperties.getCaptures().getTimeUnit());
+        if (user.getDetails().getLevel() <= 0)
+            endTime = current.plus(capturesProperties.getTimeValueFirst(), capturesProperties.getTimeUnitFirst());
+        else {
+            endTime = current.plus(quality > 0 ? capturesProperties.getTimeValueNet() : capturesProperties.getTimeValue(),
+                    quality > 0 ? capturesProperties.getTimeUnitNet() : capturesProperties.getTimeUnit());
+        }
 
         return captureMapper.toDto(captureRepository.save(Capture.builder()
                 .quality(quality)
@@ -124,6 +123,6 @@ public class CaptureServiceImpl implements CaptureService {
 
     @Override
     public boolean hasRunningCapture() {
-        return captureRepository.countByCreatureIdIsNull() > 0;
+        return captureRepository.countByCreatureInfoIsNull() > 0;
     }
 }

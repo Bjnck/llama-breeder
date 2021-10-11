@@ -1,5 +1,6 @@
 package hrpg.server.pen.resource;
 
+import hrpg.server.pen.service.PenComputor;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
@@ -49,19 +50,24 @@ public class PenController {
 
     private final PenService penService;
     private final PenResourceMapper penResourceMapper;
+    private final PenComputor penComputor;
 
     public PenController(EntityLinks entityLinks,
                          PenService penService,
                          PenResourceMapper penResourceMapper,
-                         PagedResourcesAssembler<PenResponse> pagedResourcesAssembler) {
+                         PagedResourcesAssembler<PenResponse> pagedResourcesAssembler,
+                         PenComputor penComputor) {
         this.links = entityLinks.forType(PenResponse::getId);
         this.penService = penService;
         this.penResourceMapper = penResourceMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.penComputor = penComputor;
     }
 
     @PutMapping("{id}")
     public ResponseEntity<Object> update(@PathVariable long id, @Valid @RequestBody PenRequest request) {
+        //need to compute first if a creature or item is removed
+        penComputor.compute(id);
         try {
             PenResponse response = penResourceMapper.toResponse(penService.update(id, penResourceMapper.toDto(request)));
             return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
@@ -100,6 +106,7 @@ public class PenController {
 
     @GetMapping("{id}")
     public PenResponse get(@PathVariable long id) {
+        penComputor.compute(id);
         return penService.findById(id)
                 .map(penResourceMapper::toResponse)
                 .map(response -> {
@@ -111,8 +118,10 @@ public class PenController {
 
     @GetMapping
     @SortValues(values = {"id"})
-    public PagedModel<EntityModel<PenResponse>> search(
-            @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public PagedModel<EntityModel<PenResponse>> search(@RequestParam(defaultValue = "true") boolean compute,
+                                                       @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (compute) penComputor.compute();
+        
         Page<PenResponse> responses = penService.search(pageable)
                 .map(penResourceMapper::toResponse)
                 .map(response -> {
@@ -120,6 +129,15 @@ public class PenController {
                     return response.add(links.linkToItemResource(response));
                 });
         return pagedResourcesAssembler.toModel(responses);
+    }
+
+    @PostMapping("{id}/action/activate-item/{itemId}")
+    public PenActivationResponse activateItem(@PathVariable long id, @PathVariable long itemId) {
+        try {
+            return penResourceMapper.toResponse(penService.activateItem(id, itemId));
+        } catch (ItemNotFoundException | PenNotFoundException e) {
+            throw new ResourceNotFoundException();
+        }
     }
 
     private void addLinkToSetElt(PenResponse response) {

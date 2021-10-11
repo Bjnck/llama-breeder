@@ -1,9 +1,13 @@
 package hrpg.server.creature.resource;
 
-import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
+import hrpg.server.common.resource.exception.ValidationCode;
+import hrpg.server.common.resource.exception.ValidationError;
+import hrpg.server.common.resource.exception.ValidationException;
+import hrpg.server.creature.service.CreatureComputor;
 import hrpg.server.creature.service.CreatureService;
+import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +19,13 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.hateoas.server.TypedEntityLinks;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "creatures")
@@ -29,25 +39,35 @@ public class CreatureController {
 
     private final CreatureService creatureService;
     private final CreatureResourceMapper creatureResourceMapper;
-    private final CaptureComputor captureComputor;
+    private final CreatureComputor creatureComputor;
 
     public CreatureController(EntityLinks entityLinks,
                               PagedResourcesAssembler<CreatureResponse> pagedResourcesAssembler,
                               CreatureService creatureService,
                               CreatureResourceMapper creatureResourceMapper,
-                              CaptureComputor captureComputor) {
+                              CreatureComputor creatureComputor) {
         this.links = entityLinks.forType(CreatureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.creatureService = creatureService;
         this.creatureResourceMapper = creatureResourceMapper;
-        this.captureComputor = captureComputor;
+        this.creatureComputor = creatureComputor;
     }
 
-    //todo add put for update creature name
+    @PutMapping("{id}")
+    public ResponseEntity<Object> update(@PathVariable long id, @Valid @RequestBody CreatureRequest request) {
+        try {
+            CreatureResponse response = creatureResourceMapper.toResponse(creatureService.update(id, creatureResourceMapper.toDto(request)));
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
+        } catch (CreatureNotFoundException e) {
+            throw new ResourceNotFoundException();
+        }
+    }
 
     @GetMapping("{id}")
-    public CreatureResponse get(@PathVariable long id) {
+    public CreatureResponse get(@PathVariable long id, @RequestParam(defaultValue = "true") boolean compute) {
+        if (compute) creatureComputor.compute(id);
+
         return creatureService.findById(id)
                 .map(creatureResourceMapper::toResponse)
                 .map(response -> response.add(links.linkToItemResource(response)))
@@ -57,10 +77,9 @@ public class CreatureController {
     @GetMapping
     @SortValues(values = {"id"})
     public PagedModel<EntityModel<CreatureResponse>> search(CreatureQueryParams queryParams,
+                                                            @RequestParam(defaultValue = "true") boolean compute,
                                                             @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        //fixme because front call this endpoints twice to get the size. Front should only call it once and this condition should be removed
-        if(pageable.getPageSize() > 1)
-            captureComputor.compute();
+        if (compute) creatureComputor.compute();
 
         Page<CreatureResponse> responses = creatureService.search(creatureResourceMapper.toSearch(queryParams), pageable)
                 .map(creatureResourceMapper::toResponse)
@@ -69,12 +88,15 @@ public class CreatureController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable long id) {
-        //todo should return coins
+    public CreatureDeleteResponse delete(@PathVariable long id) {
         try {
-            creatureService.delete(id);
+            return CreatureDeleteResponse.builder().coins(creatureService.delete(id)).build();
         } catch (CreatureNotFoundException e) {
             throw new ResourceNotFoundException();
+        } catch (CreatureInUseException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("creatures.id").code(ValidationCode.CONFLICT.getCode())
+                            .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
         }
     }
 }

@@ -1,6 +1,7 @@
 package hrpg.server.capture.dao;
 
 import hrpg.server.common.dao.WithUser;
+import hrpg.server.creature.dao.CreatureInfo;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +24,9 @@ public class Capture extends WithUser {
     @Version
     private long version = 0;
 
-    private Long creatureId;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "creature_info_id")
+    private CreatureInfo creatureInfo;
 
     @Builder.Default
     @Column(nullable = false, updatable = false)

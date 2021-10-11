@@ -7,6 +7,8 @@ import {Creature} from '../shared/creature/creature.interface';
 import {CreatureService} from '../shared/creature/creature.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
+import {Pen} from '../pen/pen.interface';
+import {environment} from '../../environments/environment';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -17,9 +19,15 @@ import {CreatureDetailsDialogComponent} from '../shared/creature/details/creatur
   ]
 })
 export class BarnComponent implements OnInit {
+  maturityMax = environment.maturityMax;
+  maturityDivider = environment.maturityDivider;
+  energyDivider = environment.energyDivider;
+
   user: User;
   creatures: Creature[];
   creatureCount: number;
+  pen: Pen;
+  creaturesInPen: string[];
 
   sex: string;
 
@@ -40,6 +48,8 @@ export class BarnComponent implements OnInit {
     this.user = this.route.snapshot.data.user;
     this.creatures = this.route.snapshot.data.creatures;
     this.creatureCount = this.route.snapshot.data.creatureCount.totalElements;
+    this.pen = this.route.snapshot.data.pens[0];
+    this.creaturesInPen = this.pen.creatures.map(creature => creature.id);
   }
 
   toggleSexFilter(sex: string) {
@@ -49,14 +59,14 @@ export class BarnComponent implements OnInit {
 
   resetList() {
     this.page = 0;
-    this.creatureService.list(this.size, this.page, this.sex)
+    this.creatureService.list(this.size, this.page, false, this.sex)
       .subscribe((creatures: Creature[]) => {
         this.creatures = creatures;
       });
   }
 
   onScroll() {
-    this.creatureService.list(this.size, ++this.page, this.sex)
+    this.creatureService.list(this.size, ++this.page, false, this.sex)
       .subscribe((creatures: Creature[]) => {
         this.creatures.push(...creatures);
       });
@@ -64,21 +74,26 @@ export class BarnComponent implements OnInit {
 
   openDetails(creature: Creature) {
     this.dialog.open(CreatureDetailsDialogComponent, {
-      data: creature,
+      data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
+      position: {top: '100px'},
+      minWidth: '272px',
+      maxWidth: '90%',
       restoreFocus: false
-    });
-  }
-
-  delete(creature: Creature) {
-    this.creatureService.delete(creature).subscribe((resp: any) => {
-      this.creatureCount--;
-      this.creatures.splice(this.creatures.findIndex(i => i.id === creature.id), 1);
-      this.creatureService.list(1, this.creatures.length, this.sex)
-        .subscribe((creatures: Creature[]) => {
-          if (creatures && creatures.length > 0 && !this.creatures.find((i: Creature) => i.id === creatures[0].id)) {
-            this.creatures.push(...creatures);
-          }
-        });
+    }).afterClosed().subscribe({
+      next: resp => {
+        if (resp != null && resp.delete != null) {
+          this.creatureCount--;
+          this.creatures.splice(this.creatures.findIndex(
+            i => i.id.toString() === resp.delete.id.toString()), 1);
+          this.creatureService.list(1, this.creatures.length, false)
+            .subscribe((creatures: Creature[]) => {
+              if (creatures && creatures.length > 0 && !this.creatures.find(
+                (i: Creature) => i.id.toString() === creatures[0].id.toString())) {
+                this.creatures.push(...creatures);
+              }
+            });
+        }
+      }
     });
   }
 }

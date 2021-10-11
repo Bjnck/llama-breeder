@@ -23,7 +23,7 @@ public class Color {
     @Column(nullable = false, updatable = false)
     private String name;
     @Column(nullable = false, updatable = false)
-    private Integer generation;
+    private int generation;
     @Column(nullable = false)
     private String parentCode;
 }

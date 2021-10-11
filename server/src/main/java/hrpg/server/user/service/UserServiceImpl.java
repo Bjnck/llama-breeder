@@ -1,5 +1,7 @@
 package hrpg.server.user.service;
 
+import hrpg.server.pen.dao.Pen;
+import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
@@ -16,17 +18,21 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PenRepository penRepository;
     private final UserMapper userMapper;
     private final ParametersProperties parametersProperties;
 
     public UserServiceImpl(UserRepository userRepository,
+                           PenRepository penRepository,
                            UserMapper userMapper,
                            ParametersProperties parametersProperties) {
         this.userRepository = userRepository;
+        this.penRepository = penRepository;
         this.userMapper = userMapper;
         this.parametersProperties = parametersProperties;
     }
 
+    @Transactional
     @Override
     public UserDto create(@NotNull String registrationKey) {
         User user = User.builder().registrationKey(registrationKey).build();
@@ -35,7 +41,14 @@ public class UserServiceImpl implements UserService {
                 .coins(parametersProperties.getUser().getStartCoins())
                 .level(parametersProperties.getUser().getStartLevel())
                 .build());
-        return userMapper.toDto(userRepository.save(user));
+        UserDto userDto = userMapper.toDto(userRepository.save(user));
+
+        //todo test pen is created in tests
+        Pen pen = Pen.builder().build();
+        pen.setUserId(user.getId());
+        penRepository.save(pen);
+
+        return userDto;
     }
 
     @Override
@@ -61,6 +74,14 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.get();
         user.setName(name);
         return userMapper.toDto(user);
+    }
+
+    @Transactional
+    @Override
+    public void updateLevel(int level) {
+        User user = userRepository.get();
+        if (user.getDetails().getLevel() < level)
+            user.getDetails().setLevel(level);
     }
 
     @Transactional

@@ -5,7 +5,6 @@ import {Capture} from './capture.interface';
 import {CaptureService} from './capture.service';
 import {AuthService} from '../shared/auth/auth.service';
 import {HeaderService} from '../shared/header/header.service';
-import {CaptureCreature} from './capture-creature.interface';
 import {UserService} from '../shared/user/user.service';
 
 @Component({
@@ -18,7 +17,7 @@ import {UserService} from '../shared/user/user.service';
 
 export class CaptureComponent implements OnInit {
   user: User;
-  captureCreaturePairs: CaptureCreature[];
+  captures: Capture[];
 
   constructor(private headerService: HeaderService,
               private authService: AuthService,
@@ -30,26 +29,23 @@ export class CaptureComponent implements OnInit {
   ngOnInit() {
     this.headerService.showHeader('Wild Lands', false);
     this.user = this.route.snapshot.data.user;
-    this.captureCreaturePairs = this.route.snapshot.data.captures;
+    this.captures = this.route.snapshot.data.captures;
     // todo remove this when bait is managed by server
-    this.captureCreaturePairs.forEach(pair => pair.capture.bait = 0);
+    this.captures.forEach(capture => capture.bait = 0);
   }
 
   get activeCapture(): Capture {
-    return this.captureCreaturePairs
-      .find(pair => !pair.capture.creatureId)?.capture;
+    return this.captures.find(capture => !capture.sex);
   }
 
-  get history(): CaptureCreature[] {
-    return this.captureCreaturePairs
-      .filter(pair => pair.capture.creatureId)
-      .slice(0, 10);
+  get history(): Capture[] {
+    return this.captures.filter(capture => capture.sex).slice(0, 10);
   }
 
   onCaptureFinished() {
     this.captureService.listCaptures(11)
-      .subscribe(pairs => {
-        this.captureCreaturePairs = pairs;
+      .subscribe(captures => {
+        this.captures = captures;
 
         // update user level if tutorial ended
         if (this.user.level <= 0) {

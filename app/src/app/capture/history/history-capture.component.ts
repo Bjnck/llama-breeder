@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {CaptureCreature} from '../capture-creature.interface';
+import {Capture} from '../capture.interface';
 
 @Component({
   selector: 'app-history-capture',
@@ -7,7 +7,7 @@ import {CaptureCreature} from '../capture-creature.interface';
   styleUrls: ['./history-capture.component.sass']
 })
 export class HistoryCaptureComponent {
-  @Input() captureCreaturePairs: CaptureCreature[];
+  @Input() captures: Capture[];
 
   constructor() {
   }

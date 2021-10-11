@@ -4,6 +4,7 @@
 
   <div id="menu">
     <mat-grid-list cols="2" rowHeight="2:1" gutterSize="10px">
+
       <mat-grid-tile>
         <button mat-button class="menu-item capture" routerLink="capture">
           <mat-icon>grass</mat-icon>
@@ -12,9 +13,24 @@
       </mat-grid-tile>
 
       <mat-grid-tile>
+        <button mat-button class="menu-item pen" routerLink="pen">
+          <mat-icon>fence</mat-icon>
+          <br/>Pen
+        </button>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
         <button mat-button class="menu-item barn" routerLink="barn">
-          <mat-icon svgIcon="barn"></mat-icon>
+<!--          <mat-icon svgIcon="barn"></mat-icon>-->
+          <mat-icon>gite</mat-icon>
           <br/>Barn
+        </button>
+      </mat-grid-tile>
+
+      <mat-grid-tile>
+        <button mat-button class="menu-item llamadex" disabled>
+          <mat-icon>catching_pokemon</mat-icon>
+          <br/>Llamadex
         </button>
       </mat-grid-tile>
 
@@ -24,12 +40,14 @@
           <br/>Inventory
         </button>
       </mat-grid-tile>
+
       <mat-grid-tile>
         <button mat-button class="menu-item shop" routerLink="shop">
           <mat-icon>storefront</mat-icon>
           <br/>Shop
         </button>
       </mat-grid-tile>
+
     </mat-grid-list>
   </div>
 </div>

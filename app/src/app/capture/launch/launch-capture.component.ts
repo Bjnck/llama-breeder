@@ -1,16 +1,16 @@
-import {Component, EventEmitter, Inject, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Capture} from '../capture.interface';
 import {CaptureService} from '../capture.service';
 import {ActivatedRoute} from '@angular/router';
 import {NetCount} from './net-count.interface';
+import {TimerUtil} from '../../shared/timer/timer.util';
 
 @Component({
   selector: 'app-launch-capture',
   templateUrl: './launch-capture.component.html',
   styleUrls: ['./launch-capture.component.sass']
 })
-
-export class LaunchCaptureComponent implements OnInit {
+export class LaunchCaptureComponent implements OnInit, OnDestroy {
 
   active: Capture;
 
@@ -18,7 +18,7 @@ export class LaunchCaptureComponent implements OnInit {
   set activeCapture(capture: Capture) {
     this.active = capture;
     if (capture) {
-      this.maxCreatureReached = this.utc(new Date(capture.endTime)) < this.utc(new Date());
+      this.maxCreatureReached = TimerUtil.utc(new Date(capture.endTime)) < TimerUtil.utc(new Date());
     }
   }
 
@@ -38,17 +38,22 @@ export class LaunchCaptureComponent implements OnInit {
 
   ngOnInit() {
     this.netCount = this.route.snapshot.data.netCount;
-    this.setTimer(this.active);
+    this.setTimer();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
   }
 
   launch() {
     this.captureService.createCapture(this.quality)
       .subscribe(capture => {
-        this.setTimer(capture);
         // todo remove this when server manage bait
         capture.bait = 0;
 
         this.activeCapture = capture;
+
+        this.setTimer();
 
         if (this.quality === 1) {
           this.netCount.quality_1--;
@@ -62,28 +67,22 @@ export class LaunchCaptureComponent implements OnInit {
       });
   }
 
-  private setTimer(capture: Capture) {
-    if (capture && this.utc(new Date(capture.endTime)) >= this.utc(new Date())) {
-      this.timeLeft = (this.utc(new Date(capture.endTime)).getTime() - this.utc(new Date()).getTime());
+  private setTimer() {
+    if (this.active && TimerUtil.utc(new Date(this.active.endTime)) >= TimerUtil.utc(new Date())) {
+      this.timeLeft = TimerUtil.timeLeft(new Date(this.active.endTime));
       this.interval = setInterval(() => {
         if (this.timeLeft > 0) {
-          if (this.timeLeft > 100) {
-            this.timeLeft = this.timeLeft - 100;
-          } else {
-            this.timeLeft = 0;
-          }
+          this.timeLeft = TimerUtil.timeLeft(new Date(this.active.endTime));
+          // if (this.timeLeft > 100) {
+          //   this.timeLeft = this.timeLeft - 100;
+          // } else {
+          //   this.timeLeft = 0;
+          // }
         } else {
           this.finish();
         }
       }, 100);
     }
-  }
-
-  private utc(date: Date): Date {
-    const utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-      date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-
-    return new Date(utc);
   }
 
   finish() {

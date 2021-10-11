@@ -17,6 +17,7 @@ import {AccountModule} from './account/account.module';
 import {ShopModule} from './shop/shop.module';
 import {InventoryModule} from './inventory/inventory.module';
 import {BarnModule} from './barn/barn.module';
+import {PenModule} from './pen/pen.module';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {BarnModule} from './barn/barn.module';
     InventoryModule,
     CaptureModule,
     BarnModule,
+    PenModule,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,

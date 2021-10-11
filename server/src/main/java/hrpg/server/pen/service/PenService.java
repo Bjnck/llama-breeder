@@ -1,6 +1,5 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.creature.service.exception.MaxCreaturesException;
@@ -9,6 +8,7 @@ import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

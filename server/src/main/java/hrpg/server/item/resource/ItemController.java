@@ -1,15 +1,16 @@
 package hrpg.server.item.resource;
 
-import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationCode;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
+import hrpg.server.item.service.ItemComputor;
 import hrpg.server.item.service.ItemService;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.user.service.exception.InsufficientLevelException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,15 +41,18 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemResourceMapper itemResourceMapper;
+    private final ItemComputor itemComputor;
 
     public ItemController(EntityLinks entityLinks,
                           ItemService itemService,
                           ItemResourceMapper itemResourceMapper,
-                          PagedResourcesAssembler<ItemResponse> pagedResourcesAssembler) {
+                          PagedResourcesAssembler<ItemResponse> pagedResourcesAssembler,
+                          ItemComputor itemComputor) {
         this.links = entityLinks.forType(ItemResponse::getId);
         this.itemService = itemService;
         this.itemResourceMapper = itemResourceMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.itemComputor = itemComputor;
     }
 
     @PostMapping
@@ -72,7 +76,9 @@ public class ItemController {
     }
 
     @GetMapping("{id}")
-    public ItemResponse get(@PathVariable long id) {
+    public ItemResponse get(@PathVariable long id, @RequestParam(defaultValue = "true") boolean compute) {
+        if (compute) itemComputor.compute(id);
+
         return itemService.findById(id)
                 .map(itemResourceMapper::toResponse)
                 .map(response -> response.add(links.linkToItemResource(response)))
@@ -82,7 +88,10 @@ public class ItemController {
     @GetMapping
     @SortValues(values = {"id", "life"})
     public PagedModel<EntityModel<ItemResponse>> search(ItemQueryParams queryParams,
+                                                        @RequestParam(defaultValue = "true") boolean compute,
                                                         @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (compute) itemComputor.compute();
+
         Page<ItemResponse> responses = itemService.search(itemResourceMapper.toSearch(queryParams), pageable)
                 .map(itemResourceMapper::toResponse)
                 .map(response -> response.add(links.linkToItemResource(response)));

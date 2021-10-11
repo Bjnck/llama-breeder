@@ -1,6 +1,6 @@
 parameters:
   user:
-    start-coins: 100
+    start-coins: 50
     start-level: 4
   items:
     max: 2

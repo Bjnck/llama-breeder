@@ -22,7 +22,7 @@
   </div>
 
 
-  <div class="no-items-message" *ngIf="!creatures || creatures.length === 0">No llama in the barn</div>
+  <div class="no-creatures-message" *ngIf="!creatures || creatures.length === 0">No llamas in the barn</div>
 
   <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
        infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
@@ -31,6 +31,7 @@
 
       <div *ngFor="let creature of creatures">
         <div class="creature mat-elevation-z1">
+
           <div class="details">
             <div class="image">
               <app-llama [color1]="creature.colors.color1.code"
@@ -40,58 +41,58 @@
 
             <div class="info">
               <div class="line1">
-                <div class="sex-icon">
+                <div class="sex-icon-barn">
                   <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
                   <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
                 </div>
+
                 <div class="name">
-                  <!--todo remove default when creature name use default in db-->
-                  {{creature.name ? creature.name : 'Llama'}}
+                  {{creature.name}}
                 </div>
-                <div *ngIf="creature.wild" class="status-icon wild-icon">
-                  <mat-icon>grass</mat-icon>
+
+                <div class="status">
+                  <div class="status-icon-barn wild-icon" *ngIf="creature.wild">
+                    <mat-icon>grass</mat-icon>
+                  </div>
+                  <div class="status-icon-barn baby-icon" *ngIf="creature.statistics.maturity < maturityMax">
+                    <mat-icon svgIcon="baby"></mat-icon>
+                  </div>
+                  <div class="status-icon-barn pregnant-icon" *ngIf="creature.pregnant">
+                    <mat-icon svgIcon="pregnant"></mat-icon>
+                  </div>
+                  <div class="status-icon-barn pen-icon" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
+                    <mat-icon>fence</mat-icon>
+                  </div>
                 </div>
-                <!--todo use maturity to show-->
-                <div class="status-icon baby-icon">
-                  <mat-icon svgIcon="baby"></mat-icon>
-                </div>
-                <div *ngIf="creature.pregnant" class="status-icon pregnant-icon">
-                  <mat-icon svgIcon="pregnant"></mat-icon>
-                </div>
-                <!--todo display if in a pen-->
-<!--                <div class="status-icon pen-icon">-->
-<!--                  <mat-icon>fence</mat-icon>-->
-<!--                </div>-->
+
               </div>
 
               <div class="line2">
-                <!--todo use statistics to show-->
-                <div class="energy">
+
+                <div class="energy" *ngIf="creature.statistics.maturity >= maturityMax">
                   <div class="stat-icon">
                     <mat-icon>bolt</mat-icon>
                   </div>
-                  <div class="stat-value">100</div>
-                </div>
-                <div class="thirst">
-                  <div class="stat-icon">
-                    <mat-icon>local_drink</mat-icon>
+                  <div class="stat-value">
+                    {{creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1}}
                   </div>
-                  <div class="stat-value">0</div>
                 </div>
-                <div class="hunger">
+                <div class="maturity" *ngIf="creature.statistics.maturity < maturityMax">
                   <div class="stat-icon">
-                    <mat-icon svgIcon="hay"></mat-icon>
+                    <mat-icon svgIcon="baby"></mat-icon>
                   </div>
-                  <div class="stat-value">0</div>
+                  <div class="stat-value">
+                    {{creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1}}
+                  </div>
                 </div>
-                <div class="love">
-                  <div class="stat-icon">
-                    <mat-icon>favorite</mat-icon>
-                  </div>
-                  <div class="stat-value">0</div>
+
+                <div class="genes">
+                  <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+                  <span *ngIf="creature.genes.gene2">
+                    -<app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+                  </span>
                 </div>
               </div>
-
 
             </div>
           </div>

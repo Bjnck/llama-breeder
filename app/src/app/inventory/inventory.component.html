@@ -64,12 +64,28 @@
             </div>
           </div>
           <div class="button">
-            <button class="buttonSpace" mat-stroked-button disabled>
+            <button class="buttonSpace" mat-stroked-button [matMenuTriggerFor]="menu_pen_add"
+                    *ngIf="(itemsInPen.indexOf(item.id) === -1) && item.code.toLowerCase() !== 'net'">
               <mat-icon>fence</mat-icon>
             </button>
-            <button mat-stroked-button (click)="onDelete(item)">
+            <mat-menu #menu_pen_add="matMenu">
+              <button mat-menu-item (click)="addToPen(item)" [disabled]="pen.items.length >= pen.size">
+                Add to pen ({{pen.items.length}}/{{pen.size}})
+              </button>
+            </mat-menu>
+
+            <button class="buttonSpace button-in-pen" mat-flat-button (click)="removeFromPen(item)"
+                    *ngIf="(itemsInPen.indexOf(item.id) > -1)  && item.code.toLowerCase() !== 'net'">
+              <mat-icon>fence</mat-icon>
+            </button>
+
+            <button mat-stroked-button [matMenuTriggerFor]="menu_delete"
+                    [disabled]="itemsInPen.indexOf(item.id) > -1">
               <mat-icon>delete</mat-icon>
             </button>
+            <mat-menu #menu_delete="matMenu">
+              <button mat-menu-item (click)="delete(item)">Delete</button>
+            </mat-menu>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface CaptureRepository extends WithUserRepository<Capture, Long> {
-    long countByCreatureIdIsNull();
+    long countByCreatureInfoIsNull();
 
-    List<Capture> findByCreatureIdIsNullAndEndTimeLessThanEqual(ZonedDateTime endTime);
+    List<Capture> findByCreatureInfoIsNullAndEndTimeLessThanEqual(ZonedDateTime endTime);
 }

@@ -8,7 +8,9 @@ import java.util.Optional;
 
 @Repository
 public interface ColorRepository extends CrudRepository<Color, Integer> {
-    Optional<Color> findByCode(String parentCode);
+    Optional<Color> findByCode(String code);
+
+    Optional<Color> findByParentCode(String parentCode);
 
     List<Color> findAllByGeneration(int generation);
 

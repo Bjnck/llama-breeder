@@ -30,11 +30,12 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
         Gene gene = geneRepository.findByCode(hrpg.server.creature.type.Gene.FERTILE).orElseThrow();
         Creature creature = givenCreature(color, gene);
 
+        //todo check statitisc default values
         //get creature
         get(CREATURE_URL + "/" + creature.getId())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(creature.getId().intValue())))
-                .andExpect(jsonPath("$.sex", equalTo(creature.getSex().name())))
+                .andExpect(jsonPath("$.sex", equalTo(creature.getInfo().getSex().name())))
                 .andExpect(jsonPath("$.generation", equalTo(creature.getGeneration())))
                 .andExpect(jsonPath("$.name", equalTo(creature.getName())))
                 .andExpect(jsonPath("$.originalUser", equalTo(userDto.getName())))
@@ -60,9 +61,11 @@ class CreatureEndpointIT extends AbstractIntegrationTest {
         Creature creature = Creature.builder()
                 .originalUserId(userDto.getId())
                 .createDate(LocalDate.now())
-                .sex(Sex.F)
-                .color1(color)
-                .gene1(gene)
+                .info(CreatureInfo.builder()
+                        .sex(Sex.F)
+                        .color1(color)
+                        .gene1(gene)
+                        .build())
                 .build();
         creature.setUserId(userDto.getId());
         creature.setDetails(CreatureDetails.builder()

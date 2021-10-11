@@ -20,7 +20,6 @@ public class CaptureResponse extends RepresentationModel<CaptureResponse> {
     private int quality;
     private Integer bait;
 
-    private Long creatureId;
     private Sex sex;
     private Color color;
     private String gene;

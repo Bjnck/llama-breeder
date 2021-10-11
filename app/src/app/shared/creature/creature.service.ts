@@ -12,20 +12,18 @@ export class CreatureService {
   constructor(private restangular: Restangular) {
   }
 
-  get(id: number): Observable<Creature> {
-    return this.restangular.one('creatures', id).get();
+  get(id: string, compute: boolean = true): Observable<Creature> {
+    return this.restangular.one('creatures', id).get({compute});
   }
 
-  count(): Observable<Page> {
-    return this.baseRest.customGET('', {size: 1});
+  count(compute: boolean = true): Observable<Page> {
+    return this.baseRest.customGET('', {size: 1, compute});
   }
 
-  list(size: number, page: number, sex?: string): Observable<Creature[]> {
-    let param;
-    if (sex) {
-      param = {size, page, sex, sort: 'id,asc'};
-    } else {
-      param = {size, page, sort: 'id,asc'};
+  list(size: number, page: number, compute: boolean = true, sex?: string): Observable<Creature[]> {
+    const param: any = {size, page, sort: 'id,asc', compute};
+    if (sex != null) {
+      param.sex = sex;
     }
     return this.baseRest.getList(param);
   }

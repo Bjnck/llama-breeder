@@ -12,15 +12,16 @@ export class ItemService {
   constructor(private restangular: Restangular) {
   }
 
+  get(id: string, compute: boolean = true): Observable<Item> {
+    return this.restangular.one('items', id).get({compute});
+  }
+
   add(code: string, quality: number): Observable<any> {
     return this.baseRest.post({code, quality});
   }
 
-  count(): Observable<Page>;
-  count(code: string, quality: number): Observable<Page>;
-
-  count(code?: string, quality?: number): Observable<Page> {
-    const params: any = {size: 1};
+  count(code?: string, quality?: number, compute: boolean = true): Observable<Page> {
+    const params: any = {size: 1, compute};
     if (code) {
       params.code = code;
     }
@@ -31,12 +32,12 @@ export class ItemService {
     return this.baseRest.customGET('', params);
   }
 
-  list(size: number, page: number, code: string): Observable<Item[]> {
+  list(size: number, page: number, code: string, compute: boolean = true): Observable<Item[]> {
     let param;
     if (code) {
-      param = {size, page, code, sort: 'id,asc'};
+      param = {size, page, code, sort: 'id,asc', compute};
     } else {
-      param = {size, page, sort: 'id,asc'};
+      param = {size, page, sort: 'id,asc', compute};
     }
     return this.baseRest.getList(param);
   }

@@ -1,0 +1,40 @@
+<div class="pen-items">
+
+  <div class="no-items-message" *ngIf="pen.items.length === 0">
+    <div>No items in the pen</div>
+    <div><button mat-raised-button class="add-button" routerLink="/inventory">Add items</button></div>
+  </div>
+
+  <div *ngIf="pen.items.length > 0">
+  <mat-grid-list cols="2" rowHeight="2:1" gutterSize="10px">
+    <mat-grid-tile *ngFor="let item of items">
+      <button mat-raised-button class="item-button" [ngClass]="item.code.toLowerCase()" (click)="onActivation(item)"
+              *ngIf="item.life > 0">
+        <mat-icon *ngIf="item.code.toLowerCase()==='thirst'">local_drink</mat-icon>
+        <mat-icon *ngIf="item.code.toLowerCase()==='hunger'" svgIcon="hay"></mat-icon>
+        <mat-icon *ngIf="item.code.toLowerCase()==='love'">favorite</mat-icon>
+        <br/>
+        <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
+        (lvl.{{item.quality}})
+        <br/>{{item.life}}/100
+      </button>
+
+      <button mat-raised-button class="item-button delete" *ngIf="item.life <= 0" (click)="delete(item)"
+              [disableRipple]="true">
+        <ng-container>
+          <mat-icon *ngIf="item.code.toLowerCase()==='thirst'">local_drink</mat-icon>
+          <mat-icon *ngIf="item.code.toLowerCase()==='hunger'" svgIcon="hay"></mat-icon>
+          <mat-icon *ngIf="item.code.toLowerCase()==='love'">favorite</mat-icon>
+          <br/>
+          <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
+          (lvl.{{item.quality}})
+          <br/>Click to delete
+        </ng-container>
+      </button>
+    </mat-grid-tile>
+  </mat-grid-list>
+  </div>
+
+</div>
+
+

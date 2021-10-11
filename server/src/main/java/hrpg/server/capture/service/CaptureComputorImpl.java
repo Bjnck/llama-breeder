@@ -1,6 +1,9 @@
 package hrpg.server.capture.service;
 
 import hrpg.server.capture.dao.CaptureRepository;
+import hrpg.server.creature.dao.ColorRepository;
+import hrpg.server.creature.dao.CreatureInfo;
+import hrpg.server.creature.dao.GeneRepository;
 import hrpg.server.creature.service.CreatureDto;
 import hrpg.server.creature.service.CreatureFactory;
 import hrpg.server.creature.service.CreatureService;
@@ -19,15 +22,21 @@ public class CaptureComputorImpl implements CaptureComputor {
     private final CreatureFactory creatureFactory;
     private final UserRepository userRepository;
     private final CreatureService creatureService;
+    private final ColorRepository colorRepository;
+    private final GeneRepository geneRepository;
 
     public CaptureComputorImpl(CaptureRepository captureRepository,
                                CreatureFactory creatureFactory,
                                UserRepository userRepository,
-                               CreatureService creatureService) {
+                               CreatureService creatureService,
+                               ColorRepository colorRepository,
+                               GeneRepository geneRepository) {
         this.captureRepository = captureRepository;
         this.creatureFactory = creatureFactory;
         this.userRepository = userRepository;
         this.creatureService = creatureService;
+        this.colorRepository = colorRepository;
+        this.geneRepository = geneRepository;
     }
 
     @Transactional
@@ -40,15 +49,19 @@ public class CaptureComputorImpl implements CaptureComputor {
     @Override
     public void compute(Long id) {
         //find ended capture without creature (can get more than one result if capture created at the same time as another ended)
-        captureRepository.findByCreatureIdIsNullAndEndTimeLessThanEqual(ZonedDateTime.now()).forEach(capture -> {
+        captureRepository.findByCreatureInfoIsNullAndEndTimeLessThanEqual(ZonedDateTime.now()).forEach(capture -> {
             if (id == null || id.equals(capture.getId())) {
                 User user = userRepository.get();
 
-                //generate new creature and add to to capture
+                //generate new creature and add info to capture
                 try {
                     CreatureDto creatureDto = creatureFactory.generateForCapture(
                             user.getDetails().getLevel(), capture.getQuality(), capture.getBaitGeneration(), capture.getEndTime().toLocalDate());
-                    capture.setCreatureId(creatureDto.getId());
+                    capture.setCreatureInfo(CreatureInfo.builder()
+                            .sex(creatureDto.getInfo().getSex())
+                            .color1(colorRepository.findByCode(creatureDto.getInfo().getColor1().getCode()).orElseThrow())
+                            .gene1(geneRepository.findByCode(creatureDto.getInfo().getGene1()).orElse(null))
+                            .build());
                 } catch (MaxCreaturesException e) {
                     //todo notify user
                 }

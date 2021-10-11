@@ -20,6 +20,9 @@ import {CreatureDetailsDialogComponent} from './creature/details/creature-detail
 import {MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@angular/forms';
 import {CreatureGeneComponent} from './creature/creature-gene.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {RomanPipe} from "./creature/details/roman.pipe";
+import {MatDividerModule} from "@angular/material/divider";
 
 @NgModule({
   declarations: [
@@ -28,17 +31,20 @@ import {CreatureGeneComponent} from './creature/creature-gene.component';
     ItemIconComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
-    CreatureGeneComponent
+    CreatureGeneComponent,
+    RomanPipe
   ],
-    imports: [
-        BrowserModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        RouterModule,
-        MatDialogModule,
-        FormsModule
-    ],
+  imports: [
+    BrowserModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterModule,
+    MatDialogModule,
+    FormsModule,
+    MatMenuModule,
+    MatDividerModule
+  ],
   exports: [
     HeaderComponent,
     ItemNameComponent,

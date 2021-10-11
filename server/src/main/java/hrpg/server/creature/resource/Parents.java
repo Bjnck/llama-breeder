@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Parents {
-    private Long parentId1;
-    private Long parentId2;
+    private Parent parent1;
+    private Parent parent2;
 }

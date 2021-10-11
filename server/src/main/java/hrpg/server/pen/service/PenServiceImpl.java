@@ -1,12 +1,12 @@
 package hrpg.server.pen.service;
 
-import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.properties.PensProperties;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.service.CreatureDto;
 import hrpg.server.creature.service.CreatureService;
+import hrpg.server.creature.service.CreatureUtil;
 import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
 import hrpg.server.creature.service.exception.MaxCreaturesException;
@@ -21,16 +21,15 @@ import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
 import hrpg.server.user.service.UserService;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Service
 public class PenServiceImpl implements PenService {
@@ -59,7 +58,7 @@ public class PenServiceImpl implements PenService {
         this.itemRepository = itemRepository;
         this.userService = userService;
         this.creatureService = creatureService;
-        pensProperties = parametersProperties.getPens();
+        this.pensProperties = parametersProperties.getPens();
     }
 
     @Override
@@ -120,6 +119,8 @@ public class PenServiceImpl implements PenService {
         for (Long itemId : itemIds) {
             Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
             if (penRepository.existsByItemsContainingAndIdNot(item, pen.getId())) throw new ItemInUseException(itemId);
+            //reset penActivationTime to added item
+            item.setPenActivationTime(ZonedDateTime.now());
             items.add(item);
         }
         pen.setItems(items);
@@ -138,53 +139,60 @@ public class PenServiceImpl implements PenService {
                     .orElseThrow(() -> new CreatureNotFoundException(creatureId));
             if (penRepository.existsByCreaturesContainingAndIdNot(creature, pen.getId()))
                 throw new CreatureInUseException(creatureId);
+            //reset penActivationTime to added creature
+            creature.getDetails().setPenActivationTime(ZonedDateTime.now());
             creatures.add(creature);
         }
+
+        //reset energyUpdateTime to removed creature
+        final Collection<Long> finalCreatureIds = Collections.unmodifiableCollection(creaturesIds);
+        pen.getCreatures().stream()
+                .filter(creature -> !finalCreatureIds.contains(creature.getId()))
+                .forEach(creature -> creature.getDetails().setEnergyUpdateTime(ZonedDateTime.now()));
+
+        //update creatures
         pen.setCreatures(creatures);
     }
 
-    //todo penCalculator
-    //add last check time on pen
-    //for each passed minutes activate all items
-
-    @Transactional
+    @Transactional(rollbackFor = {
+            PenNotFoundException.class,
+            ItemNotFoundException.class
+    })
     @Override
-    public PenActivationDto activateItem(long id, long itemId) throws PenNotFoundException, ItemNotFoundException {
+    public PenActivationDto activateItem(long id, long itemId)
+            throws PenNotFoundException, ItemNotFoundException {
         Pen pen = penRepository.findById(id).orElseThrow(PenNotFoundException::new);
         if (pen.getItems().stream().noneMatch(item -> item.getId().equals(itemId)))
             throw new ItemNotFoundException();
         Item item = itemRepository.findById(itemId).orElseThrow(ItemNotFoundException::new);
 
         Set<CreatureDto> creatures = new HashSet<>();
+
         for (Creature creature : pen.getCreatures()) {
-            //item hits creature
-            if (new Random().nextInt(100) < pensProperties.getItemActivationChance()) {
-                //remove 1 life and delete if life ended
-                item.setLife(item.getLife() - 1);
-                if (item.getLife() <= 0)
-                    itemRepository.delete(item);
-                //hit creature
-                try {
-                    creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
-                } catch (CreatureNotFoundException e) {
-                    throw new RuntimeException(e);
+            //only activate item if it is still alive and hittable
+            if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode())) {
+                //item hits creature
+                if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
+                    //remove 1 life and delete if life ended
+                    item.setLife(item.getLife() - 1);
+                    //hit creature
+                    try {
+                        creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
+                    } catch (CreatureNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-
-
-
             }
         }
-
-        //todo check stats and breed if
-//        for (CreatureDto creature1 : creatures) {
-//            for (CreatureDto creature2 : creatures) {
-//                if(CreatureUtil.isBreedable(creature1.getMaturity() && creature2.getLove()))
-//            }
-//        }
 
         return PenActivationDto.builder()
                 .item(itemMapper.toDto(item))
                 .creatures(creatures)
                 .build();
+    }
+
+    private int getActivationChance(int creatureGeneration) {
+        //activation chance are lower by generation
+        return pensProperties.getItemActivationChance() / creatureGeneration;
     }
 }

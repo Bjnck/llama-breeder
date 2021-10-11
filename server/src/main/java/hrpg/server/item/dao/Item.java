@@ -5,6 +5,7 @@ import hrpg.server.item.type.ItemCode;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -32,4 +33,6 @@ public class Item extends WithUser {
     @Builder.Default
     @Column(nullable = false)
     private Integer life = 100;
+
+    private ZonedDateTime penActivationTime;
 }

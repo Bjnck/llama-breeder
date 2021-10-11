@@ -17,6 +17,9 @@ import {NetCountResolve} from './capture/launch/net-count.resolve';
 import {BarnComponent} from './barn/barn.component';
 import {CreatureListResolve} from './barn/creature-list.resolve';
 import {CreatureCountResolve} from './barn/creature-count.resolve';
+import {PenComponent} from './pen/pen.component';
+import {PenListResolve} from './pen/pen-list.resolve';
+import {PenListContentResolve} from './pen/pen-list-content.resolve';
 
 
 const routes: Routes = [
@@ -56,7 +59,8 @@ const routes: Routes = [
     resolve: {
       user: UserResolve,
       items: ItemListResolve,
-      itemCount: ItemCountResolve
+      itemCount: ItemCountResolve,
+      pens: PenListResolve
     },
     canActivate: [AuthGuard]
   },
@@ -76,7 +80,17 @@ const routes: Routes = [
     resolve: {
       user: UserResolve,
       creatures: CreatureListResolve,
-      creatureCount: CreatureCountResolve
+      creatureCount: CreatureCountResolve,
+      pens: PenListResolve
+    },
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'pen',
+    component: PenComponent,
+    resolve: {
+      user: UserResolve,
+      pens: PenListContentResolve
     },
     canActivate: [AuthGuard]
   }

@@ -7,13 +7,11 @@ import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {ItemDeleteDialogComponent} from './item-delete.dialog';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
-    InventoryComponent,
-    ItemDeleteDialogComponent
+    InventoryComponent
   ],
   imports: [
     SharedModule,
@@ -21,7 +19,7 @@ import {MatDialogModule} from '@angular/material/dialog';
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatDialogModule
+    MatMenuModule
   ],
   exports: [
   ],

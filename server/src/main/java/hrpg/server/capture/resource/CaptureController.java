@@ -10,7 +10,6 @@ import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
-import hrpg.server.creature.resource.CreatureController;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -28,8 +27,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(path = "captures")
@@ -97,9 +94,6 @@ public class CaptureController {
     private CaptureResponse toResponse(@NotNull CaptureDto captureDto) {
         CaptureResponse response = captureResourceMapper.toResponse(captureDto);
         response.add(links.linkToItemResource(response));
-
-        if(response.getCreatureId() != null)
-            response.add(linkTo(CreatureController.class).slash(response.getCreatureId()).withRel("creature"));
 
         return response;
     }

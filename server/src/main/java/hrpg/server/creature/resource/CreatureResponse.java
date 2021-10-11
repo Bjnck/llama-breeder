@@ -28,6 +28,7 @@ public class CreatureResponse extends RepresentationModel<CreatureResponse> {
 
     private boolean wild;
 
+    private int breedingCount;
     private boolean pregnant;
     private LocalDateTime pregnancyStartTime;
     private LocalDateTime pregnancyEndTime;

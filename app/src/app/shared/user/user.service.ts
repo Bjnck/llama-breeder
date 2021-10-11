@@ -1,8 +1,8 @@
-import {EventEmitter, Injectable, Output} from "@angular/core";
-import {User} from "./user.interface";
-import {Restangular} from "ngx-restangular";
-import {map} from "rxjs/operators";
-import {Observable} from "rxjs";
+import {EventEmitter, Injectable, Output} from '@angular/core';
+import {User} from './user.interface';
+import {Restangular} from 'ngx-restangular';
+import {map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class UserService {

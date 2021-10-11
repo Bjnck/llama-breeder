@@ -2,12 +2,15 @@ package hrpg.server.creature.service;
 
 import hrpg.server.common.properties.CreaturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
+import hrpg.server.common.util.DurationUtil;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.dao.CreatureSpecification;
+import hrpg.server.creature.service.exception.CreatureInUseException;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
-import hrpg.server.creature.type.Sex;
+import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.item.type.ItemCode;
+import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +18,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static hrpg.server.creature.type.CreatureConstant.*;
 
 @Service
 public class CreatureServiceImpl implements CreatureService {
@@ -25,15 +34,29 @@ public class CreatureServiceImpl implements CreatureService {
     private final CreatureMapper creatureMapper;
     private final CreaturesProperties creaturesProperties;
     private final UserService userService;
+    private final CreatureFactory creatureFactory;
+    private final PenRepository penRepository;
 
     public CreatureServiceImpl(CreatureRepository creatureRepository,
                                CreatureMapper creatureMapper,
                                ParametersProperties parametersProperties,
-                               UserService userService) {
+                               UserService userService,
+                               CreatureFactory creatureFactory,
+                               PenRepository penRepository) {
         this.creatureRepository = creatureRepository;
         this.creatureMapper = creatureMapper;
         this.creaturesProperties = parametersProperties.getCreatures();
         this.userService = userService;
+        this.creatureFactory = creatureFactory;
+        this.penRepository = penRepository;
+    }
+
+    @Transactional(rollbackFor = CreatureNotFoundException.class)
+    @Override
+    public CreatureDto update(long id, @NotNull CreatureDto creatureDto) throws CreatureNotFoundException {
+        Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
+        creature.setName(creatureDto.getName());
+        return creatureMapper.toDto(creature, userService);
     }
 
     @Override
@@ -52,90 +75,125 @@ public class CreatureServiceImpl implements CreatureService {
                 .map(creature -> creatureMapper.toDto(creature, userService));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {
+            CreatureNotFoundException.class,
+            CreatureInUseException.class
+    })
     @Override
-    public int delete(long id) throws CreatureNotFoundException {
-        //todo smart delete: remove details and remove full only if not in use
-        // clean child/parent
-        Creature creature = getCreature(id);
+    public int delete(long id) throws CreatureNotFoundException, CreatureInUseException {
+        Creature creature = creatureRepository.findById(id).orElseThrow(() -> new CreatureNotFoundException(id));
+        if (penRepository.existsByCreaturesContaining(creature)) throw new CreatureInUseException(creature.getId());
 
         //sell creature
-        int price = getPrice(creature);
+        int price;
+        if (creature.getDetails().isWild() || creature.getInfo().getColor2() == null) price = 0;
+        else price = creaturesProperties.getPrice(creature.getGeneration());
         userService.addCoins(price);
 
         //delete creature
         creatureRepository.delete(creature);
+
         return price;
     }
 
-    private int getPrice(Creature creature) {
-        if (!creature.getDetails().isWild())
-            return creaturesProperties.getPrice().get("gene-" + creature.getGeneration());
-        return 0;
-    }
-
-    //todo service should check if statistics reach a goal and manage reproduction
     @Transactional
     @Override
     public CreatureDto hit(long id, @NotNull ItemCode itemCode, int itemQuality) throws CreatureNotFoundException {
-        Creature creature = getCreature(id);
-        //check creature has energy
-        if (creature.getDetails().getEnergy() > 0) {
-            //remove 1 energy
-            creature.getDetails().setEnergy(creature.getDetails().getEnergy() - 1);
+        Creature creature = creatureRepository.findById(id).orElseThrow(() -> new CreatureNotFoundException(id));
+
+        if (CreatureUtil.isHittable(creature, itemCode)) {
+            //remove energy
+            creature.getDetails().setEnergy(creature.getDetails().getEnergy() - ENERGY_DIVIDER);
             //check item quality is valid for creature generation
-            if (creature.getGeneration() <= itemQuality) {
+            if (itemQuality >= creature.getGeneration()) {
                 //increase stats
-                int stat;
                 switch (itemCode) {
                     case HUNGER:
-                        stat = creature.getDetails().getHunger();
-                        creature.getDetails().setHunger(increaseStat(stat));
+                        creature.getDetails().setHunger(increaseStat(creature.getDetails().getHunger(),
+                                increaseLevel(creature.getGeneration(), itemQuality)));
                         break;
                     case THIRST:
-                        stat = creature.getDetails().getThirst();
-                        creature.getDetails().setThirst(increaseStat(stat));
+                        creature.getDetails().setThirst(increaseStat(creature.getDetails().getThirst(),
+                                increaseLevel(creature.getGeneration(), itemQuality)));
                         break;
                     case LOVE:
-                        if (creature.getDetails().getHunger() >= 75 && creature.getDetails().getThirst() >= 75 &&
-                                creature.getDetails().getMaturity() >= 100) {
-                            stat = creature.getDetails().getLove();
-                            creature.getDetails().setLove(increaseStat(stat));
-                        }
+                        //must not increase more than hunger/thirst available
+                        int increaseLevel = Math.min(
+                                Math.min(
+                                        increaseLevel(creature.getGeneration(), itemQuality),
+                                        creature.getDetails().getHunger() - (STATS_LOVE_REQUIREMENT - 1)),
+                                creature.getDetails().getThirst() - (STATS_LOVE_REQUIREMENT - 1));
+
+                        creature.getDetails().setHunger(creature.getDetails().getHunger() - increaseLevel);
+                        creature.getDetails().setThirst(creature.getDetails().getThirst() - increaseLevel);
+                        creature.getDetails().setLove(increaseStat(creature.getDetails().getLove(), increaseLevel));
                         break;
                 }
             }
         }
 
-
         return creatureMapper.toDto(creature, userService);
     }
 
-    private int increaseStat(int stat) {
-        return stat < 100 ? stat + 1 : stat;
+    private int increaseLevel(int generation, int itemQuality) {
+        //max 3 itemQuality above generation effectiveness
+        return creaturesProperties.getStatsIncrement(generation) + Math.max(0, Math.min(3, itemQuality - generation));
     }
 
-    @Transactional
+    private int increaseStat(int stat, int increaseLevel) {
+        return Math.min(stat + increaseLevel, STATS_MAX);
+    }
+
+    //todo send to computor
+    @Transactional(rollbackFor = CreatureNotFoundException.class)
     @Override
-    public boolean breed(long id1, long id2) throws CreatureNotFoundException {
-        Creature creature1 = getCreature(id1);
-        Creature creature2 = getCreature(id2);
+    public void calculateEnergy(List<Long> ids) throws CreatureNotFoundException {
+        for (long id : ids) {
+            Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
 
-        if (id1 != id2 && !creature1.getSex().equals(creature2.getSex()) &&
-                CreatureUtil.isBreedable(creature1.getDetails().getMaturity(), creature1.getDetails().getLove()) &&
-                CreatureUtil.isBreedable(creature2.getDetails().getMaturity(), creature2.getDetails().getLove())) {
-            creature1.getDetails().setLove(0);
-            creature2.getDetails().setLove(0);
-
-            Creature female = creature1.getSex().equals(Sex.F) ? creature1 : creature2;
-            female.getDetails().setPregnant(true);
-            female.getDetails().setPregnancyStartTime(LocalDateTime.now());
-            return true;
+            long duration = DurationUtil.getDurationDividedBy(
+                    creature.getDetails().getEnergyUpdateTime(),
+                    ZonedDateTime.now(),
+                    creaturesProperties.getEnergyTimeValue(),
+                    creaturesProperties.getEnergyTimeUnit());
+            long energyToAdd = duration * (creaturesProperties.getEnergyIncrement(creature.getGeneration()));
+            if (energyToAdd > 0) {
+                long energy = creature.getDetails().getEnergy() + energyToAdd;
+                //add the exact amount of time calculated to not loose started minute
+                creature.getDetails().setEnergyUpdateTime(creature.getDetails().getEnergyUpdateTime()
+                        .plus(duration * creaturesProperties.getEnergyTimeValue(),
+                                creaturesProperties.getEnergyTimeUnit()));
+                creature.getDetails().setEnergy(Math.min(ENERGY_MAX, ((Long) energy).intValue()));
+            }
         }
-        return false;
     }
 
-    private Creature getCreature(long id) throws CreatureNotFoundException {
-        return creatureRepository.findById(id).orElseThrow(() -> new CreatureNotFoundException(id));
+    //todo send to computor
+    @Transactional(rollbackFor = CreatureNotFoundException.class)
+    @Override
+    public List<CreatureDto> calculateBirth(List<Long> ids) throws CreatureNotFoundException {
+        List<CreatureDto> babies = new ArrayList<>();
+
+        for (long id : ids) {
+            Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
+            if (creature.getDetails().getPregnancyEndTime().isBefore(ZonedDateTime.now()))
+                babies.addAll(getBabies(creature));
+        }
+
+        //update user level if new generation discovered
+        if (!babies.isEmpty()) {
+            int maxGen = Collections.max(babies.stream().map(CreatureDto::getGeneration).collect(Collectors.toList()));
+            userService.updateLevel(maxGen);
+        }
+
+        return babies;
+    }
+
+    private List<CreatureDto> getBabies(Creature creature) throws CreatureNotFoundException {
+        try {
+            return creatureFactory.generateForBirth(creature.getId());
+        } catch (MaxCreaturesException e) {
+            return Collections.emptyList();
+        }
     }
 }

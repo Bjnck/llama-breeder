@@ -1,6 +1,7 @@
 package hrpg.server.user.service;
 
 import hrpg.server.user.service.exception.InsufficientCoinsException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -15,6 +16,8 @@ public interface UserService {
     UserDto get();
 
     UserDto updateName(String name);
+
+    void updateLevel(int level);
 
     void addCoins(int coins);
 

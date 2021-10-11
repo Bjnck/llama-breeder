@@ -1,35 +1,33 @@
-<div *ngFor="let pair of captureCreaturePairs" class="details mat-elevation-z1">
+<div *ngFor="let capture of captures" class="details mat-elevation-z1">
 
   <div class="creature-details">
-    <app-llama [color1]="pair.creature.colors.color1.code"
-               [color2]="pair.creature.colors.color2 ? pair.creature.colors.color2.code : pair.creature.colors.color1.code">
-    </app-llama>
+    <app-llama [color1]="capture.color.code" [color2]="capture.color.code"></app-llama>
 
     <div>
-      <div class="sex-icon">
-        <mat-icon *ngIf="pair.creature.sex === 'M'" class="male">male</mat-icon>
-        <mat-icon *ngIf="pair.creature.sex === 'F'" class="female">female</mat-icon>
+      <div class="sex-icon-capture">
+        <mat-icon *ngIf="capture.sex === 'M'" class="male">male</mat-icon>
+        <mat-icon *ngIf="capture.sex === 'F'" class="female">female</mat-icon>
       </div>
       <div class="gene">
-        <app-creature-gene code="{{pair.creature.genes.gene1}}"></app-creature-gene>
+        <app-creature-gene code="{{capture.gene}}"></app-creature-gene>
       </div>
     </div>
   </div>
 
   <div class="capture-details">
-    <div>{{pair.capture.endTime | date:'MMMM dd, HH:mm'}}</div>
+    <div>{{capture.endTime | date:'MMMM dd, HH:mm'}}</div>
     <div class="capture-items">
       <div class="item-net">
-        <div *ngIf="pair.capture.quality > 0">
+        <div *ngIf="capture.quality > 0">
           <mat-icon svgIcon="net"></mat-icon>
         </div>
-        <app-item-name code="net" [quality]="pair.capture.quality" *ngIf="pair.capture.quality > 0"></app-item-name>
+        <app-item-name code="net" [quality]="capture.quality" *ngIf="capture.quality > 0"></app-item-name>
       </div>
       <div class="item-bait">
-        <div *ngIf="pair.capture.bait > 0">
+        <div *ngIf="capture.bait > 0">
           <mat-icon svgIcon="bait"></mat-icon>
         </div>
-        <div *ngIf="pair.capture.bait > 0">Mediocre</div>
+        <div *ngIf="capture.bait > 0">Mediocre</div>
       </div>
     </div>
   </div>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 @Component
 @Aspect
@@ -30,11 +31,7 @@ public class WithUserAspect {
         return point.proceed();
     }
 
-    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.findBy*(..))")
-    public void findByIdPointCut() {
-    }
-
-    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.findAll(..))")
+    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.findAll*(..))")
     public void findAllPointCut() {
     }
 
@@ -42,7 +39,11 @@ public class WithUserAspect {
     public void countPointCut() {
     }
 
-    @Around("findAllPointCut() || countPointCut() || findByIdPointCut()")
+    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.deleteAll*(..))")
+    public void deleteAllPointCut() {
+    }
+
+    @Around("findAllPointCut() || countPointCut() || deleteAllPointCut()")
     public Object onSearch(ProceedingJoinPoint point) throws Throwable {
         Session session = entityManager.unwrap(Session.class);
         session.enableFilter("filterUserId").setParameter("userId", OAuthUserUtil.getUserId());
@@ -50,4 +51,29 @@ public class WithUserAspect {
         session.disableFilter("filterUserId");
         return obj;
     }
+
+
+    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.findBy*(..))")
+    public void findByPointCut() {
+    }
+
+    @Around("findByPointCut()")
+    public Object onGet(ProceedingJoinPoint point) throws Throwable {
+        Optional<WithUser> withUser = (Optional<WithUser>) point.proceed();
+        if (withUser.isPresent() && !withUser.get().getUserId().equals(OAuthUserUtil.getUserId()))
+            return Optional.empty();
+        return withUser;
+    }
+
+//    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.existsBy*(..))")
+//    public void existsByPointCut() {
+//    }
+//
+//    @Around("existsByPointCut()")
+//    public Object onExists(ProceedingJoinPoint point) throws Throwable {
+//        boolean exists = (boolean) point.proceed();
+//        if (withUser.isPresent() && !withUser.get().getUserId().equals(OAuthUserUtil.getUserId()))
+//            return Optional.empty();
+//        return withUser;
+//    }
 }

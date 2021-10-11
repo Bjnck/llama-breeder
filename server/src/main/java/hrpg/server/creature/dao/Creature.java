@@ -5,6 +5,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
+
+import static hrpg.server.creature.type.CreatureConstant.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -48,6 +51,41 @@ public class Creature extends WithUser {
     @Column(nullable = false)
     private String name = "Llama";
 
-    @OneToOne(mappedBy = "creature", cascade = CascadeType.ALL, orphanRemoval = true)
-    private CreatureDetails details;
+    @Builder.Default
+    @Column(nullable = false, updatable = false)
+    private boolean wild = false;
+
+    private ZonedDateTime penActivationTime;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean pregnant = false;
+    @Builder.Default
+    @Column(nullable = false)
+    private int breedingCount = 0;
+    private ZonedDateTime pregnancyStartTime;
+    private ZonedDateTime pregnancyEndTime;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "pregnancy_male_info_id")
+    private CreatureInfo pregnancyMaleInfo;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private ZonedDateTime energyUpdateTime = ZonedDateTime.now();
+
+    @Builder.Default
+    @Column(nullable = false)
+    private int energy = ENERGY_MAX;
+    @Builder.Default
+    @Column(nullable = false)
+    private int love = STATS_MIN;
+    @Builder.Default
+    @Column(nullable = false)
+    private int thirst = STATS_MIN;
+    @Builder.Default
+    @Column(nullable = false)
+    private int hunger = STATS_MIN;
+    @Builder.Default
+    @Column(nullable = false)
+    private int maturity = MATURITY_MIN;
 }

@@ -86,7 +86,7 @@ public class CreatureServiceImpl implements CreatureService {
 
         //sell creature
         int price;
-        if (creature.getDetails().isWild() || creature.getInfo().getColor2() == null) price = 0;
+        if (creature.isWild() || creature.getInfo().getColor2() == null) price = 0;
         else price = creaturesProperties.getPrice(creature.getGeneration());
         userService.addCoins(price);
 
@@ -103,17 +103,17 @@ public class CreatureServiceImpl implements CreatureService {
 
         if (CreatureUtil.isHittable(creature, itemCode)) {
             //remove energy
-            creature.getDetails().setEnergy(creature.getDetails().getEnergy() - ENERGY_DIVIDER);
+            creature.setEnergy(creature.getEnergy() - ENERGY_DIVIDER);
             //check item quality is valid for creature generation
             if (itemQuality >= creature.getGeneration()) {
                 //increase stats
                 switch (itemCode) {
                     case HUNGER:
-                        creature.getDetails().setHunger(increaseStat(creature.getDetails().getHunger(),
+                        creature.setHunger(increaseStat(creature.getHunger(),
                                 increaseLevel(creature.getGeneration(), itemQuality)));
                         break;
                     case THIRST:
-                        creature.getDetails().setThirst(increaseStat(creature.getDetails().getThirst(),
+                        creature.setThirst(increaseStat(creature.getThirst(),
                                 increaseLevel(creature.getGeneration(), itemQuality)));
                         break;
                     case LOVE:
@@ -121,12 +121,12 @@ public class CreatureServiceImpl implements CreatureService {
                         int increaseLevel = Math.min(
                                 Math.min(
                                         increaseLevel(creature.getGeneration(), itemQuality),
-                                        creature.getDetails().getHunger() - (STATS_LOVE_REQUIREMENT - 1)),
-                                creature.getDetails().getThirst() - (STATS_LOVE_REQUIREMENT - 1));
+                                        creature.getHunger() - (STATS_LOVE_REQUIREMENT - 1)),
+                                creature.getThirst() - (STATS_LOVE_REQUIREMENT - 1));
 
-                        creature.getDetails().setHunger(creature.getDetails().getHunger() - increaseLevel);
-                        creature.getDetails().setThirst(creature.getDetails().getThirst() - increaseLevel);
-                        creature.getDetails().setLove(increaseStat(creature.getDetails().getLove(), increaseLevel));
+                        creature.setHunger(creature.getHunger() - increaseLevel);
+                        creature.setThirst(creature.getThirst() - increaseLevel);
+                        creature.setLove(increaseStat(creature.getLove(), increaseLevel));
                         break;
                 }
             }
@@ -152,18 +152,18 @@ public class CreatureServiceImpl implements CreatureService {
             Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
 
             long duration = DurationUtil.getDurationDividedBy(
-                    creature.getDetails().getEnergyUpdateTime(),
+                    creature.getEnergyUpdateTime(),
                     ZonedDateTime.now(),
                     creaturesProperties.getEnergyTimeValue(),
                     creaturesProperties.getEnergyTimeUnit());
             long energyToAdd = duration * (creaturesProperties.getEnergyIncrement(creature.getGeneration()));
             if (energyToAdd > 0) {
-                long energy = creature.getDetails().getEnergy() + energyToAdd;
+                long energy = creature.getEnergy() + energyToAdd;
                 //add the exact amount of time calculated to not loose started minute
-                creature.getDetails().setEnergyUpdateTime(creature.getDetails().getEnergyUpdateTime()
+                creature.setEnergyUpdateTime(creature.getEnergyUpdateTime()
                         .plus(duration * creaturesProperties.getEnergyTimeValue(),
                                 creaturesProperties.getEnergyTimeUnit()));
-                creature.getDetails().setEnergy(Math.min(ENERGY_MAX, ((Long) energy).intValue()));
+                creature.setEnergy(Math.min(ENERGY_MAX, ((Long) energy).intValue()));
             }
         }
     }
@@ -176,7 +176,7 @@ public class CreatureServiceImpl implements CreatureService {
 
         for (long id : ids) {
             Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
-            if (creature.getDetails().getPregnancyEndTime().isBefore(ZonedDateTime.now()))
+            if (creature.getPregnancyEndTime().isBefore(ZonedDateTime.now()))
                 babies.addAll(getBabies(creature));
         }
 

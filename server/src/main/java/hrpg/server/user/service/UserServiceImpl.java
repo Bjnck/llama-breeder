@@ -1,5 +1,8 @@
 package hrpg.server.user.service;
 
+import hrpg.server.capture.dao.CaptureRepository;
+import hrpg.server.creature.dao.CreatureRepository;
+import hrpg.server.item.dao.ItemRepository;
 import hrpg.server.pen.dao.Pen;
 import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
@@ -19,15 +22,24 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PenRepository penRepository;
+    private final CreatureRepository creatureRepository;
+    private final ItemRepository itemRepository;
+    private final CaptureRepository captureRepository;
     private final UserMapper userMapper;
     private final ParametersProperties parametersProperties;
 
     public UserServiceImpl(UserRepository userRepository,
                            PenRepository penRepository,
+                           CreatureRepository creatureRepository,
+                           ItemRepository itemRepository,
+                           CaptureRepository captureRepository,
                            UserMapper userMapper,
                            ParametersProperties parametersProperties) {
         this.userRepository = userRepository;
         this.penRepository = penRepository;
+        this.creatureRepository = creatureRepository;
+        this.itemRepository = itemRepository;
+        this.captureRepository = captureRepository;
         this.userMapper = userMapper;
         this.parametersProperties = parametersProperties;
     }
@@ -107,10 +119,12 @@ public class UserServiceImpl implements UserService {
     public void delete() {
         User user = userRepository.get();
 
-        //todo delete all items
-        //todo delete all captures
+        penRepository.deleteAll();
+        itemRepository.deleteAll();
+        captureRepository.deleteAll();
+        creatureRepository.deleteAll();
 
-        //todo if user has no creatures
+        //todo if user has no creatures + for every delete creature, check if riginalUserId still has creature, otherwise delete it
         // userRepository.delete(user);
         // else remove extra info
         user.setRegistrationKeys(null);

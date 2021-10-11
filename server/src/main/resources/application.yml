@@ -21,7 +21,7 @@ parameters:
     max: 100
   captures:
     time-unit: MINUTES
-    time-value: 5
+    time-value: 15
     time-unit-net: HOURS
     time-value-net: 4
     time-unit-first: SECONDS

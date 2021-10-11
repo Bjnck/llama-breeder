@@ -237,6 +237,7 @@ public class PenEndpointIT extends AbstractIntegrationTest {
         Creature creature = Creature.builder()
                 .originalUserId(userDto.getId())
                 .createDate(LocalDate.now())
+                .wild(true)
                 .info(CreatureInfo.builder()
                         .sex(Sex.F)
                         .color1(color)
@@ -244,10 +245,6 @@ public class PenEndpointIT extends AbstractIntegrationTest {
                         .build())
                 .build();
         creature.setUserId(userDto.getId());
-        creature.setDetails(CreatureDetails.builder()
-                .creature(creature)
-                .wild(true)
-                .build());
         return creatureRepository.save(creature);
     }
 

@@ -15,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static hrpg.server.creature.type.CreatureConstant.MATURITY_MAX;
 
@@ -82,12 +79,9 @@ public class CreatureFactoryImpl implements CreatureFactory {
         Creature creature = creatureBuilder
                 .originalUserId(OAuthUserUtil.getUserId())
                 .createDate(captureEndDate)
-                .build();
-        creature.setDetails(CreatureDetails.builder()
-                .creature(creature)
                 .wild(true)
                 .maturity(MATURITY_MAX)
-                .build());
+                .build();
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }
 
@@ -104,22 +98,19 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
         //get parents
         Creature mother = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
-        Creature father = creatureRepository.findById(mother.getDetails().getPregnancyMaleId())
-                .orElseThrow(CreatureNotFoundException::new);
+        CreatureInfo father = mother.getPregnancyMaleInfo();
 
         //generate babies
         List<CreatureDto> babies = new ArrayList<>();
         for (int i = 0; i < maxBabies; i++) {
             Pair<Color, Optional<Color>> colors = colorFactory.getForBirth(
-                    mother.getInfo().getColor1(), mother.getInfo().getColor2(),
-                    father.getInfo().getColor1(), father.getInfo().getColor2());
+                    mother.getInfo().getColor1(), mother.getInfo().getColor2(), father.getColor1(), father.getColor2());
             Pair<Optional<Gene>, Optional<Gene>> genes = geneFactory.getForBirth(
-                    mother.getInfo().getGene1(), mother.getInfo().getGene2(),
-                    father.getInfo().getGene1(), father.getInfo().getGene2());
+                    mother.getInfo().getGene1(), mother.getInfo().getGene2(), father.getGene1(), father.getGene2());
 
             Creature baby = Creature.builder()
                     .originalUserId(OAuthUserUtil.getUserId())
-                    .createDate(mother.getDetails().getPregnancyEndTime().toLocalDate())
+                    .createDate(mother.getPregnancyEndTime().toLocalDate())
                     .generation(Math.max(colors.getFirst().getGeneration(),
                             colors.getSecond().map(Color::getGeneration).orElse(0)))
                     .info(CreatureInfo.builder()
@@ -129,32 +120,17 @@ public class CreatureFactoryImpl implements CreatureFactory {
                             .gene1(genes.getFirst().orElse(null))
                             .gene2(genes.getSecond().orElse(null))
                             .build())
-                    .parentInfo1(CreatureInfo.builder()
-                            .sex(mother.getInfo().getSex())
-                            .color1(mother.getInfo().getColor1())
-                            .color2(mother.getInfo().getColor2())
-                            .gene1(mother.getInfo().getGene1())
-                            .gene2(mother.getInfo().getGene2())
-                            .build())
-                    .parentInfo2(CreatureInfo.builder()
-                            .sex(father.getInfo().getSex())
-                            .color1(father.getInfo().getColor1())
-                            .color2(father.getInfo().getColor2())
-                            .gene1(father.getInfo().getGene1())
-                            .gene2(father.getInfo().getGene2())
-                            .build())
+                    .parentInfo1(mother.getInfo().toBuilder().id(null).build())
+                    .parentInfo2(father.toBuilder().id(null).build())
                     .build();
-            baby.setDetails(CreatureDetails.builder()
-                    .creature(baby)
-                    .build());
             babies.add(creatureMapper.toDto(creatureRepository.save(baby), userService));
         }
 
         //update mother pregnancy stats
-        mother.getDetails().setPregnancyMaleId(null);
-        mother.getDetails().setPregnant(false);
-        mother.getDetails().setPregnancyStartTime(null);
-        mother.getDetails().setPregnancyEndTime(null);
+        mother.setPregnancyMaleInfo(null);
+        mother.setPregnant(false);
+        mother.setPregnancyStartTime(null);
+        mother.setPregnancyEndTime(null);
 
         return babies;
     }

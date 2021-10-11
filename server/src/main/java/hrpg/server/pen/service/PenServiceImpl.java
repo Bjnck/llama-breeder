@@ -133,22 +133,28 @@ public class PenServiceImpl implements PenService {
         if (pen.getSize() < creaturesIds.size())
             throw new MaxCreaturesException();
 
+        ZonedDateTime now =ZonedDateTime.now();
+
         Set<Creature> creatures = new HashSet<>();
         for (Long creatureId : creaturesIds) {
             Creature creature = creatureRepository.findById(creatureId)
                     .orElseThrow(() -> new CreatureNotFoundException(creatureId));
             if (penRepository.existsByCreaturesContainingAndIdNot(creature, pen.getId()))
                 throw new CreatureInUseException(creatureId);
-            //reset penActivationTime to added creature
-            creature.getDetails().setPenActivationTime(ZonedDateTime.now());
+
+            //reset penActivationTime to newly added creature
+            if(pen.getCreatures().stream().noneMatch(c -> c.getId().equals(creatureId)))
+                creature.setPenActivationTime(now);
+
             creatures.add(creature);
         }
 
-        //reset energyUpdateTime to removed creature
+
         final Collection<Long> finalCreatureIds = Collections.unmodifiableCollection(creaturesIds);
+        //reset energyUpdateTime to removed creature
         pen.getCreatures().stream()
                 .filter(creature -> !finalCreatureIds.contains(creature.getId()))
-                .forEach(creature -> creature.getDetails().setEnergyUpdateTime(ZonedDateTime.now()));
+                .forEach(creature -> creature.setEnergyUpdateTime(now));
 
         //update creatures
         pen.setCreatures(creatures);

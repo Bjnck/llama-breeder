@@ -62,7 +62,7 @@ public class CreatureComputorImpl implements CreatureComputor {
         Pageable pageRequestBirth = PageRequest.of(0, 20);
         Page<Creature> creaturesBirth;
         do {
-            creaturesBirth = creatureRepository.findAllByDetails_PregnancyEndTimeLessThanEqual(now, pageRequestBirth);
+            creaturesBirth = creatureRepository.findAllByPregnancyEndTimeLessThanEqual(now, pageRequestBirth);
             try {
                 creatureService.calculateBirth(getIdNotInPen(creaturesBirth));
             } catch (CreatureNotFoundException e) {
@@ -97,7 +97,7 @@ public class CreatureComputorImpl implements CreatureComputor {
             //if creature not in pen
             else {
                 //update energy
-                if (creature.getDetails().getEnergy() < ENERGY_MAX) {
+                if (creature.getEnergy() < ENERGY_MAX) {
                     try {
                         creatureService.calculateEnergy(Collections.singletonList(creature.getId()));
                     } catch (CreatureNotFoundException e) {
@@ -105,8 +105,8 @@ public class CreatureComputorImpl implements CreatureComputor {
                     }
                 }
                 //update birth
-                if (creature.getDetails().getPregnancyEndTime() != null &&
-                        creature.getDetails().getPregnancyEndTime().isBefore(ZonedDateTime.now())) {
+                if (creature.getPregnancyEndTime() != null &&
+                        creature.getPregnancyEndTime().isBefore(ZonedDateTime.now())) {
                     try {
                         creatureService.calculateBirth(Collections.singletonList(creature.getId()));
                     } catch (CreatureNotFoundException e) {

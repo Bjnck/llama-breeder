@@ -16,16 +16,6 @@ import org.mapstruct.Named;
         })
 public interface CreatureMapper {
 
-    @Mapping(target = "wild", source = "details.wild")
-    @Mapping(target = "pregnant", source = "details.pregnant")
-    @Mapping(target = "breedingCount", source = "details.breedingCount")
-    @Mapping(target = "pregnancyStartTime", source = "details.pregnancyStartTime")
-    @Mapping(target = "pregnancyEndTime", source = "details.pregnancyEndTime")
-    @Mapping(target = "energy", source = "details.energy")
-    @Mapping(target = "love", source = "details.love")
-    @Mapping(target = "thirst", source = "details.thirst")
-    @Mapping(target = "hunger", source = "details.hunger")
-    @Mapping(target = "maturity", source = "details.maturity")
     @Mapping(target = "originalUser", source = "originalUserId", qualifiedByName = "toOriginalUser")
     CreatureDto toDto(Creature entity, @Context UserService userService);
 

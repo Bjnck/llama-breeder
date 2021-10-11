@@ -56,15 +56,13 @@ public class PenComputorImpl implements PenComputor {
     }
 
     private void compute(Pen pen) {
-        ZonedDateTime now = ZonedDateTime.now();
-
         if (!pen.getCreatures().isEmpty()) {
             ZonedDateTime minActivationTime = pen.getCreatures().stream()
-                    .map(creature -> creature.getDetails().getPenActivationTime())
+                    .map(Creature::getPenActivationTime)
                     .min(Comparator.comparing(dateTime -> dateTime))
                     .orElseThrow();
 
-            long totalLoop = DurationUtil.getDurationDividedBy(minActivationTime, now,
+            long totalLoop = DurationUtil.getDurationDividedBy(minActivationTime, ZonedDateTime.now(),
                     pensProperties.getActivationTimeValue(), pensProperties.getActivationTimeUnit());
             for (int i = 0; i < totalLoop; i++) {
                 //stop loop if nothing to calculate
@@ -81,9 +79,9 @@ public class PenComputorImpl implements PenComputor {
                         .filter(creature -> Sex.F.equals(creature.getInfo().getSex()))
                         .count();
                 boolean adultPresent = pen.getCreatures().stream()
-                        .anyMatch(creature -> creature.getDetails().getMaturity() >= MATURITY_MAX);
+                        .anyMatch(creature -> creature.getMaturity() >= MATURITY_MAX);
                 long babies = pen.getCreatures().stream()
-                        .filter(creature -> creature.getDetails().getMaturity() < MATURITY_MAX).count();
+                        .filter(creature -> creature.getMaturity() < MATURITY_MAX).count();
                 if (hittable == 0 && (breedableMale == 0 || breedableFemale == 0) && (babies == 0 || !adultPresent))
                     break;
 
@@ -96,12 +94,12 @@ public class PenComputorImpl implements PenComputor {
                 breed(pen, activationTime);
                 //calculate maturity based on activationTime
                 increaseMaturity(pen, activationTime);
+
+                //update penActivationTime
+                pen.getItems().forEach(item -> item.setPenActivationTime(activationTime));
+                pen.getCreatures().forEach(creature -> creature.setPenActivationTime(activationTime));
             }
         }
-
-        //update penActivationTime
-        pen.getItems().forEach(item -> item.setPenActivationTime(now));
-        pen.getCreatures().forEach(creature -> creature.getDetails().setPenActivationTime(now));
     }
 
     private void hit(Pen pen, ZonedDateTime activationTime) {
@@ -120,18 +118,18 @@ public class PenComputorImpl implements PenComputor {
 
     private void increaseMaturity(Pen pen, ZonedDateTime activationTime) {
         //verify if adult in pen
-        boolean adultPresent = pen.getCreatures().stream().anyMatch(creature -> creature.getDetails().getMaturity() >= MATURITY_MAX);
+        boolean adultPresent = pen.getCreatures().stream().anyMatch(creature -> creature.getMaturity() >= MATURITY_MAX);
         if (adultPresent) {
             //get all babies for activationTime
             Set<Creature> creatures = pen.getCreatures().stream()
-                    .filter(creature -> creature.getDetails().getMaturity() < MATURITY_MAX)
-                    .filter(creature -> creature.getDetails().getPenActivationTime().isBefore(activationTime))
+                    .filter(creature -> creature.getMaturity() < MATURITY_MAX)
+                    .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
                     .collect(Collectors.toSet());
             //increase maturity
             creatures.forEach(creature -> {
                 int increment = creaturesProperties.getMaturityIncrement(creature.getGeneration());
-                int maturity = creature.getDetails().getMaturity() + increment;
-                creature.getDetails().setMaturity(Math.min(maturity, MATURITY_MAX));
+                int maturity = creature.getMaturity() + increment;
+                creature.setMaturity(Math.min(maturity, MATURITY_MAX));
             });
         }
     }
@@ -139,7 +137,7 @@ public class PenComputorImpl implements PenComputor {
     public void breed(Pen pen, ZonedDateTime activationTime) {
         Set<Creature> breedableCreatures = pen.getCreatures().stream()
                 .filter(CreatureUtil::isBreedable)
-                .filter(creature -> creature.getDetails().getPenActivationTime().isBefore(activationTime))
+                .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
                 .collect(Collectors.toSet());
 
         List<Creature> females = breedableCreatures.stream()
@@ -159,27 +157,26 @@ public class PenComputorImpl implements PenComputor {
 
     private void breed(Creature male, Creature female, ZonedDateTime activationTime) {
         //update stats
-        male.getDetails().setEnergy(ENERGY_MIN);
-        female.getDetails().setEnergy(ENERGY_MIN);
-        male.getDetails().setThirst(STATS_MIN);
-        female.getDetails().setThirst(STATS_MIN);
-        male.getDetails().setHunger(STATS_MIN);
-        female.getDetails().setHunger(STATS_MIN);
-        male.getDetails().setLove(STATS_MIN);
-        female.getDetails().setLove(STATS_MIN);
+        male.setEnergy(ENERGY_MIN);
+        female.setEnergy(ENERGY_MIN);
+        male.setThirst(STATS_MIN);
+        female.setThirst(STATS_MIN);
+        male.setHunger(STATS_MIN);
+        female.setHunger(STATS_MIN);
+        male.setLove(STATS_MIN);
+        female.setLove(STATS_MIN);
 
         //increase count breeding
-        male.getDetails().setBreedingCount(male.getDetails().getBreedingCount() + 1);
-        female.getDetails().setBreedingCount(female.getDetails().getBreedingCount() + 1);
+        male.setBreedingCount(male.getBreedingCount() + 1);
+        female.setBreedingCount(female.getBreedingCount() + 1);
 
         //set pregnant
-        female.getDetails().setPregnant(true);
-        female.getDetails().setPregnancyMaleId(male.getId());
-        female.getDetails().setPregnancyStartTime(activationTime);
+        female.setPregnant(true);
+        female.setPregnancyMaleInfo(male.getInfo().toBuilder().id(null).build());
+        female.setPregnancyStartTime(activationTime);
         //female generation has an impact on the pregnancy time
-        female.getDetails().setPregnancyEndTime(
-                activationTime.plus(
-                        creaturesProperties.getPregnancyTimeValue(Math.max(female.getGeneration(), male.getGeneration())),
-                        creaturesProperties.getPregnancyTimeUnit()));
+        female.setPregnancyEndTime(activationTime.plus(
+                creaturesProperties.getPregnancyTimeValue(Math.max(female.getGeneration(), male.getGeneration())),
+                creaturesProperties.getPregnancyTimeUnit()));
     }
 }

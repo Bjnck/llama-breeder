@@ -84,22 +84,11 @@ create table if not exists creature (
     parent_two_info_id bigint,
     name varchar(15) not null default 'Llama',
     create_date date not null,
-    primary key (id),
-    foreign key (user_id) REFERENCES user(id),
-    foreign key (original_user_id) REFERENCES user(id),
-    foreign key (info_id) REFERENCES creature_info(id),
-    foreign key (parent_one_info_id) REFERENCES creature_info(id),
-    foreign key (parent_two_info_id) REFERENCES creature_info(id)
-);
-
-create table if not exists creature_details (
-    creature_id bigint not null,
-    version bigint not null default 0,
     wild boolean not null,
     pen_activation_time datetime,
     pregnant boolean not null default 0,
     breeding_count tinyint(1) not null default 0, check (breeding_count between 0 and 10),
-    pregnancy_male_id bigint,
+    pregnancy_male_info_id bigint,
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,
     energy_update_time datetime not null,
@@ -108,9 +97,13 @@ create table if not exists creature_details (
     thirst tinyint(1) not null default 0, check (thirst between 0 and 100),
     hunger tinyint(1) not null default 0, check (hunger between 0 and 100),
     maturity int not null default 0, check (maturity between 0 and 10000),
-    primary key (creature_id),
-    foreign key (creature_id) REFERENCES creature(id),
-    foreign key (pregnancy_male_id) REFERENCES creature(id)
+    primary key (id),
+    foreign key (user_id) REFERENCES user(id),
+    foreign key (original_user_id) REFERENCES user(id),
+    foreign key (info_id) REFERENCES creature_info(id),
+    foreign key (parent_one_info_id) REFERENCES creature_info(id),
+    foreign key (parent_two_info_id) REFERENCES creature_info(id),
+    foreign key (pregnancy_male_info_id) REFERENCES creature_info(id)
 );
 
 create table if not exists capture (

@@ -13,3 +13,9 @@ body {
 .mat-dialog-container{
   background-color: #2d2d2d;
 }
+.cdk-overlay-backdrop.cdk-overlay-backdrop-showing{
+  opacity: 0.8
+}
+.cdk-overlay-dark-backdrop{
+  background: black
+}

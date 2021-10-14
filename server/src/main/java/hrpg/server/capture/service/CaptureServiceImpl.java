@@ -109,7 +109,7 @@ public class CaptureServiceImpl implements CaptureService {
         ZonedDateTime current = ZonedDateTime.now();
         ZonedDateTime endTime;
         if (user.getDetails().getLevel() <= 0) {
-            if (captureCount < 3)
+            if (captureCount < 2)
                 endTime = current.plus(capturesProperties.getTimeValueFirst(), capturesProperties.getTimeUnitFirst());
             else
                 endTime = current.plus(capturesProperties.getTimeValueThird(), capturesProperties.getTimeUnitThird());

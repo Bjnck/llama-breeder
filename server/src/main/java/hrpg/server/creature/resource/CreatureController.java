@@ -7,8 +7,7 @@ import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.creature.service.CreatureComputor;
 import hrpg.server.creature.service.CreatureService;
-import hrpg.server.creature.service.exception.CreatureInUseException;
-import hrpg.server.creature.service.exception.CreatureNotFoundException;
+import hrpg.server.creature.service.exception.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -97,6 +96,27 @@ public class CreatureController {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("creatures.id").code(ValidationCode.CONFLICT.getCode())
                             .value(Optional.ofNullable(e.getId()).map(Object::toString).orElse(null)).build()));
+        }
+    }
+
+    //todo add to int test
+    @PostMapping("{id}/action/redeem")
+    public CreatureResponse redeem(@PathVariable long id) {
+        try {
+            CreatureResponse response = creatureResourceMapper.toResponse(creatureService.redeem(id));
+            response.add(links.linkToItemResource(response));
+            return response;
+        } catch (CreatureNotFoundException e) {
+            throw new ResourceNotFoundException();
+        } catch (CreatureNotPregnantException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("notPregnant").build()));
+        } catch (CreatureInPregnancyException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("pregnancyRunning").build()));
+        } catch (MaxCreaturesException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("maxCreatures").build()));
         }
     }
 }

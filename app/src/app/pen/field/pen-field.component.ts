@@ -23,6 +23,7 @@ export class PenFieldComponent {
   }
 
   openDetails(creature: Creature) {
+    // todo send user to dialog (needed for birth)
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {
         creature,
@@ -30,9 +31,12 @@ export class PenFieldComponent {
         creaturesInPen: this.pen.creatures,
         creaturesIdInPen: this.pen.creatures.map(c => c.id)
       },
-      position: {top: '100px'},
-      minWidth: '272px',
-      maxWidth: '90%'
+      disableClose: true,
+      position: {top: '50px'},
+      width: '100%',
+      maxWidth: '500px',
+      minWidth: '340px',
+      restoreFocus: false
     });
   }
 }

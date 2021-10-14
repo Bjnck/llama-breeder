@@ -1,243 +1,255 @@
-<div mat-dialog-title class="title">
+<div id="creature-details">
 
+  <div mat-dialog-title id="title">
+    <input id="name" type="text" maxlength="15" [value]="name" (focusout)="onNameChange($event.target.value)">
+  </div>
 
-  <input class="input" type="text" maxlength="15" [value]="name" (focusout)="onNameChange($event.target.value)">
+  <div mat-dialog-content>
 
-
-</div>
-
-<div mat-dialog-content>
-  <div class="block-info">
-    <div class="left">
-      <div class="image">
-        <app-llama [color1]="creature.colors.color1.code"
-                   [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
-        </app-llama>
+    <div id="info">
+      <div class="image-wrapper">
+        <div class="image">
+          <app-llama [color1]="creature.colors.color1.code"
+                     [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+          </app-llama>
+        </div>
       </div>
-    </div>
-    <div class="right">
-      <div>
-        <div class="line">
-          <div class="cell-right sex-icon-creature-details">
-            <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
-            <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
-          </div>
-          <div class="cell-left">
-            {{creature.colors.color1.name}}<span
-            *ngIf="creature.colors.color2">-{{creature.colors.color2.name}}</span>
-          </div>
-        </div>
 
-        <div class="line">
-          <div class="cell-right">
-            Gen. {{creature.generation | roman}}
+      <div class="details-wrapper">
+        <div class="details">
+          <div class="line">
+            <div class="detail sex">
+              <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+              <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+            </div>
+            <div class="detail wild" *ngIf="creature.wild">wild</div>
+            <div class="detail generation">Generation {{creature.generation | roman}}</div>
           </div>
-          <div class="cell-left">
-            <div class="wild" *ngIf="creature.wild">Wild</div>
+          <div class="line">
+            <div class="detail color">{{creature.colors.color1.name}}</div>
+            <div class="detail color" *ngIf="creature.colors.color2">{{creature.colors.color2.name}}</div>
           </div>
-        </div>
-
-        <div class="line">
-          <div class="cell-right">
-            Genes:
-          </div>
-          <div class="cell-left">
-            <span *ngIf="creature.genes.gene1">
+          <div class="line">
+            <div class="detail gene" *ngIf="creature.genes.gene1">
               <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
-            </span>
-            <span *ngIf="!creature.genes.gene1">
-              None
-            </span>
-            <span *ngIf="creature.genes.gene2">
-              -<app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
-            </span>
+            </div>
+            <div class="detail gene" *ngIf="creature.genes.gene2">
+              <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <mat-divider class="divider"></mat-divider>
+    <mat-divider class="divider"></mat-divider>
 
-  <div>
-    <div class="breeding">
-      <div class="breeding-icon" [ngClass]="{'disable': !creature.pregnant}">
-        <mat-icon svgIcon="pregnant"></mat-icon>
+    <div id="breeding">
+      <div class="count">
+        <div>
+          <mat-icon *ngIf="creature.breedingCount < breedingMax">favorite_border</mat-icon>
+          <mat-icon *ngIf="creature.breedingCount >= breedingMax">heart_broken</mat-icon>
+        </div>
+        <div>{{creature.breedingCount}}/{{breedingMax}}</div>
       </div>
-      <div class="breeding-count">{{creature.breedingCount}}/{{breedingMax}}</div>
-      <div *ngIf="!creature.pregnant && creature.breedingCount >= breedingMax">Max births reached</div>
-      <div *ngIf="timeLeft > 0">{{timeLeft | date:'HH:mm:ss':'UTC'}}</div>
-      <div *ngIf="timeLeft <= 0 && creature.pregnant">Ready to give birth</div>
-    </div>
-
-    <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax">
-      <div class="stat-icon energy">
-        <mat-icon>bolt</mat-icon>
-      </div>
-      <div class="stat-line">
-        <div class="stat-line-wrapper">
-          <div class="stat-line-value energy"
-               [style.width.%]="creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1">
+      <div class="info">
+        <div *ngIf="!creature.pregnant && creature.breedingCount >= breedingMax">Max births reached</div>
+        <div *ngIf="timeLeft > 0">{{timeLeft | date:'HH:mm:ss':'UTC'}}</div>
+        <div class="redeem" *ngIf="creature.pregnant && timeLeft <= 0">
+          <div>What's that ?</div>
+          <div>
+            <button mat-raised-button (click)="redeem()">
+              <mat-icon>redeem</mat-icon>
+            </button>
           </div>
         </div>
       </div>
-      <div class="stat-pc">
-        {{creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1}}%
-      </div>
     </div>
 
-    <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax" [ngClass]="{'disable': creature.pregnant}">
-      <div class="stat-icon thirst">
-        <mat-icon>local_drink</mat-icon>
-      </div>
-      <div class="stat-line">
-        <div class="stat-line-wrapper">
-          <div class="stat-line-value thirst" [style.width.%]="creature.statistics.thirst"></div>
+    <div id="stats">
+      <div class="stat" *ngIf="creature.statistics.maturity < maturityMax">
+        <div class="icon maturity">
+          <mat-icon svgIcon="baby"></mat-icon>
         </div>
-      </div>
-      <div class="stat-pc">{{creature.statistics.thirst}}%</div>
-    </div>
-
-    <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax" [ngClass]="{'disable': creature.pregnant}">
-      <div class="stat-icon hunger">
-        <mat-icon svgIcon="hay"></mat-icon>
-      </div>
-      <div class="stat-line">
-        <div class="stat-line-wrapper">
-          <div class="stat-line-value hunger" [style.width.%]="creature.statistics.hunger"></div>
-        </div>
-      </div>
-      <div class="stat-pc">{{creature.statistics.hunger}}%</div>
-    </div>
-
-    <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax" [ngClass]="{'disable': creature.pregnant ||
-         (creature.statistics.hunger < statsLoveRequirement || creature.statistics.thirst < statsLoveRequirement)}">
-      <div class="stat-icon love">
-        <mat-icon>favorite</mat-icon>
-      </div>
-      <div class="stat-line">
-        <div class="stat-line-wrapper">
-          <div class="stat-line-value love" [style.width.%]="creature.statistics.love"></div>
-        </div>
-      </div>
-      <div class="stat-pc">{{creature.statistics.love}}%</div>
-    </div>
-    <div class="help" *ngIf="creature.statistics.maturity >= maturityMax">
-      Must have at least {{statsLoveRequirement}}% thirst and hunger to increase love
-    </div>
-
-    <div class="stat" *ngIf="creature.statistics.maturity < maturityMax">
-      <div class="stat-icon maturity">
-        <mat-icon svgIcon="baby"></mat-icon>
-      </div>
-      <div class="stat-line">
-        <div class="stat-line-wrapper">
-          <div class="stat-line-value maturity"
-               [style.width.%]="creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1">
+        <div class="line">
+          <div class="line-wrapper">
+            <div class="line-value maturity"
+                 [style.width.%]="creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1">
+            </div>
           </div>
         </div>
+        <div class="pc">
+          {{creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1}}%
+        </div>
       </div>
-      <div class="stat-pc">
-        {{creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1}}%
+      <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax">
+        <div class="icon energy">
+          <mat-icon>bolt</mat-icon>
+        </div>
+        <div class="line">
+          <div class="line-wrapper">
+            <div class="line-value energy"
+                 [style.width.%]="creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1">
+            </div>
+          </div>
+        </div>
+        <div class="pc">
+          {{creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1}}%
+        </div>
+      </div>
+      <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax">
+        <div class="icon thirst">
+          <mat-icon>local_drink</mat-icon>
+        </div>
+        <div class="line">
+          <div class="line-wrapper">
+            <div class="line-value thirst" [style.width.%]="creature.statistics.thirst"></div>
+          </div>
+        </div>
+        <div class="pc">{{creature.statistics.thirst}}%</div>
+      </div>
+      <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax">
+        <div class="icon hunger">
+          <mat-icon>restaurant</mat-icon>
+        </div>
+        <div class="line">
+          <div class="line-wrapper">
+            <div class="line-value hunger" [style.width.%]="creature.statistics.hunger"></div>
+          </div>
+        </div>
+        <div class="pc">{{creature.statistics.hunger}}%</div>
+      </div>
+      <div class="stat" *ngIf="creature.statistics.maturity >= maturityMax"
+           [ngClass]="{'disable': creature.statistics.hunger < statsLoveRequirement || creature.statistics.thirst < statsLoveRequirement}">
+        <div class="icon love">
+          <mat-icon>favorite</mat-icon>
+        </div>
+        <div class="line">
+          <div class="line-wrapper">
+            <div class="line-value love" [style.width.%]="creature.statistics.love"></div>
+          </div>
+        </div>
+        <div class="pc">{{creature.statistics.love}}%</div>
       </div>
     </div>
-    <div class="help" *ngIf="creature.statistics.maturity < maturityMax">
-      Send to a pen with another fully mature llama to increase maturity
+
+    <div id="help">
+      <div *ngIf="creature.statistics.maturity >= maturityMax &&
+      (creature.statistics.hunger < statsLoveRequirement || creature.statistics.thirst < statsLoveRequirement)">
+        Llama must have at least {{statsLoveRequirement}}% thirst and hunger to increase love
+      </div>
+      <div *ngIf="creature.statistics.maturity < maturityMax">
+        Send to a pen with another fully mature llama to increase maturity
+      </div>
     </div>
-  </div>
 
-  <mat-divider class="divider" *ngIf="creature.parents && creature.parents.parent1"></mat-divider>
 
-  <div *ngIf="creature.parents && creature.parents.parent1">
-    <div class="parent">
-      <div class="parent-image">
-        <app-llama [color1]="creature.parents.parent1.colors.color1.code"
-                   [color2]="creature.parents.parent1.colors.color2 ?
+    <mat-divider class="divider" *ngIf="creature.parents && creature.parents.parent1"></mat-divider>
+
+
+    <div id="parents" *ngIf="creature.parents && creature.parents.parent1">
+      <div class="parent">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="creature.parents.parent1.colors.color1.code"
+                       [color2]="creature.parents.parent1.colors.color2 ?
                     creature.parents.parent1.colors.color2.code : creature.parents.parent1.colors.color1.code">
-        </app-llama>
+            </app-llama>
+          </div>
+        </div>
+        <div class="elt sex">
+          <mat-icon *ngIf="creature.parents.parent1.sex === 'M'" class="male">male</mat-icon>
+          <mat-icon *ngIf="creature.parents.parent1.sex === 'F'" class="female">female</mat-icon>
+        </div>
+        <div class="elt gene" *ngIf="creature.parents.parent1.genes.gene1">
+          <app-creature-gene code="{{creature.parents.parent1.genes.gene1}}"></app-creature-gene>
+        </div>
+        <div class="elt gene" *ngIf="creature.parents.parent1.genes.gene2">
+          <app-creature-gene code="{{creature.parents.parent1.genes.gene2}}"></app-creature-gene>
+        </div>
+        <div class="elt gene" *ngIf="!creature.parents.parent1.genes.gene1 && !creature.parents.parent1.genes.gene2">
+          No gene
+        </div>
       </div>
-      <div class="parent-line sex-icon-creature-details">
-        <mat-icon *ngIf="creature.parents.parent1.sex === 'M'" class="male">male</mat-icon>
-        <mat-icon *ngIf="creature.parents.parent1.sex === 'F'" class="female">female</mat-icon>
-      </div>
-      <div class="parent-line">
-        <span *ngIf="creature.parents.parent1.genes.gene1">
-              <app-creature-gene code="{{creature.parents.parent1.genes.gene1}}"></app-creature-gene>
-        </span>
-        <span *ngIf="creature.parents.parent1.genes.gene2">
-          -<app-creature-gene code="{{creature.parents.parent1.genes.gene2}}"></app-creature-gene>
-        </span>
-      </div>
-    </div>
-    <div class="parent">
-      <div class="parent-image">
-        <app-llama [color1]="creature.parents.parent2.colors.color1.code"
-                   [color2]="creature.parents.parent2.colors.color2 ?
+      <div class="parent">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="creature.parents.parent2.colors.color1.code"
+                       [color2]="creature.parents.parent2.colors.color2 ?
                     creature.parents.parent2.colors.color2.code : creature.parents.parent2.colors.color1.code">
-        </app-llama>
-      </div>
-      <div class="parent-line sex-icon-creature-details">
-        <mat-icon *ngIf="creature.parents.parent2.sex === 'M'" class="male">male</mat-icon>
-        <mat-icon *ngIf="creature.parents.parent2.sex === 'F'" class="female">female</mat-icon>
-      </div>
-      <div class="parent-line">
-        <span *ngIf="creature.parents.parent2.genes.gene1">
-              <app-creature-gene code="{{creature.parents.parent2.genes.gene1}}"></app-creature-gene>
-        </span>
-        <span *ngIf="creature.parents.parent2.genes.gene2">
-          -<app-creature-gene code="{{creature.parents.parent2.genes.gene2}}"></app-creature-gene>
-        </span>
+            </app-llama>
+          </div>
+        </div>
+        <div class="elt sex">
+          <mat-icon *ngIf="creature.parents.parent2.sex === 'M'" class="male">male</mat-icon>
+          <mat-icon *ngIf="creature.parents.parent2.sex === 'F'" class="female">female</mat-icon>
+        </div>
+        <div class="elt gene" *ngIf="creature.parents.parent2.genes.gene1">
+          <app-creature-gene code="{{creature.parents.parent2.genes.gene1}}"></app-creature-gene>
+        </div>
+        <div class="elt gene" *ngIf="creature.parents.parent2.genes.gene2">
+          <app-creature-gene code="{{creature.parents.parent2.genes.gene2}}"></app-creature-gene>
+        </div>
+        <div class="elt gene" *ngIf="!creature.parents.parent2.genes.gene1 && !creature.parents.parent2.genes.gene2">
+          No gene
+        </div>
       </div>
     </div>
   </div>
 
 
-</div>
+  <div mat-dialog-actions>
+    <div id="buttons">
+      <!--    todo if creature in pen remove first then delete-->
+      <button mat-raised-button *ngIf="!creature.wild && creature.colors.color2" class="icon-button"
+              [matMenuTriggerFor]="menu_delete">
+        <mat-icon>attach_money</mat-icon>
+      </button>
 
-<div mat-dialog-actions class="buttons">
-  <div>
-    <button mat-stroked-button class="button-square" [disabled]="creaturesIdInPen.indexOf(creature.id) > -1"
-            *ngIf="!creature.wild && creature.colors.color2" [matMenuTriggerFor]="menu_delete_bi">
-      <mat-icon>attach_money</mat-icon>
-    </button>
-    <mat-menu #menu_delete_bi="matMenu">
-      <button mat-menu-item (click)="onDelete(creature)">Sell</button>
-    </mat-menu>
+      <button mat-raised-button *ngIf="creature.wild" class="icon-button" [matMenuTriggerFor]="menu_delete">
+        <mat-icon>delete_sweep</mat-icon>
+      </button>
 
-    <button mat-stroked-button class="button-square" [disabled]="creaturesIdInPen.indexOf(creature.id) > -1"
-            *ngIf="creature.wild" [matMenuTriggerFor]="menu_delete_wild">
-      <mat-icon>delete_sweep</mat-icon>
-    </button>
-    <mat-menu #menu_delete_wild="matMenu">
-      <button mat-menu-item (click)="onDelete(creature)">Release</button>
-    </mat-menu>
+      <button mat-raised-button *ngIf="!creature.wild && !creature.colors.color2" class="icon-button"
+              [matMenuTriggerFor]="menu_delete">
+        <mat-icon>delete_sweep</mat-icon>
+        <!--todo use this when baits available-->
+        <!--      <mat-icon>restore_from_trash</mat-icon>-->
+      </button>
 
-    <button mat-stroked-button class="button-square" [disabled]="creaturesIdInPen.indexOf(creature.id) > -1"
-            *ngIf="!creature.wild && !creature.colors.color2" [matMenuTriggerFor]="menu_delete_wild">
-      <mat-icon>delete_sweep</mat-icon>
-<!--      <mat-icon>restore_from_trash</mat-icon>-->
-    </button>
-    <!--todo use this when baits available-->
-    <mat-menu #menu_delete_mono="matMenu">
-      <button mat-menu-item (click)="onDelete(creature)">Release</button>
-    </mat-menu>
 
-    <button mat-stroked-button [matMenuTriggerFor]="menu_pen_add" class="button-square button-space"
-            *ngIf="creaturesIdInPen.indexOf(creature.id) === -1">
-      <mat-icon>fence</mat-icon>
-    </button>
+      <button mat-raised-button (click)="onClose()" cdkFocusRegionstart>Back</button>
+
+
+      <button mat-raised-button [matMenuTriggerFor]="menu_pen_add" class="icon-button"
+              *ngIf="creaturesIdInPen.indexOf(creature.id) === -1">
+        <mat-icon>fence</mat-icon>
+      </button>
+
+
+      <button mat-raised-button (click)="removeFromPen(creature)" class="in-pen icon-button" (click)="onClose()"
+              *ngIf="creaturesIdInPen.indexOf(creature.id) > -1">
+        <mat-icon>fence</mat-icon>
+      </button>
+    </div>
+
     <mat-menu #menu_pen_add="matMenu">
-      <button mat-menu-item (click)="addToPen(creature)" mat-dialog-close [disabled]="pen.creatures.length >= pen.size">
+      <button mat-menu-item (click)="addToPen(creature)" class="creature-details-menu-item"
+              [disabled]="pen.creatures.length >= pen.size">
         Add to pen ({{pen.creatures.length}}/{{pen.size}})
       </button>
     </mat-menu>
-
-    <button mat-flat-button (click)="removeFromPen(creature)" class="button-square button-space button-in-pen"
-            mat-dialog-close
-            *ngIf="creaturesIdInPen.indexOf(creature.id) > -1">
-      <mat-icon>fence</mat-icon>
-    </button>
+    <mat-menu #menu_delete="matMenu">
+      <button mat-menu-item (click)="onDelete(creature)" *ngIf="creature.colors.color2"
+              class="creature-details-menu-item">Sell llama
+      </button>
+      <!--todo romove !creature.colors.color2 condition when bait available-->
+      <button mat-menu-item (click)="onDelete(creature)" *ngIf="creature.wild || !creature.colors.color2"
+              class="creature-details-menu-item">Release llama
+      </button>
+      <!--todo use this when baits available-->
+      <!--        <button mat-menu-item (click)="onDelete(creature)" *ngIf="!creature.wild && !creature.colors.color2" class="creature-details-menu-item">-->
+      <!--          Collect wool and release-->
+      <!--        </button>-->
+    </mat-menu>
   </div>
-
-  <button mat-stroked-button mat-dialog-close cdkFocusRegionstart>Close</button>
 </div>

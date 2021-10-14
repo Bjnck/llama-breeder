@@ -9,6 +9,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
 import {Pen} from '../pen/pen.interface';
 import {environment} from '../../environments/environment';
+import {CreatureDetailsResponse} from '../shared/creature/details/creature-details-response.interface';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -32,7 +33,7 @@ export class BarnComponent implements OnInit {
   sex: string;
 
   throttle = 0;
-  distance = 2;
+  distance = 5;
   page = 0;
   size = 20;
 
@@ -75,16 +76,25 @@ export class BarnComponent implements OnInit {
   openDetails(creature: Creature) {
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
-      position: {top: '100px'},
-      minWidth: '272px',
-      maxWidth: '90%',
-      restoreFocus: false
+      disableClose: true,
+      position: {top: '50px'},
+      width: '100%',
+      maxWidth: '500px',
+      minWidth: '340px',
+      restoreFocus: false,
+      // hasBackdrop: true,
+      // backdropClass: 'backdrop-dialog'
     }).afterClosed().subscribe({
-      next: resp => {
-        if (resp != null && resp.delete != null) {
+      next: (response: CreatureDetailsResponse) => {
+        if (response.baby) {
+          this.addBabyToList(response.baby);
+        }
+
+        if (response.deletedId) {
           this.creatureCount--;
           this.creatures.splice(this.creatures.findIndex(
-            i => i.id.toString() === resp.delete.id.toString()), 1);
+            i => i.id.toString() === response.deletedId.toString()), 1);
+          // todo must list again using filters
           this.creatureService.list(1, this.creatures.length, false)
             .subscribe((creatures: Creature[]) => {
               if (creatures && creatures.length > 0 && !this.creatures.find(
@@ -95,5 +105,13 @@ export class BarnComponent implements OnInit {
         }
       }
     });
+  }
+
+  private addBabyToList(creature: Creature) {
+    // todo also depends on the filters
+    if (this.creatures.length < (this.page + 1) * this.size) {
+      this.creatureCount++;
+      this.creatures.push(creature);
+    }
   }
 }

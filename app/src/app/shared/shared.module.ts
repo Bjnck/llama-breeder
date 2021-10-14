@@ -23,6 +23,7 @@ import {CreatureGeneComponent} from './creature/creature-gene.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {RomanPipe} from "./creature/details/roman.pipe";
 import {MatDividerModule} from "@angular/material/divider";
+import {RedeemCreatureDialogComponent} from "./creature/redeem/redeem-creature.dialog";
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import {MatDividerModule} from "@angular/material/divider";
     ItemIconComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
+    RedeemCreatureDialogComponent,
     CreatureGeneComponent,
     RomanPipe
   ],

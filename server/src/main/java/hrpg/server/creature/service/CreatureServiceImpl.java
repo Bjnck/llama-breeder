@@ -6,9 +6,7 @@ import hrpg.server.common.util.DurationUtil;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.dao.CreatureSpecification;
-import hrpg.server.creature.service.exception.CreatureInUseException;
-import hrpg.server.creature.service.exception.CreatureNotFoundException;
-import hrpg.server.creature.service.exception.MaxCreaturesException;
+import hrpg.server.creature.service.exception.*;
 import hrpg.server.item.type.ItemCode;
 import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.UserService;
@@ -19,11 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static hrpg.server.creature.type.CreatureConstant.*;
 
@@ -62,11 +57,6 @@ public class CreatureServiceImpl implements CreatureService {
     @Override
     public Optional<CreatureDto> findById(long id) {
         return creatureRepository.findById(id).map(creature -> creatureMapper.toDto(creature, userService));
-    }
-
-    @Override
-    public long count() {
-        return creatureRepository.count();
     }
 
     @Override
@@ -168,32 +158,28 @@ public class CreatureServiceImpl implements CreatureService {
         }
     }
 
-    //todo send to computor
-    @Transactional(rollbackFor = CreatureNotFoundException.class)
+    @Transactional(rollbackFor = {
+            CreatureNotFoundException.class,
+            CreatureNotPregnantException.class,
+            CreatureInPregnancyException.class,
+            MaxCreaturesException.class
+    })
     @Override
-    public List<CreatureDto> calculateBirth(List<Long> ids) throws CreatureNotFoundException {
-        List<CreatureDto> babies = new ArrayList<>();
+    public CreatureDto redeem(long id)
+            throws CreatureNotFoundException, CreatureNotPregnantException, CreatureInPregnancyException, MaxCreaturesException {
+        ZonedDateTime now = ZonedDateTime.now();
 
-        for (long id : ids) {
-            Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
-            if (creature.getPregnancyEndTime().isBefore(ZonedDateTime.now()))
-                babies.addAll(getBabies(creature));
-        }
+        Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
 
-        //update user level if new generation discovered
-        if (!babies.isEmpty()) {
-            int maxGen = Collections.max(babies.stream().map(CreatureDto::getGeneration).collect(Collectors.toList()));
-            userService.updateLevel(maxGen);
-        }
+        if (creature.getPregnancyEndTime() == null) throw new CreatureNotPregnantException();
+        if (creature.getPregnancyEndTime().isAfter(now)) throw new CreatureInPregnancyException();
 
-        return babies;
-    }
+        //get first as for now only 1 baby is generated, but the factory can be setup to generate many
+        CreatureDto baby = creatureFactory.generateForBirth(creature.getId()).stream().findFirst().orElseThrow();
 
-    private List<CreatureDto> getBabies(Creature creature) throws CreatureNotFoundException {
-        try {
-            return creatureFactory.generateForBirth(creature.getId());
-        } catch (MaxCreaturesException e) {
-            return Collections.emptyList();
-        }
+        //update level if needed
+        userService.updateLevel(baby.getGeneration());
+
+        return baby;
     }
 }

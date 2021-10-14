@@ -98,7 +98,7 @@ export class LaunchCaptureComponent implements OnInit, OnDestroy {
     this.dialog.open(RedeemCaptureDialogComponent, {
       disableClose: true,
       data: this.capture,
-      position: {top: '60px'},
+      position: {top: '50px'},
       width: '100%',
       maxWidth: '500px',
       minWidth: '340px',

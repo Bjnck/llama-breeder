@@ -60,14 +60,14 @@ public class CreatureFactoryImpl implements CreatureFactory {
                         .sex(Sex.F)
                         .color1(colorFactory.getForCapture(null))
                         .build());
-            } else if(creatureCount == 1) {
+            } else if (creatureCount == 1) {
                 //second creature
                 Creature creature = creatureRepository.findAll(Pageable.unpaged()).stream().findFirst().orElseThrow();
                 creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.M)
                         .color1(colorFactory.getForCapture(Collections.singletonList(creature.getInfo().getColor1().getCode())))
                         .build());
-            }else{
+            } else {
                 List<String> colors = creatureRepository.findAll(PageRequest.of(0, 2))
                         .map(c -> c.getInfo().getColor1().getCode())
                         .getContent();
@@ -94,7 +94,10 @@ public class CreatureFactoryImpl implements CreatureFactory {
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {
+            MaxCreaturesException.class,
+            CreatureNotFoundException.class
+    })
     @Override
     public List<CreatureDto> generateForBirth(long id) throws MaxCreaturesException, CreatureNotFoundException {
         validateMaxCreaturesReached();

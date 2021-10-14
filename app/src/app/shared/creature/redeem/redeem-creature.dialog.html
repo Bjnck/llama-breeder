@@ -1,0 +1,112 @@
+<div id="redeem-creature">
+  <div mat-dialog-content>
+    <div id="info">
+      <div class="elt">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="creature.colors.color1.code"
+                       [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+            </app-llama>
+          </div>
+        </div>
+        <div class="details">
+          <div class="sex">
+            <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+            <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+          </div>
+          <div class="gene" *ngIf="creature.genes.gene1">
+            <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+          </div>
+          <div class="gene" *ngIf="creature.genes.gene2">
+            <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+          </div>
+          <div class="gene obscure" *ngIf="!creature.genes.gene1 && !creature.genes.gene2">No gene</div>
+          <div class="gene" *ngIf="!creature.genes.gene2"></div>
+        </div>
+      </div>
+      <!--      todo use info from male pregnancy-->
+      <div class="elt">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="creature.colors.color1.code"
+                       [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+            </app-llama>
+          </div>
+        </div>
+        <div class="details">
+          <div class="sex">
+            <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+            <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+          </div>
+          <div class="genes">
+            <div class="gene" *ngIf="creature.genes.gene1">
+              <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+            </div>
+            <div class="gene" *ngIf="creature.genes.gene2">
+              <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+            </div>
+            <div class="gene obscure" *ngIf="!creature.genes.gene1 && !creature.genes.gene2">No gene</div>
+            <div class="gene" *ngIf="!creature.genes.gene2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="loot">
+      <div class="redeem-logo step-0" *ngIf="step <= 0">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-1" *ngIf="step === 1">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-2" *ngIf="step === 2">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-3" *ngIf="step === 3">
+        <mat-icon>redeem</mat-icon>
+      </div>
+
+      <div id="creature" *ngIf="step > 3 && baby">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="baby.colors.color1.code"
+                       [color2]="baby.colors.color2 ? baby.colors.color2.code : baby.colors.color1.code">
+            </app-llama>
+          </div>
+        </div>
+        <div class="info">
+          <div class="sex">
+            <mat-icon class="male" *ngIf="baby.sex === 'M'">male</mat-icon>
+            <mat-icon class="female" *ngIf="baby.sex === 'F'">female</mat-icon>
+          </div>
+          <div class="genes">
+            <div *ngIf="baby.genes.gene1">
+              <app-creature-gene code="{{baby.genes.gene1}}"></app-creature-gene>
+            </div>
+            <div class="gene2" *ngIf="baby.genes.gene2">
+              <app-creature-gene code="{{baby.genes.gene2}}"></app-creature-gene>
+            </div>
+            <div class="obscure" *ngIf="!baby.genes.gene1 && !baby.genes.gene2">
+              No gene
+            </div>
+          </div>
+        </div>
+
+        <div class="message" *ngIf="step > 3 && baby && baby.generation > user.level">
+          Congrats, you discovered a new generation of llamas !
+        </div>
+        <div class="message" *ngIf="step > 3 && baby && baby.generation <= user.level">
+          Wow, a new llama is born !
+        </div>
+        <div class="message" *ngIf="step > 3 && !baby">
+          An error occurred, try again later...
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div mat-dialog-actions id="buttons">
+    <button mat-raised-button [mat-dialog-close]="baby" cdkFocusRegionstart [disabled]="step <= 3">Continue</button>
+  </div>
+</div>

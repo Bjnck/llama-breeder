@@ -1,152 +1,194 @@
-.input
+#creature-details ::-webkit-scrollbar
+  width: 0
+
+#creature-details .divider
+  margin-top: 10px
+  margin-bottom: 10px
+
+
+#creature-details #title #name
   background-color: inherit
   border: none
   outline: none
   color: inherit
   font: inherit
   width: 100%
+  font-size: 24px
 
-.title
-  display: inline-flex
 
-.block-info
+#creature-details #info
   display: flex
-.line
+
+#creature-details #info .image-wrapper
+  width: 80px
+  vertical-align: middle
+#creature-details #info .image
+  width: 75px
+  height: 75px
+
+#creature-details #info .details-wrapper
   display: flex
-.cell
-  width: 50%
-.cell-right
-  width: 25%
-.cell-left
-  width: 75%
+  justify-content: center
   text-align: center
+  width: 100%
+#creature-details #info .details
+  font-size: 16px
+  text-align: left
+#creature-details #info .details .line
+  display: flex
+  height: 25px
+#creature-details #info .details .detail
+  line-height: 25px
+  vertical-align: center
+  margin-left: 10px
 
-.left
-  width: 25%
-.right
-  width: 75%
-.image
-  width: 60px
-  height: 60px
-
-.divider
-  margin-top: 10px
-  margin-bottom: 10px
-
-::ng-deep .sex-icon-creature-details mat-icon
-  height: 20px
-  font-size: 20px
-.male
+#creature-details #info .details .detail.sex
+  margin-left: 5px
+#creature-details #info .details .detail.sex .male
   color: lightblue
-.female
+#creature-details #info .details .detail.sex .female
   color: pink
 
-.stat
+
+#creature-details #breeding
+  display: flex
+  justify-content: space-between
+  font-size: 16px
+  height: 60px
+  line-height: 60px
+  vertical-align: center
+  margin-bottom: 10px
+  width: 100%
+#creature-details #breeding .count
+  display: flex
+#creature-details #breeding .count mat-icon
+  margin-top: 18px
+  margin-right: 10px
+#creature-details #breeding .info
+  margin-left: 20px
+#creature-details #breeding .info .redeem
+  display: flex
+#creature-details #breeding .info .redeem button
+  background-color: goldenrod
+  height: 50px
+  width: 50px
+  margin-left: 10px
+  padding: 0
+#creature-details #breeding .info .redeem button mat-icon
+  height: 40px
+  width: 40px
+  font-size: 40px
+
+
+#creature-details #stats .stat
   display: flex
   justify-content: space-between
   width: 100%
-.stat-icon
-  width: 12px
   height: 20px
-.stat-line
+  margin-bottom: 5px
+#creature-details #stats .stat .icon
+  height: 20px
+  width: 20px
+#creature-details #stats .stat .icon mat-icon
+  font-size: 20px
+::ng-deep #creature-details #stats .stat .icon mat-icon svg
+  height: 20px
+  width: 20px
+#creature-details #stats .stat .line
   padding-left: 10px
   padding-right: 10px
   width: 100%
-  padding-top: 8px
-.stat-line-wrapper
-  height: 6px
-  border-radius: 3px
+  padding-top: 5px
+#creature-details #stats .stat .line-wrapper
+  height: 10px
+  border-radius: 5px
   background-color: #5d5d5d
   width: 100%
-.stat-line-value
-  height: 6px
-  border-radius: 3px
-.stat-pc
-  font-size: 10px
-  width: 30px
+#creature-details #stats .stat .line-value
+  height: 10px
+  border-radius: 5px
+#creature-details #stats .stat .pc
+  font-size: 16px
+  width: 50px
 
-.energy mat-icon, .thirst mat-icon, .love mat-icon
-  font-size: 12px
-  width: 12px
-  height: 12px
-  margin-top: 3px
-.hunger mat-icon, .maturity mat-icon
-  height: 12px
-  width: 12px
-  margin-top: 2px
-  margin-right: 2px
-
-.stat-icon.energy
+#creature-details #stats .stat .line-value.energy
+  background-color: lightyellow
+#creature-details #stats .stat .icon.energy
   color: lightyellow
-.stat-icon.hunger
+
+#creature-details #stats .stat .line-value.hunger
+  background-color: sandybrown
+#creature-details #stats .stat .icon.hunger
   color: sandybrown
-.stat-icon.thirst
+
+#creature-details #stats .stat .line-value.thirst
+  background-color: cornflowerblue
+#creature-details #stats .stat .icon.thirst
   color: cornflowerblue
-.stat-icon.love
+
+#creature-details #stats .stat .line-value.love
+  background-color: palevioletred
+#creature-details #stats .stat .icon.love
   color: palevioletred
-.stat-icon.maturity
+
+#creature-details #stats .stat .line-value.maturity
+  background-color: skyblue
+#creature-details #stats .stat .icon.maturity
   color: skyblue
 
-.disable .stat-icon.thirst, .disable .stat-icon.hunger, .disable .stat-icon.love
+#creature-details #stats .stat.disable .icon, #creature-details #stats .stat.disable .pc
   color: #717171
-
-.stat-line-value.energy
-  background-color: lightyellow
-.stat-line-value.hunger
-  background-color: sandybrown
-.stat-line-value.thirst
-  background-color: cornflowerblue
-.stat-line-value.love
-  background-color: palevioletred
-.stat-line-value.maturity
-  background-color: skyblue
-
-.disable .stat-line-value.hunger, .disable .stat-line-value.thirst, .disable .stat-line-value.love
+#creature-details #stats .stat.disable .line-value
   background-color: #717171
 
-.breeding
-  display: flex
-  margin-bottom: 5px
-.breeding-icon
-  margin-right: 5px
-.breeding-icon mat-icon
-  width: 16px
-  height: 16px
-.breeding-count
-  margin-right: 20px
 
-.disable
-  color: #717171
-
-.help
-  margin-top: 5px
+#help
+  margin-top: 10px
   text-align: center
-  font-size: 12px
-  padding-right: 10px
-  padding-left: 10px
+  font-size: 16px
+  color: #c9c9c9
+  margin-bottom: 10px
 
-.parent
+
+#creature-details #parents .parent
   display: flex
-  height: 30px
+  height: 40px
   margin-bottom: 5px
-.parent-image
-  width: 30px
-.parent-line
-  line-height: 30px
+  line-height: 40px
   vertical-align: middle
-.parent-line mat-icon
-  padding-top: 5px
+  font-size: 16px
+#creature-details #parents .parent .elt
+  margin-left: 5px
 
-.buttons
+#creature-details #parents .parent .image-wrapper
+  height: 40px
+  width: 40px
+
+#creature-details #parents .parent .sex
+  margin-top: 8px
+#creature-details #parents .parent .sex .male
+  color: lightblue
+#creature-details #parents .parent .sex .female
+  color: pink
+
+
+#creature-details #buttons
   display: flex
   justify-content: space-between
-.button-square
-  width: 36px
-  min-width: 36px
+  width: 100%
+#creature-details #buttons button
+  font-size: 16px
+#creature-details #buttons .icon-button
   padding: 0
-.button-in-pen
+#creature-details #buttons .icon-button mat-icon
+  height: 36px
+  width: 40px
+  font-size: 32px
+  margin-top: 4px
+
+#creature-details #buttons .in-pen
   background-color: brown
 
-.button-space
-  margin-left: 8px
+.creature-details-menu-item
+  font-size: 16px
 

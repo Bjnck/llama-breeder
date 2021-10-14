@@ -35,4 +35,8 @@ export class CreatureService {
   delete(creature: any): Observable<any> {
     return creature.remove();
   }
+
+  redeem(id: string): Observable<Creature> {
+    return this.baseRest.customPOST({}, id + '/action/redeem');
+  }
 }

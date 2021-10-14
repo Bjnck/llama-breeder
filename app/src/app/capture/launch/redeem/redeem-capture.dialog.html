@@ -1,7 +1,7 @@
 <div id="redeem-capture">
   <div mat-dialog-content>
     <div id="info">
-      <div class="info-elt">
+      <div class="elt">
         <div class="logo" [ngClass]="{'obscure': capture.quality <= 0}">
           <mat-icon svgIcon="net"></mat-icon>
         </div>
@@ -12,7 +12,7 @@
         </div>
       </div>
 
-      <div class="info-elt">
+      <div class="elt">
         <div class="logo" [ngClass]="{'obscure': capture.bait <= 0}">
           <mat-icon svgIcon="bait"></mat-icon>
         </div>
@@ -55,7 +55,7 @@
       </div>
 
       <div class="message" *ngIf="step > 3 && capture.color">
-        Congrats, you captured a new llama !
+        Yeah, you captured a new llama !
       </div>
       <div class="message" *ngIf="step > 3 && !capture.color">
         An error occurred, try again later...

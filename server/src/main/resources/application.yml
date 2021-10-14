@@ -32,7 +32,7 @@ parameters:
     chance-female: 50
     chance-cross-breed: 20
     chance-bi-color: 50
-    max-babies: 2
+    max-babies: 1
     energy-time-unit: MINUTES
     energy-time-value: 1
     pregnancy-time-unit: MINUTES

@@ -1,5 +1,5 @@
-import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
+import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Creature} from '../creature.interface';
 import {CreatureService} from '../creature.service';
 import {Pen} from '../../../pen/pen.interface';
@@ -9,6 +9,8 @@ import {TimerUtil} from '../../timer/timer.util';
 import {UserService} from '../../user/user.service';
 import {User} from '../../user/user.interface';
 import {environment} from '../../../../environments/environment';
+import {RedeemCreatureDialogComponent} from '../redeem/redeem-creature.dialog';
+import {CreatureDetailsResponse} from "./creature-details-response.interface";
 
 @Component({
   templateUrl: './creature-details.dialog.html',
@@ -32,8 +34,10 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
   name: string;
   timeLeft: number;
   interval;
+  baby: Creature;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: CreatureDetailsData,
+              private dialog: MatDialog,
               private dialogRef: MatDialogRef<CreatureDetailsDialogComponent>,
               private creatureService: CreatureService,
               private penService: PenService,
@@ -66,16 +70,23 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
     this.creatureService.delete(creature).subscribe({
       next: resp => {
         this.userService.updateCoins(this.user.coins + resp.coins);
-        this.dialogRef.close({delete: creature});
+        this.onClose(true);
       }
     });
+  }
+
+  onClose(isDelete = false) {
+    const response: CreatureDetailsResponse = {baby: this.baby};
+    if (isDelete) {
+      response.deletedId = this.creature.id;
+    }
+    this.dialogRef.close(response);
   }
 
   addToPen(creature: Creature) {
     this.addCreature(creature);
     this.penService.update(this.pen).subscribe(
-      pen => {
-      },
+      pen => this.onClose(),
       error => this.removeCreature(creature));
   }
 
@@ -122,17 +133,37 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
   }
 
   private setTimer() {
-    this.timeLeft = TimerUtil.timeLeft(new Date(this.creature.pregnancyEndTime));
+    this.timeLeft = TimerUtil.timeLeft(TimerUtil.utc(new Date(this.creature.pregnancyEndTime)));
     if (TimerUtil.utc(new Date(this.creature.pregnancyEndTime)) >= TimerUtil.utc(new Date())) {
-      this.timeLeft = TimerUtil.timeLeft(new Date(this.creature.pregnancyEndTime));
+      this.timeLeft = TimerUtil.timeLeft(TimerUtil.utc(new Date(this.creature.pregnancyEndTime)));
       this.interval = setInterval(() => {
         if (this.timeLeft > 0) {
-          this.timeLeft = TimerUtil.timeLeft(new Date(this.creature.pregnancyEndTime));
+          this.timeLeft = TimerUtil.timeLeft(TimerUtil.utc(new Date(this.creature.pregnancyEndTime)));
         } else {
-          // todo send event to notify barn to update creature in list
           clearInterval(this.interval);
         }
       }, 100);
     }
+  }
+
+  redeem() {
+    this.dialog.open(RedeemCreatureDialogComponent, {
+      disableClose: true,
+      data: {creature: this.creature, user: this.user},
+      position: {top: '50px'},
+      width: '100%',
+      maxWidth: '500px',
+      minWidth: '340px',
+      restoreFocus: false
+    }).afterClosed().subscribe({
+      next: (creature: Creature) => {
+        if (creature) {
+          this.baby = creature;
+          this.creature.pregnant = false;
+          this.creature.pregnancyStartTime = null;
+          this.creature.pregnancyEndTime = null;
+        }
+      }
+    });
   }
 }

@@ -19,7 +19,6 @@ public class CreatureUtil {
     public static boolean isHittable(Creature creature, ItemCode itemCode) {
         if (creature.getEnergy() <= ENERGY_MIN) return false;
         if (creature.getMaturity() < MATURITY_MAX) return false;
-        if (creature.isPregnant()) return false;
 
         switch (itemCode) {
             case HUNGER:

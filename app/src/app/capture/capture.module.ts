@@ -11,19 +11,23 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {HistoryCaptureComponent} from './history/history-capture.component';
 import {NetCountResolve} from './launch/net-count.resolve';
+import {RedeemCaptureDialogComponent} from './launch/redeem/redeem-capture.dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
     CaptureComponent,
     HistoryCaptureComponent,
-    LaunchCaptureComponent
+    LaunchCaptureComponent,
+    RedeemCaptureDialogComponent
   ],
   imports: [
     BrowserModule,
     SharedModule,
     MatMenuModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatDialogModule
   ],
   exports: [],
   providers: [

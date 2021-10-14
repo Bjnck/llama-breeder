@@ -1,15 +1,16 @@
 package hrpg.server.capture.resource;
 
-import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.capture.service.CaptureDto;
 import hrpg.server.capture.service.CaptureService;
 import hrpg.server.capture.service.exception.BaitUnavailableException;
+import hrpg.server.capture.service.exception.CaptureNotFoundException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
+import hrpg.server.creature.service.exception.MaxCreaturesException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,25 +41,20 @@ public class CaptureController {
 
     private final CaptureService captureService;
     private final CaptureResourceMapper captureResourceMapper;
-    private final CaptureComputor captureComputor;
 
     public CaptureController(EntityLinks entityLinks,
                              PagedResourcesAssembler<CaptureResponse> pagedResourcesAssembler,
                              CaptureService captureService,
-                             CaptureResourceMapper captureResourceMapper,
-                             CaptureComputor captureComputor) {
+                             CaptureResourceMapper captureResourceMapper) {
         this.links = entityLinks.forType(CaptureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.captureService = captureService;
         this.captureResourceMapper = captureResourceMapper;
-        this.captureComputor = captureComputor;
     }
 
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody CaptureRequest request) {
-        captureComputor.compute();
-
         CaptureResponse response;
         try {
             response = captureResourceMapper.toResponse(captureService.create(request.getQuality(), request.getBait()));
@@ -78,7 +74,6 @@ public class CaptureController {
 
     @GetMapping("{id}")
     public CaptureResponse get(@PathVariable long id) {
-        captureComputor.compute(id);
         return toResponse(captureService.findById(id).orElseThrow(ResourceNotFoundException::new));
     }
 
@@ -86,9 +81,24 @@ public class CaptureController {
     @SortValues(values = {"id", "startTime", "endTime"})
     public PagedModel<EntityModel<CaptureResponse>> search(
             @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        captureComputor.compute();
         Page<CaptureResponse> captures = captureService.search(pageable).map(this::toResponse);
         return pagedResourcesAssembler.toModel(captures);
+    }
+
+    //todo add to int test
+    @PostMapping("{id}/action/redeem")
+    public CaptureResponse redeem(@PathVariable long id) {
+        try {
+            return toResponse(captureService.redeem(id));
+        } catch (CaptureNotFoundException e) {
+            throw new ResourceNotFoundException();
+        } catch (RunningCaptureException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("runningCapture").build()));
+        } catch (MaxCreaturesException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code("maxCreatures").build()));
+        }
     }
 
     private CaptureResponse toResponse(@NotNull CaptureDto captureDto) {

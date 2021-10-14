@@ -10,10 +10,10 @@ import java.time.temporal.ChronoUnit;
 public class CapturesProperties {
     private int timeValue;
     private ChronoUnit timeUnit;
-    private int timeValueNet;
-    private ChronoUnit timeUnitNet;
     private int timeValueFirst;
     private ChronoUnit timeUnitFirst;
+    private int timeValueThird;
+    private ChronoUnit timeUnitThird;
     private int max;
 }
 

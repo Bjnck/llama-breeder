@@ -2,8 +2,8 @@ parameters:
   captures:
     time-unit: SECONDS
     time-value: 5
-    time-unit-net: SECONDS
-    time-value-net: 10
+    time-unit-third: SECONDS
+    time-value-third: 5
   creatures:
     energy-time-unit: MILLIS
     energy-time-value: 1

@@ -14,13 +14,17 @@ export class CaptureService {
               private restangular: Restangular) {
   }
 
-  listCaptures(size: number): Observable<Capture[]> {
+  list(size: number): Observable<Capture[]> {
     return this.baseRest.getList({size});
   }
 
-  createCapture(quality: number): Observable<Capture> {
+  create(quality: number): Observable<Capture> {
     return this.restFullResponse.all('captures').post({quality})
       .pipe(flatMap((response: any) =>
         this.baseRest.oneUrl('captures', response.headers.headers.get('location')).get()));
+  }
+
+  redeem(id: string): Observable<Capture> {
+    return this.baseRest.customPOST({}, id + '/action/redeem');
   }
 }

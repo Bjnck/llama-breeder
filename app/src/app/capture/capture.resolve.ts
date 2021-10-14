@@ -11,6 +11,6 @@ export class CaptureResolve implements Resolve<Capture[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Capture[]> {
-    return this.captureService.listCaptures(11);
+    return this.captureService.list(11);
   }
 }

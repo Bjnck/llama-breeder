@@ -6,6 +6,7 @@ import {CaptureService} from './capture.service';
 import {AuthService} from '../shared/auth/auth.service';
 import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
+import {TimerUtil} from '../shared/timer/timer.util';
 
 @Component({
   templateUrl: './capture.component.html',
@@ -17,40 +18,50 @@ import {UserService} from '../shared/user/user.service';
 
 export class CaptureComponent implements OnInit {
   user: User;
-  captures: Capture[];
+  activeCapture: Capture;
+  history: Capture[];
+  redeem = false;
 
   constructor(private headerService: HeaderService,
               private authService: AuthService,
               private route: ActivatedRoute,
-              private captureService: CaptureService,
               private userService: UserService) {
   }
 
   ngOnInit() {
     this.headerService.showHeader('Wild Lands', false);
     this.user = this.route.snapshot.data.user;
-    this.captures = this.route.snapshot.data.captures;
+    const captures: Capture[] = this.route.snapshot.data.captures;
     // todo remove this when bait is managed by server
-    this.captures.forEach(capture => capture.bait = 0);
+    captures.forEach(capture => capture.bait = 0);
+
+    this.activeCapture = captures.find(capture => !capture.sex);
+    if (this.activeCapture) {
+      this.redeem = TimerUtil.utc(new Date(this.activeCapture.endTime)) < TimerUtil.utc(new Date());
+    }
+    this.history = captures.filter(capture => capture.sex).slice(0, 10);
   }
 
-  get activeCapture(): Capture {
-    return this.captures.find(capture => !capture.sex);
-  }
-
-  get history(): Capture[] {
-    return this.captures.filter(capture => capture.sex).slice(0, 10);
+  onCaptureStarted(capture: Capture) {
+    this.activeCapture = capture;
   }
 
   onCaptureFinished() {
-    this.captureService.listCaptures(11)
-      .subscribe(captures => {
-        this.captures = captures;
+    this.redeem = true;
+  }
 
-        // update user level if tutorial ended
-        if (this.user.level <= 0) {
-          this.userService.fetch();
-        }
-      });
+  onRedeem(capture: Capture) {
+    this.activeCapture = null;
+    this.redeem = false;
+
+    const newHistory = this.history.reverse();
+    newHistory.push(capture);
+    this.history = newHistory.reverse();
+
+    // todo we can use cache for user and directly change level to 1
+    // update user level if tutorial ended
+    if (this.user.level <= 0 && this.history.length >= 3) {
+      this.userService.fetch();
+    }
   }
 }

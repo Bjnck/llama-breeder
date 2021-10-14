@@ -1,6 +1,5 @@
 package hrpg.server.creature.service;
 
-import hrpg.server.capture.service.CaptureComputor;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.service.exception.CreatureNotFoundException;
@@ -25,19 +24,16 @@ public class CreatureComputorImpl implements CreatureComputor {
 
     private final CreatureRepository creatureRepository;
     private final PenRepository penRepository;
-    private final CaptureComputor captureComputor;
     private final PenComputor penComputor;
     private final CreatureService creatureService;
 
     public CreatureComputorImpl(CreatureRepository creatureRepository,
                                 PenRepository penRepository,
-                                CaptureComputor captureComputor,
                                 PenComputor penComputor,
                                 CreatureService creatureService) {
         this.creatureRepository = creatureRepository;
         this.penRepository = penRepository;
         ;
-        this.captureComputor = captureComputor;
         this.penComputor = penComputor;
         this.creatureService = creatureService;
     }
@@ -70,9 +66,6 @@ public class CreatureComputorImpl implements CreatureComputor {
             }
             pageRequestBirth = pageRequestBirth.next();
         } while (!creaturesBirth.isEmpty());
-
-        //generate new creatures from capture
-        captureComputor.compute();
 
         //update statistics for all creatures in pen
         penComputor.compute();

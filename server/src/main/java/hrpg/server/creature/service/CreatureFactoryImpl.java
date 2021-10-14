@@ -9,6 +9,7 @@ import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.creature.type.Sex;
 import hrpg.server.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,19 +53,27 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
         //tutorial - always get female then male of different color, no gene
         if (userLevel == 0) {
-            if (creatureRepository.count() == 0) {
+            long creatureCount = creatureRepository.count();
+            if (creatureCount == 0) {
                 //if first creature
                 creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.F)
                         .color1(colorFactory.getForCapture(null))
                         .build());
-            } else {
+            } else if(creatureCount == 1) {
                 //second creature
-                Creature creature = creatureRepository.findAll(PageRequest.of(0, 1))
-                        .stream().findFirst().orElseThrow();
+                Creature creature = creatureRepository.findAll(Pageable.unpaged()).stream().findFirst().orElseThrow();
                 creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.M)
-                        .color1(colorFactory.getForCapture(creature.getInfo().getColor1().getCode()))
+                        .color1(colorFactory.getForCapture(Collections.singletonList(creature.getInfo().getColor1().getCode())))
+                        .build());
+            }else{
+                List<String> colors = creatureRepository.findAll(PageRequest.of(0, 2))
+                        .map(c -> c.getInfo().getColor1().getCode())
+                        .getContent();
+                creatureBuilder.info(CreatureInfo.builder()
+                        .sex(randomSex())
+                        .color1(colorFactory.getForCapture(colors))
                         .build());
             }
         } else {

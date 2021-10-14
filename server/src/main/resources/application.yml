@@ -20,12 +20,12 @@ parameters:
   items:
     max: 100
   captures:
-    time-unit: MINUTES
-    time-value: 15
-    time-unit-net: HOURS
-    time-value-net: 4
+    time-unit: HOURS
+    time-value: 1
     time-unit-first: SECONDS
     time-value-first: 5
+    time-unit-third: MINUTES
+    time-value-third: 10
     max: 20
   creatures:
     max: 250
@@ -82,7 +82,7 @@ parameters:
       gen-7: 320
       gen-8: 640
   genes:
-    chance-quality-0: 0
+    chance-quality-0: 1
     chance-quality-1: 5
     chance-quality-2: 10
     chance-quality-3: 20

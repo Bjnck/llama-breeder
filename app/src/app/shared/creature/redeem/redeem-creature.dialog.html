@@ -24,29 +24,28 @@
           <div class="gene" *ngIf="!creature.genes.gene2"></div>
         </div>
       </div>
-      <!--      todo use info from male pregnancy-->
       <div class="elt">
         <div class="image-wrapper">
           <div class="image">
-            <app-llama [color1]="creature.colors.color1.code"
-                       [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+            <app-llama [color1]="creature.pregnancyMale.colors.color1.code"
+                       [color2]="creature.pregnancyMale.colors.color2 ? creature.pregnancyMale.colors.color2.code : creature.pregnancyMale.colors.color1.code">
             </app-llama>
           </div>
         </div>
         <div class="details">
           <div class="sex">
-            <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
-            <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+            <mat-icon *ngIf="creature.pregnancyMale.sex === 'M'" class="male">male</mat-icon>
+            <mat-icon *ngIf="creature.pregnancyMale.sex === 'F'" class="female">female</mat-icon>
           </div>
           <div class="genes">
-            <div class="gene" *ngIf="creature.genes.gene1">
-              <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+            <div class="gene" *ngIf="creature.pregnancyMale.genes.gene1">
+              <app-creature-gene code="{{creature.pregnancyMale.genes.gene1}}"></app-creature-gene>
             </div>
-            <div class="gene" *ngIf="creature.genes.gene2">
-              <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+            <div class="gene" *ngIf="creature.pregnancyMale.genes.gene2">
+              <app-creature-gene code="{{creature.pregnancyMale.genes.gene2}}"></app-creature-gene>
             </div>
-            <div class="gene obscure" *ngIf="!creature.genes.gene1 && !creature.genes.gene2">No gene</div>
-            <div class="gene" *ngIf="!creature.genes.gene2"></div>
+            <div class="gene obscure" *ngIf="!creature.pregnancyMale.genes.gene1 && !creature.pregnancyMale.genes.gene2">No gene</div>
+            <div class="gene" *ngIf="!creature.pregnancyMale.genes.gene2"></div>
           </div>
         </div>
       </div>

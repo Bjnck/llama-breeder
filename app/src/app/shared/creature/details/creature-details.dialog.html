@@ -46,14 +46,14 @@
     <div id="breeding">
       <div class="count">
         <div>
-          <mat-icon *ngIf="creature.breedingCount < breedingMax">favorite_border</mat-icon>
-          <mat-icon *ngIf="creature.breedingCount >= breedingMax">heart_broken</mat-icon>
+          <mat-icon *ngIf="creature.pregnancyCount < breedingMax">favorite_border</mat-icon>
+          <mat-icon *ngIf="creature.pregnancyCount >= breedingMax">heart_broken</mat-icon>
         </div>
-        <div>{{creature.breedingCount}}/{{breedingMax}}</div>
+        <div>{{creature.pregnancyCount}}/{{breedingMax}}</div>
       </div>
       <div class="info">
-        <div *ngIf="!creature.pregnant && creature.breedingCount >= breedingMax">Max births reached</div>
-        <div *ngIf="timeLeft > 0">{{timeLeft | date:'HH:mm:ss':'UTC'}}</div>
+        <div *ngIf="!creature.pregnant && creature.pregnancyCount >= breedingMax">Max births reached</div>
+        <div *ngIf="timeLeft > 0"><span class="baby-message">Baby's on the way</span>{{timeLeft | date:'HH:mm:ss':'UTC'}}</div>
         <div class="redeem" *ngIf="creature.pregnant && timeLeft <= 0">
           <div>What's that ?</div>
           <div>
@@ -68,7 +68,7 @@
     <div id="stats">
       <div class="stat" *ngIf="creature.statistics.maturity < maturityMax">
         <div class="icon maturity">
-          <mat-icon svgIcon="baby"></mat-icon>
+          <mat-icon>child_friendly</mat-icon>
         </div>
         <div class="line">
           <div class="line-wrapper">
@@ -166,7 +166,7 @@
         <div class="elt gene" *ngIf="creature.parents.parent1.genes.gene2">
           <app-creature-gene code="{{creature.parents.parent1.genes.gene2}}"></app-creature-gene>
         </div>
-        <div class="elt gene" *ngIf="!creature.parents.parent1.genes.gene1 && !creature.parents.parent1.genes.gene2">
+        <div class="elt gene obscure" *ngIf="!creature.parents.parent1.genes.gene1 && !creature.parents.parent1.genes.gene2">
           No gene
         </div>
       </div>
@@ -189,7 +189,7 @@
         <div class="elt gene" *ngIf="creature.parents.parent2.genes.gene2">
           <app-creature-gene code="{{creature.parents.parent2.genes.gene2}}"></app-creature-gene>
         </div>
-        <div class="elt gene" *ngIf="!creature.parents.parent2.genes.gene1 && !creature.parents.parent2.genes.gene2">
+        <div class="elt gene obscure" *ngIf="!creature.parents.parent2.genes.gene1 && !creature.parents.parent2.genes.gene2">
           No gene
         </div>
       </div>
@@ -213,7 +213,7 @@
               [matMenuTriggerFor]="menu_delete">
         <mat-icon>delete_sweep</mat-icon>
         <!--todo use this when baits available-->
-        <!--      <mat-icon>restore_from_trash</mat-icon>-->
+        <!--      <mat-icon>recycle</mat-icon>-->
       </button>
 
 
@@ -226,7 +226,7 @@
       </button>
 
 
-      <button mat-raised-button (click)="removeFromPen(creature)" class="in-pen icon-button" (click)="onClose()"
+      <button mat-raised-button (click)="removeFromPen(creature)" class="in-pen icon-button"
               *ngIf="creaturesIdInPen.indexOf(creature.id) > -1">
         <mat-icon>fence</mat-icon>
       </button>

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @NoArgsConstructor
@@ -25,10 +25,11 @@ public class CreatureDto {
 
     private boolean wild;
 
-    private int breedingCount;
+    private int pregnancyCount;
     private boolean pregnant;
-    private LocalDateTime pregnancyStartTime;
-    private LocalDateTime pregnancyEndTime;
+    private ZonedDateTime pregnancyStartTime;
+    private ZonedDateTime pregnancyEndTime;
+    private CreatureInfoDto pregnancyMaleInfo;
 
     private int energy;
     private int love;

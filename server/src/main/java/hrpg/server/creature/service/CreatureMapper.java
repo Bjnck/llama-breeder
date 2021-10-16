@@ -16,6 +16,7 @@ import org.mapstruct.Named;
         })
 public interface CreatureMapper {
 
+    @Mapping(target = "pregnancyCount", source = "breedingCount")
     @Mapping(target = "originalUser", source = "originalUserId", qualifiedByName = "toOriginalUser")
     CreatureDto toDto(Creature entity, @Context UserService userService);
 

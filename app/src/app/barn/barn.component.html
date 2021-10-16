@@ -1,36 +1,146 @@
-<div id="page">
+<div id="page" class="barn">
 
   <div id="space-top"></div>
 
-  <div id="filter">
-    <div>
-      <button mat-flat-button *ngIf="sex === 'M'" color="accent"
-              (click)="toggleSexFilter('F')">
-        <mat-icon>male</mat-icon>
+  <div id="filters">
+    <div class="filter generation">
+      <button mat-raised-button *ngIf="!generation" [matMenuTriggerFor]="menu_generation">
+        Gen.
       </button>
-      <button mat-flat-button *ngIf="sex === 'F'" color="accent"
-              (click)="toggleSexFilter(null)">
-        <mat-icon>female</mat-icon>
-      </button>
-      <button mat-stroked-button *ngIf="!sex" color="accent"
-              (click)="toggleSexFilter('M')">
-        <mat-icon svgIcon="genders"></mat-icon>
+      <button mat-raised-button class="selected" *ngIf="generation" (click)="toggleGenerationFilter(null)">
+        {{generation | roman}}
       </button>
     </div>
+    <div class="filter space sex">
+      <button mat-raised-button class="icon-button" *ngIf="!sex" (click)="toggleSexFilter('M')">
+        <mat-icon>people</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected male" *ngIf="sex === 'M'" (click)="toggleSexFilter('F')">
+        <mat-icon>male</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected female" *ngIf="sex === 'F'" (click)="toggleSexFilter(null)">
+        <mat-icon>female</mat-icon>
+      </button>
+    </div>
+    <div class="filter space barn">
+      <button mat-raised-button class="icon-button" *ngIf="!barn" (click)="toggleBarnFilter(true)">
+        <mat-icon>fence</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="barn" (click)="toggleBarnFilter(null)">
+        <mat-icon>fence</mat-icon>
+      </button>
+    </div>
+    <div class="filter space love">
+      <button mat-raised-button class="icon-button" *ngIf="!love" (click)="toggleLoveFilter(true)">
+        <mat-icon>favorite</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="love" (click)="toggleLoveFilter(null)">
+        <mat-icon>favorite</mat-icon>
+      </button>
+    </div>
+    <div class="filter space child">
+      <button mat-raised-button class="icon-button" *ngIf="!redeem && !pregnant && !baby"
+              (click)="toggleChildFilter('redeem')">
+        <mat-icon>child_care</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected redeem" *ngIf="redeem"
+              (click)="toggleChildFilter('pregnant')">
+        <mat-icon>redeem</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected pregnant" *ngIf="pregnant"
+              (click)="toggleChildFilter('baby')">
+        <mat-icon>pregnant_woman</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected baby" *ngIf="baby" (click)="toggleChildFilter(null)">
+        <mat-icon>child_friendly</mat-icon>
+      </button>
+    </div>
+    <div class="filter space old">
+      <button mat-raised-button class="icon-button" *ngIf="!old" (click)="toggleOldFilter(true)">
+        <mat-icon>heart_broken</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="old" (click)="toggleOldFilter(null)">
+        <mat-icon>heart_broken</mat-icon>
+      </button>
+    </div>
+  </div>
 
-    <div id="item-count">{{creatureCount}}/250</div>
+  <mat-menu #menu_generation="matMenu">
+    <button mat-menu-item (click)="toggleGenerationFilter(1)" class="barn-menu-item">
+      Generation {{1 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(2)" class="barn-menu-item" *ngIf="user.level >= 2">
+      Generation {{2 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(3)" class="barn-menu-item" *ngIf="user.level >= 3">
+      Generation {{3 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(4)" class="barn-menu-item" *ngIf="user.level >= 4">
+      Generation {{4 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(5)" class="barn-menu-item" *ngIf="user.level >= 5">
+      Generation {{5 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(6)" class="barn-menu-item" *ngIf="user.level >= 6">
+      Generation {{6 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(7)" class="barn-menu-item" *ngIf="user.level >= 7">
+      Generation {{7 | roman}}
+    </button>
+    <button mat-menu-item (click)="toggleGenerationFilter(8)" class="barn-menu-item" *ngIf="user.level >= 8">
+      Generation {{8 | roman}}
+    </button>
+  </mat-menu>
+
+
+  <div id="count">
+    <!--    todo use filter count-->
+    <div class="filter-count">results: {{filterCount}}</div>
+    <div class="total-count">{{totalCount}}/250</div>
   </div>
 
 
-  <div class="no-creatures-message" *ngIf="!creatures || creatures.length === 0">No llamas in the barn</div>
+  <div class="empty-message" *ngIf="!creatures || creatures.length === 0">No llamas in the barn</div>
 
   <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
        infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
 
     <div id="list-content">
-
       <div *ngFor="let creature of creatures">
-        <div class="creature mat-elevation-z1">
+        <div class="creature mat-elevation-z2" (click)="openDetails(creature)">
+
+          <div class="status">
+            <div class="left">
+              <div class="icon sex">
+                <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
+                <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
+              </div>
+            </div>
+            <div class="right">
+              <div class="icon space pen" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
+                <mat-icon>fence</mat-icon>
+              </div>
+              <div class="icon space baby" *ngIf="creature.statistics.maturity < maturityMax">
+                <mat-icon>child_friendly</mat-icon>
+              </div>
+              <div class="icon space wild" *ngIf="creature.wild">
+                <mat-icon>grass</mat-icon>
+              </div>
+              <div class="icon space pregnant" *ngIf="creature.pregnant && (creature.pregnancyEndTime | utc) > filterDate">
+                <mat-icon>pregnant_woman</mat-icon>
+              </div>
+              <div class="icon space redeem" *ngIf="creature.pregnant && (creature.pregnancyEndTime | utc) <= filterDate">
+                <mat-icon>redeem</mat-icon>
+              </div>
+              <div class="icon space love" *ngIf="creature.statistics.love >= statsMax">
+                <mat-icon>favorite</mat-icon>
+              </div>
+              <div class="icon space old" *ngIf="creature.pregnancyCount >= breedingMax">
+                <mat-icon>heart_broken</mat-icon>
+              </div>
+            </div>
+
+          </div>
 
           <div class="details">
             <div class="image">
@@ -40,69 +150,49 @@
             </div>
 
             <div class="info">
-              <div class="line1">
-                <div class="sex-icon-barn">
-                  <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
-                  <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
-                </div>
+              <div class="name">{{creature.name}}</div>
 
-                <div class="name">
-                  {{creature.name}}
-                </div>
-
-                <div class="status">
-                  <div class="status-icon-barn wild-icon" *ngIf="creature.wild">
-                    <mat-icon>grass</mat-icon>
+              <div class="under-name">
+                <div class="stats" *ngIf="creature.statistics.maturity >= maturityMax">
+                  <div class="stat energy">
+                    <div class="icon">
+                      <mat-icon>bolt</mat-icon>
+                    </div>
+                    <div class="value">
+                      {{creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1}}
+                    </div>
                   </div>
-                  <div class="status-icon-barn baby-icon" *ngIf="creature.statistics.maturity < maturityMax">
-                    <mat-icon svgIcon="baby"></mat-icon>
-                  </div>
-                  <div class="status-icon-barn pregnant-icon" *ngIf="creature.pregnant">
-                    <mat-icon svgIcon="pregnant"></mat-icon>
-                  </div>
-                  <div class="status-icon-barn pen-icon" *ngIf="creaturesInPen.indexOf(creature.id) > -1">
-                    <mat-icon>fence</mat-icon>
+                  <div class="stat love">
+                    <div class="icon">
+                      <mat-icon>favorite</mat-icon>
+                    </div>
+                    <div class="value">{{creature.statistics.love}}</div>
                   </div>
                 </div>
-
-              </div>
-
-              <div class="line2">
-
-                <div class="energy" *ngIf="creature.statistics.maturity >= maturityMax">
-                  <div class="stat-icon">
-                    <mat-icon>bolt</mat-icon>
-                  </div>
-                  <div class="stat-value">
-                    {{creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1}}
+                <div class="stats" *ngIf="creature.statistics.maturity < maturityMax">
+                  <div class="stat maturity">
+                    <div class="icon">
+                      <mat-icon>child_friendly</mat-icon>
+                    </div>
+                    <div class="value">
+                      {{creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1}}
+                    </div>
                   </div>
                 </div>
-                <div class="maturity" *ngIf="creature.statistics.maturity < maturityMax">
-                  <div class="stat-icon">
-                    <mat-icon svgIcon="baby"></mat-icon>
-                  </div>
-                  <div class="stat-value">
-                    {{creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1}}
-                  </div>
-                </div>
-
                 <div class="genes">
-                  <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
-                  <span *ngIf="creature.genes.gene2">
-                    -<app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
-                  </span>
+                  <div class="gene obscure" *ngIf="!creature.genes.gene1">
+                    No gene
+                  </div>
+                  <div class="gene" *ngIf="creature.genes.gene1">
+                    <app-creature-gene code="{{creature.genes.gene1}}"></app-creature-gene>
+                  </div>
+                  <div class="gene space" *ngIf="creature.genes.gene2">
+                    <app-creature-gene code="{{creature.genes.gene2}}"></app-creature-gene>
+                  </div>
                 </div>
               </div>
-
             </div>
           </div>
-
-          <div class="button">
-            <button class="detailsButton" mat-stroked-button (click)="openDetails(creature)">
-              <mat-icon>read_more</mat-icon>
-            </button>
-          </div>
-
         </div>
       </div>
     </div>

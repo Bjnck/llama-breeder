@@ -7,6 +7,7 @@ import {Creature} from '../shared/creature/creature.interface';
 import {PenService} from './pen.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
+import {User} from '../shared/user/user.interface';
 
 @Component({
   templateUrl: './pen.component.html',
@@ -16,6 +17,7 @@ import {ItemService} from '../shared/item/item.service';
   ]
 })
 export class PenComponent implements OnInit, OnDestroy {
+  user: User;
   pen: PenWithContent;
   updatedCreatures: Creature[];
 
@@ -29,6 +31,7 @@ export class PenComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.user = this.route.snapshot.data.user;
     this.pen = this.route.snapshot.data.pens[0];
     this.setTimer();
   }
@@ -39,7 +42,7 @@ export class PenComponent implements OnInit, OnDestroy {
 
   private setTimer() {
     this.interval = setInterval(() => {
-      console.log(this.pen.items)
+      console.log(this.pen.items);
       this.penService.getWithContent(this.pen.pen.id).subscribe({
         next: pen => {
           this.pen.pen = pen.pen;
@@ -56,6 +59,8 @@ export class PenComponent implements OnInit, OnDestroy {
       creatureToUpdate.pregnant = creature.pregnant;
       creatureToUpdate.pregnancyStartTime = creature.pregnancyStartTime;
       creatureToUpdate.pregnancyEndTime = creature.pregnancyEndTime;
+      creatureToUpdate.pregnancyMale = creature.pregnancyMale;
+      creatureToUpdate.pregnancyCount = creature.pregnancyCount;
       creatureToUpdate.statistics.energy = creature.statistics.energy;
       creatureToUpdate.statistics.maturity = creature.statistics.maturity;
       creatureToUpdate.statistics.thirst = creature.statistics.thirst;

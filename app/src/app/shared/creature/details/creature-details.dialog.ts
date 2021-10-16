@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Inject, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Creature} from '../creature.interface';
 import {CreatureService} from '../creature.service';
@@ -10,7 +10,8 @@ import {UserService} from '../../user/user.service';
 import {User} from '../../user/user.interface';
 import {environment} from '../../../../environments/environment';
 import {RedeemCreatureDialogComponent} from '../redeem/redeem-creature.dialog';
-import {CreatureDetailsResponse} from "./creature-details-response.interface";
+import {CreatureDetailsResponse} from './creature-details-response.interface';
+import {Observable} from 'rxjs';
 
 @Component({
   templateUrl: './creature-details.dialog.html',
@@ -66,23 +67,6 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDelete(creature: Creature) {
-    this.creatureService.delete(creature).subscribe({
-      next: resp => {
-        this.userService.updateCoins(this.user.coins + resp.coins);
-        this.onClose(true);
-      }
-    });
-  }
-
-  onClose(isDelete = false) {
-    const response: CreatureDetailsResponse = {baby: this.baby};
-    if (isDelete) {
-      response.deletedId = this.creature.id;
-    }
-    this.dialogRef.close(response);
-  }
-
   addToPen(creature: Creature) {
     this.addCreature(creature);
     this.penService.update(this.pen).subscribe(
@@ -101,27 +85,31 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
   }
 
   removeFromPen(creature: Creature) {
+    this.sendRemoveFromPen(creature).subscribe({
+      next: value => this.onClose(),
+      error: err => this.addCreature(creature)
+    });
+  }
+
+  private sendRemoveFromPen(creature: Creature): Observable<any> {
     this.removeCreature(creature);
-    this.penService.update(this.pen).subscribe(
-      pen => {
-      },
-      error => {
-        this.pen.items.push({id: creature.id});
-        if (this.creaturesIdInPen) {
-          this.creaturesIdInPen.push(creature.id);
-        }
-        if (this.creaturesInPen) {
-          this.creaturesInPen.push(creature);
-        }
+    return this.penService.update(this.pen);
+  }
+
+  onDelete(creature: Creature) {
+    if (this.pen.creatures.find(c => c.id === creature.id)) {
+      this.sendRemoveFromPen(creature).subscribe({
+        next: value => this.delete(creature),
+        error: err => this.addCreature(creature)
       });
+    } else {
+      this.delete(creature);
+    }
   }
 
   private removeCreature(creature: Creature) {
-    this.pen.creatures.forEach((i, index) => {
-      if (i.id.toString() === creature.id.toString()) {
-        this.pen.creatures.splice(index, 1);
-      }
-    });
+    this.pen.creatures.splice(
+      this.pen.creatures.indexOf(this.pen.creatures.find(c => c.id === creature.id)), 1);
 
     if (this.creaturesIdInPen) {
       this.creaturesIdInPen.splice(this.creaturesIdInPen.indexOf(creature.id), 1);
@@ -131,6 +119,25 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
         this.creaturesInPen.indexOf(this.creaturesInPen.find(c => c.id === creature.id)), 1);
     }
   }
+
+  private delete(creature: Creature) {
+    this.creatureService.delete(creature).subscribe({
+      next: resp => {
+        CreatureService.decrementTotalElements();
+        this.userService.updateCoins(this.user.coins + resp.coins);
+        this.onClose(true);
+      }
+    });
+  }
+
+  onClose(isDelete = false) {
+    const response: CreatureDetailsResponse = {baby: this.baby};
+    if (isDelete) {
+      response.deletedId = this.creature.id;
+    }
+    this.dialogRef.close(response);
+  }
+
 
   private setTimer() {
     this.timeLeft = TimerUtil.timeLeft(TimerUtil.utc(new Date(this.creature.pregnancyEndTime)));
@@ -162,6 +169,7 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
           this.creature.pregnant = false;
           this.creature.pregnancyStartTime = null;
           this.creature.pregnancyEndTime = null;
+          this.creature.pregnancyMale = null;
         }
       }
     });

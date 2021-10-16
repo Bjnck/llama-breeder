@@ -91,7 +91,7 @@ public class CreatureServiceImpl implements CreatureService {
     public CreatureDto hit(long id, @NotNull ItemCode itemCode, int itemQuality) throws CreatureNotFoundException {
         Creature creature = creatureRepository.findById(id).orElseThrow(() -> new CreatureNotFoundException(id));
 
-        if (CreatureUtil.isHittable(creature, itemCode)) {
+        if (CreatureUtil.isHittable(creature, itemCode, itemQuality)) {
             //remove energy
             creature.setEnergy(creature.getEnergy() - ENERGY_DIVIDER);
             //check item quality is valid for creature generation

@@ -3,6 +3,7 @@ import {PenWithContent} from '../pen-with-content.interface';
 import {MatDialog} from '@angular/material/dialog';
 import {Creature} from '../../shared/creature/creature.interface';
 import {CreatureDetailsDialogComponent} from '../../shared/creature/details/creature-details.dialog';
+import {User} from '../../shared/user/user.interface';
 
 @Component({
   selector: 'app-pen-field',
@@ -12,6 +13,7 @@ import {CreatureDetailsDialogComponent} from '../../shared/creature/details/crea
   ]
 })
 export class PenFieldComponent {
+  @Input() user: User;
   @Input() pen: PenWithContent;
   @Input() updatedCreatures: Creature[];
 
@@ -26,6 +28,7 @@ export class PenFieldComponent {
     // todo send user to dialog (needed for birth)
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {
+        user: this.user,
         creature,
         pen: this.pen.pen,
         creaturesInPen: this.pen.creatures,

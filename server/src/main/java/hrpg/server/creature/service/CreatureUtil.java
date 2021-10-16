@@ -1,8 +1,10 @@
 package hrpg.server.creature.service;
 
 import hrpg.server.creature.dao.Creature;
+import hrpg.server.item.dao.Item;
 import hrpg.server.item.type.ItemCode;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 import static hrpg.server.creature.type.CreatureConstant.*;
@@ -16,7 +18,9 @@ public class CreatureUtil {
                 !creature.isPregnant();
     }
 
-    public static boolean isHittable(Creature creature, ItemCode itemCode) {
+    public static boolean isHittable(@NotNull Creature creature, @NotNull ItemCode itemCode, int itemQuality) {
+        if (creature.getGeneration() > itemQuality) return false;
+
         if (creature.getEnergy() <= ENERGY_MIN) return false;
         if (creature.getMaturity() < MATURITY_MAX) return false;
 
@@ -37,7 +41,7 @@ public class CreatureUtil {
         return true;
     }
 
-    public static boolean isHittable(Creature creature, Set<ItemCode> itemCodes) {
-        return itemCodes.stream().anyMatch(itemCode -> isHittable(creature, itemCode));
+    public static boolean isHittable(Creature creature, Set<Item> items) {
+        return items.stream().anyMatch(item -> isHittable(creature, item.getCode(), item.getQuality()));
     }
 }

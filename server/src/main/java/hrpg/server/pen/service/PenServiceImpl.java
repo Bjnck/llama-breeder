@@ -133,7 +133,7 @@ public class PenServiceImpl implements PenService {
         if (pen.getSize() < creaturesIds.size())
             throw new MaxCreaturesException();
 
-        ZonedDateTime now =ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now();
 
         Set<Creature> creatures = new HashSet<>();
         for (Long creatureId : creaturesIds) {
@@ -143,7 +143,7 @@ public class PenServiceImpl implements PenService {
                 throw new CreatureInUseException(creatureId);
 
             //reset penActivationTime to newly added creature
-            if(pen.getCreatures().stream().noneMatch(c -> c.getId().equals(creatureId)))
+            if (pen.getCreatures().stream().noneMatch(c -> c.getId().equals(creatureId)))
                 creature.setPenActivationTime(now);
 
             creatures.add(creature);
@@ -165,7 +165,16 @@ public class PenServiceImpl implements PenService {
             ItemNotFoundException.class
     })
     @Override
-    public PenActivationDto activateItem(long id, long itemId)
+    public PenActivationDto activateItem(long id, long itemId) throws PenNotFoundException, ItemNotFoundException {
+        return activateItem(id, itemId, null);
+    }
+
+    @Transactional(rollbackFor = {
+            PenNotFoundException.class,
+            ItemNotFoundException.class
+    })
+    @Override
+    public PenActivationDto activateItem(long id, long itemId, ZonedDateTime activationTime)
             throws PenNotFoundException, ItemNotFoundException {
         Pen pen = penRepository.findById(id).orElseThrow(PenNotFoundException::new);
         if (pen.getItems().stream().noneMatch(item -> item.getId().equals(itemId)))
@@ -174,18 +183,23 @@ public class PenServiceImpl implements PenService {
 
         Set<CreatureDto> creatures = new HashSet<>();
 
-        for (Creature creature : pen.getCreatures()) {
-            //only activate item if it is still alive and hittable
-            if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode())) {
-                //item hits creature
-                if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
-                    //remove 1 life and delete if life ended
-                    item.setLife(item.getLife() - 1);
-                    //hit creature
-                    try {
-                        creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
-                    } catch (CreatureNotFoundException e) {
-                        throw new RuntimeException(e);
+        //if activationTime is not null, check that item and creature are present in the pen at that time
+        if (activationTime == null || item.getPenActivationTime().isBefore(activationTime)) {
+            for (Creature creature : pen.getCreatures()) {
+                if (activationTime == null || creature.getPenActivationTime().isBefore(activationTime)) {
+                    //only activate item if it is still alive and hittable
+                    if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode(), item.getQuality())) {
+                        //item hits creature
+                        if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
+                            //remove 1 life and delete if life ended
+                            item.setLife(item.getLife() - 1);
+                            //hit creature
+                            try {
+                                creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
+                            } catch (CreatureNotFoundException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                     }
                 }
             }

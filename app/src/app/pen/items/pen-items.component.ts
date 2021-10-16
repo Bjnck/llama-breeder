@@ -46,7 +46,6 @@ export class PenItemsComponent {
   }
 
   delete(item: Item) {
-    console.log(item)
     if (item.life <= 0) {
       this.itemDelete.emit(item);
     }

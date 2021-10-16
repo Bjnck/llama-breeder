@@ -26,12 +26,28 @@ public class CreatureSpecification implements Specification<Creature> {
                 predicates.add(builder.equal(root.get("info").get("sex"), criteria.getSex()));
             if (criteria.getGeneration() != null)
                 predicates.add(builder.equal(root.get("generation"), criteria.getGeneration()));
-
-            //todo list of codes with join on table color for code
-            //todo list of genes with join on table gene for code
-            //todo wild with join on details
-            //todo pregnant with join on details
-            //todo is mature
+            if (criteria.getInPen() != null) {
+                if (criteria.getInPen())
+                    predicates.add(builder.greaterThan(root.get("penActivationTime"), root.get("energyUpdateTime")));
+                else
+                    predicates.add(builder.lessThan(root.get("penActivationTime"), root.get("energyUpdateTime")));
+            }
+            if (criteria.getMinLove() != null)
+                predicates.add(builder.greaterThanOrEqualTo(root.get("love"), criteria.getMinLove()));
+            if (criteria.getMaxMaturity() != null)
+                predicates.add(builder.lessThanOrEqualTo(root.get("maturity"), criteria.getMaxMaturity()));
+            if (criteria.getPregnant() != null) {
+                if (criteria.getPregnant())
+                    predicates.add(builder.isTrue(root.get("pregnant")));
+                else
+                    predicates.add(builder.isFalse(root.get("pregnant")));
+            }
+            if (criteria.getMinPregnancyCount() != null)
+                predicates.add(builder.greaterThanOrEqualTo(root.get("breedingCount"), criteria.getMinPregnancyCount()));
+            if (criteria.getMaxPregnancyEndTime() != null)
+                predicates.add(builder.lessThanOrEqualTo(root.get("pregnancyEndTime"), criteria.getMaxPregnancyEndTime()));
+            if (criteria.getMinPregnancyEndTime() != null)
+                predicates.add(builder.greaterThanOrEqualTo(root.get("pregnancyEndTime"), criteria.getMinPregnancyEndTime()));
         }
 
         return builder.and(predicates.toArray(new Predicate[0]));

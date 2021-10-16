@@ -22,13 +22,19 @@ export class RedeemCreatureDialogComponent implements OnInit, OnDestroy {
   constructor(@Inject(MAT_DIALOG_DATA) public data: RedeemCreatureData,
               private creatureService: CreatureService) {
     this.user = data.user;
-    this.creature = data.creature;
+    this.creature = {
+      ...data.creature,
+      pregnancyMale: {...data.creature.pregnancyMale}
+    };
   }
 
   ngOnInit(): void {
     this.setAnimation();
     this.creatureService.redeem(this.creature.id).subscribe({
-      next: creature => this.baby = creature
+      next: creature => {
+        this.baby = creature;
+        CreatureService.incrementTotalElements();
+      }
     });
   }
 
@@ -46,6 +52,4 @@ export class RedeemCreatureDialogComponent implements OnInit, OnDestroy {
       }
     }, 800);
   }
-
-
 }

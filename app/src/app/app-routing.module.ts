@@ -80,7 +80,6 @@ const routes: Routes = [
     resolve: {
       user: UserResolve,
       creatures: CreatureListResolve,
-      creatureCount: CreatureCountResolve,
       pens: PenListResolve
     },
     canActivate: [AuthGuard]

@@ -8,18 +8,20 @@ import {MatButtonModule} from '@angular/material/button';
 import {BarnComponent} from './barn.component';
 import {CreatureListResolve} from './creature-list.resolve';
 import {CreatureCountResolve} from './creature-count.resolve';
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
     BarnComponent
   ],
-  imports: [
-    SharedModule,
-    InfiniteScrollModule,
-    CommonModule,
-    MatIconModule,
-    MatButtonModule
-  ],
+    imports: [
+        SharedModule,
+        InfiniteScrollModule,
+        CommonModule,
+        MatIconModule,
+        MatButtonModule,
+        MatMenuModule
+    ],
   exports: [],
   providers: [
     CreatureListResolve,

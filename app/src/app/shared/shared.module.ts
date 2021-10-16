@@ -21,9 +21,10 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@angular/forms';
 import {CreatureGeneComponent} from './creature/creature-gene.component';
 import {MatMenuModule} from '@angular/material/menu';
-import {RomanPipe} from "./creature/details/roman.pipe";
-import {MatDividerModule} from "@angular/material/divider";
-import {RedeemCreatureDialogComponent} from "./creature/redeem/redeem-creature.dialog";
+import {RomanPipe} from './creature/details/roman.pipe';
+import {MatDividerModule} from '@angular/material/divider';
+import {RedeemCreatureDialogComponent} from './creature/redeem/redeem-creature.dialog';
+import {UtcPipe} from './timer/utc.pipe';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import {RedeemCreatureDialogComponent} from "./creature/redeem/redeem-creature.d
     CreatureDetailsDialogComponent,
     RedeemCreatureDialogComponent,
     CreatureGeneComponent,
-    RomanPipe
+    RomanPipe,
+    UtcPipe
   ],
   imports: [
     BrowserModule,
@@ -53,7 +55,9 @@ import {RedeemCreatureDialogComponent} from "./creature/redeem/redeem-creature.d
     ItemIconComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
-    CreatureGeneComponent
+    CreatureGeneComponent,
+    RomanPipe,
+    UtcPipe
   ],
   providers: [
     HeaderService,

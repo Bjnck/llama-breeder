@@ -1,6 +1,9 @@
 #creature-details ::-webkit-scrollbar
   width: 0
 
+#creature-details .obscure
+  color: #777
+
 #creature-details .divider
   margin-top: 10px
   margin-bottom: 10px
@@ -66,6 +69,8 @@
   margin-right: 10px
 #creature-details #breeding .info
   margin-left: 20px
+#creature-details #breeding .info .baby-message
+  margin-right: 20px
 #creature-details #breeding .info .redeem
   display: flex
 #creature-details #breeding .info .redeem button
@@ -91,9 +96,6 @@
   width: 20px
 #creature-details #stats .stat .icon mat-icon
   font-size: 20px
-::ng-deep #creature-details #stats .stat .icon mat-icon svg
-  height: 20px
-  width: 20px
 #creature-details #stats .stat .line
   padding-left: 10px
   padding-right: 10px
@@ -132,9 +134,9 @@
   color: palevioletred
 
 #creature-details #stats .stat .line-value.maturity
-  background-color: skyblue
+  background-color: dodgerblue
 #creature-details #stats .stat .icon.maturity
-  color: skyblue
+  color: dodgerblue
 
 #creature-details #stats .stat.disable .icon, #creature-details #stats .stat.disable .pc
   color: #717171

@@ -76,14 +76,14 @@ parameters:
       gen-7: 2
       gen-8: 2
     prices:
-      gen-1: 2
-      gen-2: 20
-      gen-3: 40
-      gen-4: 80
-      gen-5: 160
-      gen-6: 320
-      gen-7: 640
-      gen-8: 1280
+      gen-1: 1
+      gen-2: 2
+      gen-3: 4
+      gen-4: 8
+      gen-5: 15
+      gen-6: 30
+      gen-7: 60
+      gen-8: 100
   genes:
     chance-quality-0: 10
     chance-quality-1: 20

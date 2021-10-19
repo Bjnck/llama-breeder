@@ -185,24 +185,26 @@ public class PenServiceImpl implements PenService {
 
         //if activationTime is not null, check that item and creature are present in the pen at that time
         if (activationTime == null || item.getPenActivationTime().isBefore(activationTime)) {
-            for (Creature creature : pen.getCreatures()) {
-                if (activationTime == null || creature.getPenActivationTime().isBefore(activationTime)) {
-                    //only activate item if it is still alive and hittable
-                    if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode(), item.getQuality())) {
-                        //item hits creature
-                        if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
-                            //remove 1 life and delete if life ended
-                            item.setLife(item.getLife() - 1);
-                            //hit creature
-                            try {
-                                creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
-                            } catch (CreatureNotFoundException e) {
-                                throw new RuntimeException(e);
+            pen.getCreatures().stream().sorted(Comparator.comparingLong(Creature::getId)).forEach(
+                    creature -> {
+                        if (activationTime == null || creature.getPenActivationTime().isBefore(activationTime)) {
+                            //only activate item if it is still alive and hittable
+                            if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode(), item.getQuality())) {
+                                //item hits creature
+                                if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
+                                    //remove 1 life and delete if life ended
+                                    item.setLife(item.getLife() - 1);
+                                    //hit creature
+                                    try {
+                                        creatures.add(creatureService.hit(creature.getId(), item.getCode(), item.getQuality()));
+                                    } catch (CreatureNotFoundException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
+            );
         }
 
         return PenActivationDto.builder()

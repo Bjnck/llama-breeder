@@ -22,36 +22,27 @@
         <mat-icon>female</mat-icon>
       </button>
     </div>
-    <div class="filter space barn">
-      <button mat-raised-button class="icon-button" *ngIf="!barn" (click)="toggleBarnFilter(true)">
+    <div class="filter space pen">
+      <button mat-raised-button class="icon-button" *ngIf="!inPen" (click)="toggleInPenFilter(true)">
         <mat-icon>fence</mat-icon>
       </button>
-      <button mat-raised-button class="icon-button selected" *ngIf="barn" (click)="toggleBarnFilter(null)">
+      <button mat-raised-button class="icon-button selected" *ngIf="inPen" (click)="toggleInPenFilter(null)">
         <mat-icon>fence</mat-icon>
       </button>
     </div>
-    <div class="filter space love">
-      <button mat-raised-button class="icon-button" *ngIf="!love" (click)="toggleLoveFilter(true)">
-        <mat-icon>favorite</mat-icon>
-      </button>
-      <button mat-raised-button class="icon-button selected" *ngIf="love" (click)="toggleLoveFilter(null)">
-        <mat-icon>favorite</mat-icon>
-      </button>
-    </div>
-    <div class="filter space child">
-      <button mat-raised-button class="icon-button" *ngIf="!redeem && !pregnant && !baby"
-              (click)="toggleChildFilter('redeem')">
-        <mat-icon>child_care</mat-icon>
-      </button>
-      <button mat-raised-button class="icon-button selected redeem" *ngIf="redeem"
-              (click)="toggleChildFilter('pregnant')">
-        <mat-icon>redeem</mat-icon>
-      </button>
-      <button mat-raised-button class="icon-button selected pregnant" *ngIf="pregnant"
-              (click)="toggleChildFilter('baby')">
+    <div class="filter space pregnant">
+      <button mat-raised-button class="icon-button" *ngIf="!pregnant" (click)="togglePregnantFilter(true)">
         <mat-icon>pregnant_woman</mat-icon>
       </button>
-      <button mat-raised-button class="icon-button selected baby" *ngIf="baby" (click)="toggleChildFilter(null)">
+      <button mat-raised-button class="icon-button selected" *ngIf="pregnant" (click)="togglePregnantFilter(null)">
+        <mat-icon>pregnant_woman</mat-icon>
+      </button>
+    </div>
+    <div class="filter space baby">
+      <button mat-raised-button class="icon-button" *ngIf="!baby" (click)="toggleBabyFilter(true)">
+        <mat-icon>child_friendly</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="baby" (click)="toggleBabyFilter(null)">
         <mat-icon>child_friendly</mat-icon>
       </button>
     </div>
@@ -107,7 +98,7 @@
 
     <div id="list-content">
       <div *ngFor="let creature of creatures">
-        <div class="creature mat-elevation-z2" (click)="openDetails(creature)">
+        <div class="creature mat-elevation-z2" mat-ripple (click)="openDetails(creature)">
 
           <div class="status">
             <div class="left">
@@ -126,17 +117,18 @@
               <div class="icon space wild" *ngIf="creature.wild">
                 <mat-icon>grass</mat-icon>
               </div>
-              <div class="icon space pregnant" *ngIf="creature.pregnant && (creature.pregnancyEndTime | utc) > filterDate">
+              <div class="icon space pregnant" *ngIf="creature.pregnant">
                 <mat-icon>pregnant_woman</mat-icon>
-              </div>
-              <div class="icon space redeem" *ngIf="creature.pregnant && (creature.pregnancyEndTime | utc) <= filterDate">
-                <mat-icon>redeem</mat-icon>
               </div>
               <div class="icon space love" *ngIf="creature.statistics.love >= statsMax">
                 <mat-icon>favorite</mat-icon>
               </div>
               <div class="icon space old" *ngIf="creature.pregnancyCount >= breedingMax">
                 <mat-icon>heart_broken</mat-icon>
+              </div>
+              <div class="icon space redeem"
+                   *ngIf="creature.pregnant && (creature.pregnancyEndTime | utc) <= filterDate">
+                <mat-icon>redeem</mat-icon>
               </div>
             </div>
 
@@ -195,9 +187,13 @@
           </div>
         </div>
       </div>
+
+      <div class="loading" *ngIf="loading">
+        <mat-spinner [diameter]="20"></mat-spinner>
+      </div>
+
     </div>
   </div>
-
 </div>
 
 

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {User} from '../shared/user/user.interface';
 import {ActivatedRoute} from '@angular/router';
 import {HeaderService} from '../shared/header/header.service';
@@ -12,6 +12,7 @@ import {environment} from '../../environments/environment';
 import {CreatureDetailsResponse} from '../shared/creature/details/creature-details-response.interface';
 import {TimerUtil} from '../shared/timer/timer.util';
 import {CreatureSearch} from '../shared/creature/creature-search.interface';
+import {CreatureUtil} from '../shared/creature/creature.util';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -21,9 +22,10 @@ import {CreatureSearch} from '../shared/creature/creature-search.interface';
     '../shared/shared-style.sass'
   ]
 })
-export class BarnComponent implements OnInit {
+export class BarnComponent implements OnInit, OnDestroy {
   maturityMax = environment.maturityMax;
   maturityDivider = environment.maturityDivider;
+  energyMax = environment.energyMax;
   energyDivider = environment.energyDivider;
   statsMax = environment.statsMax;
   breedingMax = environment.breedingMax;
@@ -34,21 +36,28 @@ export class BarnComponent implements OnInit {
   filterCount: number;
   pen: Pen;
   creaturesInPen: string[];
+  // date updated at each list reset or timer, use to display baby ready status
   filterDate: Date;
 
+  // filters
   generation: number;
   sex: string;
-  barn: boolean;
-  love: boolean;
+  inPen: boolean;
   baby: boolean;
   pregnant: boolean;
-  redeem: boolean;
   old: boolean;
 
   throttle = 0;
-  distance = 5;
+  distance = 2;
   page = 0;
   size = 20;
+  loading = false;
+
+  // flag so 2 calls do not compute at the same time
+  computing = false;
+
+  interval;
+  inReload = false;
 
   constructor(private headerService: HeaderService,
               private userService: UserService,
@@ -69,7 +78,86 @@ export class BarnComponent implements OnInit {
 
     this.pen = this.route.snapshot.data.pens[0];
     this.creaturesInPen = this.pen.creatures.map(creature => creature.id);
+
+    this.setTimer();
   }
+
+  ngOnDestroy() {
+    clearInterval(this.interval);
+  }
+
+  private setTimer() {
+    this.interval = setInterval(() => {
+      this.filterDate = TimerUtil.utc(new Date());
+
+      // do not update stats if list already in computing (filter change) or if still in reload
+      if (!this.computing && !this.inReload) {
+        this.computing = true;
+        this.inReload = true;
+        let computeForLoop = true; // flag to only compute once
+
+        // reload low energy, not needed if filters inPen or baby
+        if (!this.inPen && !this.baby) {
+          const lowEnergyCreatures = this.creatures
+            .filter(creature => this.creaturesInPen.indexOf(creature.id) === -1)
+            .filter(creature => creature.statistics.energy < this.energyMax);
+          if (lowEnergyCreatures.length > 0) {
+            this.reloadEnergy(lowEnergyCreatures, computeForLoop);
+            computeForLoop = false;
+          }
+        }
+
+        // reload pen related stats
+        const inPenCreatures = this.creatures
+          .filter(creature => this.creaturesInPen.indexOf(creature.id) > -1);
+        if (inPenCreatures.length > 0) {
+          this.reloadPenRelatedStatus(inPenCreatures, computeForLoop);
+          computeForLoop = false;
+        }
+
+        // if no reload needed change computing flag back
+        if (computeForLoop && this.computing) {
+          this.computing = false;
+        }
+        this.inReload = false;
+      }
+    }, 10000);
+  }
+
+  private reloadEnergy(creatures: Creature[], compute: boolean) {
+    // max 20 results returned by the backend
+    const splice = creatures.splice(0, 20);
+    this.reloadCreatures(compute, false, splice);
+    if (splice.length === 20) {
+      this.reloadEnergy(creatures, false);
+    }
+  }
+
+  private reloadPenRelatedStatus(creatures: Creature[], compute: boolean) {
+    this.reloadCreatures(compute, true, creatures);
+  }
+
+  private reloadCreatures(compute: boolean, inPen: boolean, creatures: Creature[]) {
+    this.creatureService.list(this.size, 0, compute, {inPen, ids: creatures.map(c => c.id)})
+      .subscribe({
+        next: (updatedCreatures: Creature[]) => {
+          if (compute && this.computing) {
+            this.computing = false;
+          }
+          updatedCreatures.forEach(updatedCreature => {
+            const creature = this.creatures.find(c => c.id === updatedCreature.id);
+            if (creature) {
+              CreatureUtil.updateStats(creature, updatedCreature);
+              // remove form filtered list if no more a baby
+              if (this.baby && creature.statistics.maturity >= this.maturityMax) {
+                this.deleteFromList(creature.id);
+              }
+            }
+          });
+        }
+      });
+  }
+
 
   toggleGenerationFilter(generation: number) {
     this.generation = generation;
@@ -81,13 +169,8 @@ export class BarnComponent implements OnInit {
     this.resetList();
   }
 
-  toggleBarnFilter(barn: boolean) {
-    this.barn = barn;
-    this.resetList();
-  }
-
-  toggleLoveFilter(love: boolean) {
-    this.love = love;
+  toggleInPenFilter(inPen: boolean) {
+    this.inPen = inPen;
     this.resetList();
   }
 
@@ -96,40 +179,43 @@ export class BarnComponent implements OnInit {
     this.resetList();
   }
 
-  toggleChildFilter(type: string) {
-    if (!type) {
-      this.redeem = null;
-      this.baby = null;
-      this.pregnant = null;
-    } else if (type === 'redeem') {
-      this.redeem = true;
-      this.baby = null;
-      this.pregnant = null;
-    } else if (type === 'pregnant') {
-      this.redeem = null;
-      this.baby = null;
-      this.pregnant = true;
-    } else if (type === 'baby') {
-      this.redeem = null;
-      this.baby = true;
-      this.pregnant = null;
-    }
+  togglePregnantFilter(pregnant: boolean) {
+    this.pregnant = pregnant;
+    this.resetList();
+  }
+
+  toggleBabyFilter(baby: boolean) {
+    this.baby = baby;
     this.resetList();
   }
 
   resetList() {
     this.page = 0;
     this.filterDate = TimerUtil.utc(new Date());
-    this.creatureService.list(this.size, this.page, false, this.getSearchParams())
+    let compute = false;
+    if (!this.computing) {
+      this.computing = true;
+      compute = true;
+    }
+    this.creatureService.list(this.size, this.page, compute, this.getSearchParams())
       .subscribe((creatures: Creature[]) => {
+        if (compute && this.computing) {
+          this.computing = false;
+        }
         this.creatures = creatures;
         this.filterCount = CreatureService.getFilterElements();
       });
   }
 
   onScroll() {
+    if (this.creatures.length === (this.page + 1) * this.size) {
+      this.loading = true;
+    }
     this.creatureService.list(this.size, ++this.page, false, this.getSearchParams())
       .subscribe((creatures: Creature[]) => {
+        if (creatures.length < this.size) {
+          this.loading = false;
+        }
         this.creatures.push(...creatures);
       });
   }
@@ -142,21 +228,14 @@ export class BarnComponent implements OnInit {
     if (this.sex) {
       search.sex = this.sex;
     }
-    if (this.barn) {
+    if (this.inPen) {
       search.inPen = true;
-    }
-    if (this.love) {
-      search.minLove = this.statsMax.toString();
     }
     if (this.baby) {
       search.maxMaturity = (this.statsMax - 1).toString();
     }
     if (this.pregnant) {
       search.pregnant = true;
-      search.minPregnancyEndTime = this.filterDate;
-    }
-    if (this.redeem) {
-      search.maxPregnancyEndTime = this.filterDate;
     }
     if (this.old) {
       search.minPregnancyCount = this.breedingMax.toString();
@@ -178,8 +257,11 @@ export class BarnComponent implements OnInit {
         if (response.baby) {
           this.addBabyToList(response.baby);
         }
-        if (response.deletedId) {
-          this.deleteFromList(response.deletedId);
+        if (response.deleted) {
+          this.deleteFromList(response.creatureId);
+        }
+        if (response.removeFromPen && this.inPen) {
+          this.deleteFromList(response.creatureId);
         }
       }
     });
@@ -215,8 +297,9 @@ export class BarnComponent implements OnInit {
     if (this.sex && creature.sex !== this.sex) {
       return false;
     }
-    if (this.barn || this.love || this.pregnant || this.redeem || this.old) {
+    if (this.inPen || this.pregnant || this.old) {
       return false;
     }
+    return true;
   }
 }

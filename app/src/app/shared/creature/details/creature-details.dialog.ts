@@ -86,7 +86,7 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
 
   removeFromPen(creature: Creature) {
     this.sendRemoveFromPen(creature).subscribe({
-      next: value => this.onClose(),
+      next: value => this.onClose(false, true),
       error: err => this.addCreature(creature)
     });
   }
@@ -130,10 +130,18 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
     });
   }
 
-  onClose(isDelete = false) {
-    const response: CreatureDetailsResponse = {baby: this.baby};
+  onClose(isDelete = false, isRemoveFromPen = false) {
+    const response: CreatureDetailsResponse = {
+      creatureId: this.creature.id,
+      baby: this.baby,
+      deleted: false,
+      removeFromPen: false
+    };
     if (isDelete) {
-      response.deletedId = this.creature.id;
+      response.deleted = true;
+    }
+    if (isRemoveFromPen) {
+      response.removeFromPen = true;
     }
     this.dialogRef.close(response);
   }

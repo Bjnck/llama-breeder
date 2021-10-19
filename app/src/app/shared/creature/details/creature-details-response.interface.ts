@@ -1,8 +1,10 @@
 import {Creature} from '../creature.interface';
 
 export interface CreatureDetailsResponse {
-  deletedId?: string;
-  baby: Creature;
+  creatureId: string;
+  deleted: boolean;
+  removeFromPen: boolean;
+  baby?: Creature;
 }
 
 

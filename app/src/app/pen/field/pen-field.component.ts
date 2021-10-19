@@ -25,7 +25,6 @@ export class PenFieldComponent {
   }
 
   openDetails(creature: Creature) {
-    // todo send user to dialog (needed for birth)
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {
         user: this.user,

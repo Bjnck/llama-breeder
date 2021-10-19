@@ -8,6 +8,7 @@ import {PenService} from './pen.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
 import {User} from '../shared/user/user.interface';
+import {CreatureUtil} from "../shared/creature/creature.util";
 
 @Component({
   templateUrl: './pen.component.html',
@@ -56,16 +57,7 @@ export class PenComponent implements OnInit, OnDestroy {
   onCreatureUpdate(creature: Creature) {
     const creatureToUpdate = this.pen.creatures.find(c => c.id.toString() === creature.id.toString());
     if (creatureToUpdate) {
-      creatureToUpdate.pregnant = creature.pregnant;
-      creatureToUpdate.pregnancyStartTime = creature.pregnancyStartTime;
-      creatureToUpdate.pregnancyEndTime = creature.pregnancyEndTime;
-      creatureToUpdate.pregnancyMale = creature.pregnancyMale;
-      creatureToUpdate.pregnancyCount = creature.pregnancyCount;
-      creatureToUpdate.statistics.energy = creature.statistics.energy;
-      creatureToUpdate.statistics.maturity = creature.statistics.maturity;
-      creatureToUpdate.statistics.thirst = creature.statistics.thirst;
-      creatureToUpdate.statistics.hunger = creature.statistics.hunger;
-      creatureToUpdate.statistics.love = creature.statistics.love;
+      CreatureUtil.updateStats(creatureToUpdate, creature);
     }
   }
 

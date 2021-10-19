@@ -26,11 +26,15 @@ export class CreatureService {
   }
 
   static incrementTotalElements() {
-    this.totalElements++;
+    if (this.totalElements) {
+      this.totalElements++;
+    }
   }
 
   static decrementTotalElements() {
-    this.totalElements--;
+    if (this.totalElements) {
+      this.totalElements--;
+    }
   }
 
   static getFilterElements(): number {
@@ -61,23 +65,17 @@ export class CreatureService {
       if (search.inPen) {
         param.inpen = search.inPen;
       }
-      if (search.minLove) {
-        param.minlove = search.minLove;
-      }
       if (search.maxMaturity) {
         param.maxmaturity = search.maxMaturity;
       }
-      if (search.maxPregnancyEndTime) {
-        // 2021-10-16T15:20:39+02:00
-        console.log(search.maxPregnancyEndTime.toISOString());
-        param.maxpregnancyendtime = search.maxPregnancyEndTime.toISOString();
-      }
       if (search.pregnant) {
         param.pregnant = search.pregnant;
-        param.minpregnancyendtime = search.minPregnancyEndTime.toISOString();
       }
       if (search.minPregnancyCount) {
         param.minpregnancycount = search.minPregnancyCount;
+      }
+      if (search.ids) {
+        param.ids = search.ids;
       }
     }
     return this.baseRest.getList(param);

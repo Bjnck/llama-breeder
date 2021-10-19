@@ -9,6 +9,8 @@ import {BarnComponent} from './barn.component';
 import {CreatureListResolve} from './creature-list.resolve';
 import {CreatureCountResolve} from './creature-count.resolve';
 import {MatMenuModule} from "@angular/material/menu";
+import {MatRippleModule} from "@angular/material/core";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import {MatMenuModule} from "@angular/material/menu";
         CommonModule,
         MatIconModule,
         MatButtonModule,
-        MatMenuModule
+        MatMenuModule,
+        MatRippleModule,
+        MatProgressSpinnerModule
     ],
   exports: [],
   providers: [

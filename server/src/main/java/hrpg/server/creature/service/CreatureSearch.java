@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.ZonedDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -14,10 +14,8 @@ public class CreatureSearch {
     private Integer generation;
     private Sex sex;
     private Boolean inPen;
-    private Integer minLove;
     private Integer maxMaturity;
-    private ZonedDateTime minPregnancyEndTime;
-    private ZonedDateTime maxPregnancyEndTime;
     private Boolean pregnant;
     private Integer minPregnancyCount;
+    private Set<Long> ids;
 }

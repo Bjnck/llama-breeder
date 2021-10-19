@@ -7,6 +7,7 @@ import {AuthService} from '../shared/auth/auth.service';
 import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
 import {TimerUtil} from '../shared/timer/timer.util';
+import {CreatureService} from "../shared/creature/creature.service";
 
 @Component({
   templateUrl: './capture.component.html',
@@ -21,6 +22,8 @@ export class CaptureComponent implements OnInit {
   activeCapture: Capture;
   history: Capture[];
   redeem = false;
+
+  historyMaxLength = 5;
 
   constructor(private headerService: HeaderService,
               private authService: AuthService,
@@ -39,7 +42,7 @@ export class CaptureComponent implements OnInit {
     if (this.activeCapture) {
       this.redeem = TimerUtil.utc(new Date(this.activeCapture.endTime)) < TimerUtil.utc(new Date());
     }
-    this.history = captures.filter(capture => capture.sex).slice(0, 10);
+    this.history = captures.filter(capture => capture.sex).slice(0, this.historyMaxLength);
   }
 
   onCaptureStarted(capture: Capture) {
@@ -53,7 +56,11 @@ export class CaptureComponent implements OnInit {
   onRedeem(capture: Capture) {
     this.activeCapture = null;
     this.redeem = false;
+    CreatureService.incrementTotalElements();
 
+    if (this.history.length >= this.historyMaxLength) {
+      this.history.pop();
+    }
     const newHistory = this.history.reverse();
     newHistory.push(capture);
     this.history = newHistory.reverse();

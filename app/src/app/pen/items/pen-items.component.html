@@ -16,7 +16,7 @@
         <br/>
         <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
         (lvl.{{item.quality}})
-        <br/>{{item.life}}/100
+        <br/>{{item.life}}/500
       </button>
 
       <button mat-raised-button class="item-button delete" *ngIf="item.life <= 0" (click)="delete(item)"

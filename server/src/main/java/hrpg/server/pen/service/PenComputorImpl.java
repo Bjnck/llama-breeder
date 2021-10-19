@@ -95,8 +95,14 @@ public class PenComputorImpl implements PenComputor {
                 increaseMaturity(pen, activationTime);
 
                 //update penActivationTime
-                pen.getItems().forEach(item -> item.setPenActivationTime(activationTime));
-                pen.getCreatures().forEach(creature -> creature.setPenActivationTime(activationTime));
+                pen.getItems().stream()
+                        .filter(item -> item.getPenActivationTime().isBefore(activationTime))
+                        .sorted(Comparator.comparingLong(Item::getId))
+                        .forEach(item -> item.setPenActivationTime(activationTime));
+                pen.getCreatures().stream()
+                        .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
+                        .sorted(Comparator.comparingLong(Creature::getId))
+                        .forEach(creature -> creature.setPenActivationTime(activationTime));
             }
         }
     }
@@ -106,7 +112,7 @@ public class PenComputorImpl implements PenComputor {
                 .filter(item -> item.getLife() > LIFE_MIN)
                 .filter(item -> item.getPenActivationTime().isBefore(activationTime))
                 .collect(Collectors.toSet());
-        items.forEach(item -> {
+        items.stream().sorted(Comparator.comparingLong(Item::getId)).forEach(item -> {
             try {
                 penService.activateItem(pen.getId(), item.getId(), activationTime);
             } catch (PenNotFoundException | ItemNotFoundException e) {
@@ -127,7 +133,7 @@ public class PenComputorImpl implements PenComputor {
                     .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
                     .collect(Collectors.toSet());
             //increase maturity
-            creatures.forEach(creature -> {
+            creatures.stream().sorted(Comparator.comparingLong(Creature::getId)).forEach(creature -> {
                 int increment = creaturesProperties.getMaturityIncrement(creature.getGeneration());
                 int maturity = creature.getMaturity() + increment;
                 creature.setMaturity(Math.min(maturity, MATURITY_MAX));

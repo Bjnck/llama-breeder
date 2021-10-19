@@ -12,8 +12,6 @@ public class CapturesProperties {
     private ChronoUnit timeUnit;
     private int timeValueFirst;
     private ChronoUnit timeUnitFirst;
-    private int timeValueThird;
-    private ChronoUnit timeUnitThird;
     private int max;
 }
 

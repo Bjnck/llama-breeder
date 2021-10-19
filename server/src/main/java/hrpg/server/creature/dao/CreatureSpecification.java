@@ -32,8 +32,6 @@ public class CreatureSpecification implements Specification<Creature> {
                 else
                     predicates.add(builder.lessThan(root.get("penActivationTime"), root.get("energyUpdateTime")));
             }
-            if (criteria.getMinLove() != null)
-                predicates.add(builder.greaterThanOrEqualTo(root.get("love"), criteria.getMinLove()));
             if (criteria.getMaxMaturity() != null)
                 predicates.add(builder.lessThanOrEqualTo(root.get("maturity"), criteria.getMaxMaturity()));
             if (criteria.getPregnant() != null) {
@@ -44,10 +42,11 @@ public class CreatureSpecification implements Specification<Creature> {
             }
             if (criteria.getMinPregnancyCount() != null)
                 predicates.add(builder.greaterThanOrEqualTo(root.get("breedingCount"), criteria.getMinPregnancyCount()));
-            if (criteria.getMaxPregnancyEndTime() != null)
-                predicates.add(builder.lessThanOrEqualTo(root.get("pregnancyEndTime"), criteria.getMaxPregnancyEndTime()));
-            if (criteria.getMinPregnancyEndTime() != null)
-                predicates.add(builder.greaterThanOrEqualTo(root.get("pregnancyEndTime"), criteria.getMinPregnancyEndTime()));
+            if (criteria.getIds() != null && !criteria.getIds().isEmpty()) {
+                CriteriaBuilder.In<Object> inClause = builder.in(root.get("id"));
+                criteria.getIds().forEach(inClause::value);
+                predicates.add(inClause);
+            }
         }
 
         return builder.and(predicates.toArray(new Predicate[0]));

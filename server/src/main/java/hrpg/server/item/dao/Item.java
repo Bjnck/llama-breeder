@@ -32,7 +32,7 @@ public class Item extends WithUser {
 
     @Builder.Default
     @Column(nullable = false)
-    private Integer life = 100;
+    private Integer life = 500;
 
     private ZonedDateTime penActivationTime;
 }

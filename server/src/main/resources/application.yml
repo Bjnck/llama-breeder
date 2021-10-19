@@ -1,6 +1,11 @@
 spring:
   jpa:
     generate-ddl: false
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        use_sql_comments: true
+#        format_sql: true
   datasource:
     platform: mysql
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/llama"
@@ -24,8 +29,6 @@ parameters:
     time-value: 1
     time-unit-first: SECONDS
     time-value-first: 5
-    time-unit-third: MINUTES
-    time-value-third: 10
     max: 20
   creatures:
     max: 250
@@ -46,14 +49,14 @@ parameters:
       gen-7: 720
       gen-8: 1440
     maturity-increments:
-      gen-1: 1000
+      gen-1: 500
       gen-2: 50
       gen-3: 25
-      gen-4: 12
-      gen-5: 6
-      gen-6: 4
-      gen-7: 3
-      gen-8: 2
+      gen-4: 15
+      gen-5: 15
+      gen-6: 10
+      gen-7: 10
+      gen-8: 5
     energy-increments:
       gen-1: 100
       gen-2: 10
@@ -73,23 +76,23 @@ parameters:
       gen-7: 2
       gen-8: 2
     prices:
-      gen-1: 1
-      gen-2: 10
-      gen-3: 20
-      gen-4: 40
-      gen-5: 80
-      gen-6: 160
-      gen-7: 320
-      gen-8: 640
+      gen-1: 2
+      gen-2: 20
+      gen-3: 40
+      gen-4: 80
+      gen-5: 160
+      gen-6: 320
+      gen-7: 640
+      gen-8: 1280
   genes:
-    chance-quality-0: 1
-    chance-quality-1: 5
-    chance-quality-2: 10
-    chance-quality-3: 20
-    chance-love: 30
-    chance-hunger: 30
-    chance-thirst: 30
-    chance-fertile: 10
+    chance-quality-0: 10
+    chance-quality-1: 20
+    chance-quality-2: 30
+    chance-quality-3: 40
+    chance-love: 25
+    chance-hunger: 25
+    chance-thirst: 25
+    chance-fertile: 25
     special-chance-quality-1: 20
     special-chance-quality-2: 25
     special-chance-quality-3: 30

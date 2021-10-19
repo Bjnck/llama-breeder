@@ -4,12 +4,11 @@ import {forkJoin, Observable} from 'rxjs';
 import {Pen, PenContent} from './pen.interface';
 import {Item} from '../shared/item/item.interface';
 import {PenActivation} from './pen-activation.interface';
-import {ActivatedRouteSnapshot} from "@angular/router";
-import {PenWithContent} from "./pen-with-content.interface";
-import {map, switchMap} from "rxjs/operators";
-import {Creature} from "../shared/creature/creature.interface";
-import {ItemService} from "../shared/item/item.service";
-import {CreatureService} from "../shared/creature/creature.service";
+import {PenWithContent} from './pen-with-content.interface';
+import {map, switchMap} from 'rxjs/operators';
+import {Creature} from '../shared/creature/creature.interface';
+import {ItemService} from '../shared/item/item.service';
+import {CreatureService} from '../shared/creature/creature.service';
 
 @Injectable()
 export class PenService {

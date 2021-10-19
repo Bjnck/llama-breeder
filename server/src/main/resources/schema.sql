@@ -29,7 +29,7 @@ create table if not exists item (
     version bigint not null default 0,
     code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
-    life int not null default 100, check (life between 0 and 100),
+    life int not null default 500, check (life between 0 and 500),
     pen_activation_time datetime,
     primary key (id),
     foreign key (user_id) REFERENCES user(id)

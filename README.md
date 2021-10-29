@@ -2,9 +2,6 @@
 
 description du projet, lien vers le jeu.
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/52128443/139413553-fa199fa5-11b9-4c38-8b8c-19f17bda0e4e.png" alt="logo" style="width:100px;"/>
-</p>
 
 This project is architectured in 2 distincts applications: 
 
@@ -17,7 +14,7 @@ The game's data is stored in a relational database (Mysql). The following schema
 - Capture: all parameters used for creature creation, when end_time is reached a new creature is created.
 - Pen: set of creatures and items. An item will have an effect on the creatures presents on the same pen.
 - Item: object that can be use in a pen to change a creature's statistic.
-![llama_breeder_db_diagram](https://user-images.githubusercontent.com/52128443/132261611-b2f691ce-1e1d-49bf-8c11-d74d88bd63a8.png)
+![llama_breeder_db_diagram](https://user-images.githubusercontent.com/52128443/139413676-85eff822-a918-46a8-8038-f1c683c0c852.png)
 
 ### Spring-boot application
 The server side of the game is developed in Java using spring-boot.

@@ -3,7 +3,7 @@
 description du projet, lien vers le jeu.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/52128443/132263867-66528af6-67db-42d6-8d28-adabdb06513d.png" alt="logo" style="width:100px;"/>
+  <img src="https://user-images.githubusercontent.com/52128443/139413553-fa199fa5-11b9-4c38-8b8c-19f17bda0e4e.png" alt="logo" style="width:100px;"/>
 </p>
 
 This project is architectured in 2 distincts applications: 

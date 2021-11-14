@@ -4,6 +4,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Creature} from '../../shared/creature/creature.interface';
 import {CreatureDetailsDialogComponent} from '../../shared/creature/details/creature-details.dialog';
 import {User} from '../../shared/user/user.interface';
+import {CreatureDetailsResponse} from "../../shared/creature/details/creature-details-response.interface";
 
 @Component({
   selector: 'app-pen-field',
@@ -39,6 +40,8 @@ export class PenFieldComponent {
       maxWidth: '500px',
       minWidth: '340px',
       restoreFocus: false
+    }).afterClosed().subscribe({
+      next: (value: CreatureDetailsResponse) => this.pen.creatures = value.creatures
     });
   }
 }

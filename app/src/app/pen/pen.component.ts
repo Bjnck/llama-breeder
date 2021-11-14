@@ -1,6 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {HeaderService} from '../shared/header/header.service';
-import {Pen} from './pen.interface';
 import {ActivatedRoute} from '@angular/router';
 import {PenWithContent} from './pen-with-content.interface';
 import {Creature} from '../shared/creature/creature.interface';
@@ -8,7 +7,7 @@ import {PenService} from './pen.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
 import {User} from '../shared/user/user.interface';
-import {CreatureUtil} from "../shared/creature/creature.util";
+import {CreatureUtil} from '../shared/creature/creature.util';
 
 @Component({
   templateUrl: './pen.component.html',
@@ -28,7 +27,7 @@ export class PenComponent implements OnInit, OnDestroy {
               private route: ActivatedRoute,
               private penService: PenService,
               private itemService: ItemService) {
-    this.headerService.showHeader('Pen', false);
+    this.headerService.showHeader('Pens', false);
   }
 
   ngOnInit() {
@@ -43,7 +42,6 @@ export class PenComponent implements OnInit, OnDestroy {
 
   private setTimer() {
     this.interval = setInterval(() => {
-      console.log(this.pen.items);
       this.penService.getWithContent(this.pen.pen.id).subscribe({
         next: pen => {
           this.pen.pen = pen.pen;

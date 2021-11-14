@@ -135,7 +135,8 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
       creatureId: this.creature.id,
       baby: this.baby,
       deleted: false,
-      removeFromPen: false
+      removeFromPen: false,
+      creatures: this.creaturesInPen
     };
     if (isDelete) {
       response.deleted = true;

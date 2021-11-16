@@ -21,12 +21,14 @@ public class DbUserFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        CustomPrincipal principal = (CustomPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            CustomPrincipal principal = (CustomPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String registrationKey = getRegistrationKey(principal);
-        UserDto userDto = userService.findByRegistrationKey(registrationKey)
-                .orElseGet(() -> userService.create(registrationKey));
-        principal.setUserId(userDto.getId());
+            String registrationKey = getRegistrationKey(principal);
+            UserDto userDto = userService.findByRegistrationKey(registrationKey)
+                    .orElseGet(() -> userService.create(registrationKey));
+            principal.setUserId(userDto.getId());
+        }
 
         chain.doFilter(request, response);
     }

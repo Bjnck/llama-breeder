@@ -31,10 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests(authorize -> authorize.anyRequest().authenticated()
-        ).oauth2ResourceServer(oauth2 ->
-                oauth2.authenticationManagerResolver(this.tokenAuthenticationManagerResolver())
-        );
+        http.authorizeRequests().antMatchers("/health-check", "/").permitAll();
+
+        http.authorizeRequests(authorize -> authorize.anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.authenticationManagerResolver(this.tokenAuthenticationManagerResolver()));
+
         http.cors();
         http.addFilterAfter(new DbUserFilter(userService), BearerTokenAuthenticationFilter.class);
     }

@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: llama-breeder-secret
+type: Opaque
+data:
+  mysqlUsername: bGxhbWE=
+  mysqlPassword: VGtQTzU5MVNUNDM=
+  googleSecretKey: SXN0dnZoWlBJQ2NTMUJQbTdTOTNCUnlw
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: llama-breeder-configmap
+data:
+  serverPort: "8081"
+  databaseUrl: mysql-service
+  googleClientId: 932356479055-bmtb7dp5j2irr9vibl50s0smpb2ug5n7.apps.googleusercontent.com
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-breeder
+  labels:
+    app: llama-breeder
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: llama-breeder
+  template:
+    metadata:
+      labels:
+        app: llama-breeder
+    spec:
+      containers:
+        - name: llama-breeder-server
+          image: "europe-west1-docker.pkg.dev/llamabreeder/server/llama-breeder:latest"
+          ports:
+            - containerPort: 8081
+          livenessProbe:
+            httpGet:
+              path: "/health-check"
+              port: 8081
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: "/health-check"
+              port: 8081
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: llama-breeder-configmap
+                  key: serverPort
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: llama-breeder-secret
+                  key: mysqlUsername
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: llama-breeder-secret
+                  key: mysqlPassword
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: llama-breeder-configmap
+                  key: databaseUrl
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: llama-breeder-configmap
+                  key: googleClientId
+            - name: GOOGLE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llama-breeder-secret
+                  key: googleSecretKey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-breeder-service
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"
+spec:
+  selector:
+    app: llama-breeder
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30000

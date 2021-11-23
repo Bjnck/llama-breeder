@@ -5,6 +5,7 @@ export interface CreatureDetailsResponse {
   deleted: boolean;
   removeFromPen: boolean;
   baby?: Creature;
+  creatures: Creature[];
 }
 
 

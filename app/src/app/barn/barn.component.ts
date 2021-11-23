@@ -261,6 +261,7 @@ export class BarnComponent implements OnInit, OnDestroy {
           this.addBabyToList(response.baby);
         }
         if (response.deleted) {
+          this.totalCount--;
           this.deleteFromList(response.creatureId);
         }
         if (response.removeFromPen && this.inPen) {
@@ -272,7 +273,6 @@ export class BarnComponent implements OnInit, OnDestroy {
   }
 
   private deleteFromList(id: string) {
-    this.totalCount--;
     this.filterCount--;
     this.creatures.splice(this.creatures.findIndex(i => i.id.toString() === id.toString()), 1);
     this.creatureService.list(1, this.creatures.length, false, this.getSearchParams())

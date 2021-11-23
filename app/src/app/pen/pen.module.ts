@@ -16,6 +16,7 @@ import {PenFieldCreatureComponent} from "./field/pen-field-creature.component";
 import {MatMenuModule} from "@angular/material/menu";
 import {RouterModule} from "@angular/router";
 import {MatBadgeModule} from "@angular/material/badge";
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {MatBadgeModule} from "@angular/material/badge";
         MatRippleModule,
         MatMenuModule,
         RouterModule,
-        MatBadgeModule
+        MatBadgeModule,
+        MatTabsModule
     ],
   exports: [
   ],

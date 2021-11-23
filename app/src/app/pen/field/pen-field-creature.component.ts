@@ -18,6 +18,7 @@ export class PenFieldCreatureComponent implements OnChanges {
   statsMax = environment.statsMax;
   statsLoveRequirement = environment.statsLoveRequirement;
 
+  @Input() isAddButton: boolean;
   @Input() pen: Pen;
   @Input() creature: Creature;
   @Input() updatedCreatures: Creature[];

@@ -19,7 +19,18 @@ export const environment = {
   statsMin: 0,
   statsMax: 100,
   statsLoveRequirement: 75,
-  breedingMax: 3
+  breedingMax: 3,
+
+  firebase: {
+    apiKey: 'AIzaSyBrq7lRwYNpFlGtce0PTTRvgz14JvS2WlQ',
+    authDomain: 'llamabreeder.firebaseapp.com',
+    databaseURL: '<your-database-URL>',
+    projectId: 'llamabreeder',
+    storageBucket: '<your-storage-bucket>',
+    messagingSenderId: '<your-messaging-sender-id>',
+    appId: '<your-app-id>',
+    measurementId: '<your-measurement-id>'
+  }
 };
 
 /*

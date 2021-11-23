@@ -11,6 +11,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class AppComponent {
   loading = true;
 
+
   constructor(private router: Router,
               private matIconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer) {

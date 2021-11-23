@@ -8,7 +8,7 @@ import {HomeModule} from './home/home.module';
 import {AppRoutingModule} from './app-routing.module';
 import {CaptureModule} from './capture/capture.module';
 import {Restangular, RestangularModule} from 'ngx-restangular';
-import {REST_FULL_RESPONSE, RestangularConfigFactory, RestFullResponseFactory} from './restangular.custom';
+import {REST_FULL_RESPONSE, RestangularConfigFactory, RestFullResponseFactory} from './shared/rest/restangular.custom';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {LoginModule} from './login/login.module';
@@ -18,6 +18,11 @@ import {ShopModule} from './shop/shop.module';
 import {InventoryModule} from './inventory/inventory.module';
 import {BarnModule} from './barn/barn.module';
 import {PenModule} from './pen/pen.module';
+import {AngularFireModule} from "@angular/fire";
+import {environment} from "../environments/environment";
+import {AngularFireAuthModule} from "@angular/fire/auth";
+import {AngularFireAuthGuardModule} from "@angular/fire/auth-guard";
+import {AuthService} from "./shared/auth/auth.service";
 
 @NgModule({
   declarations: [
@@ -36,10 +41,19 @@ import {PenModule} from './pen/pen.module';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+
+
+
     RouterModule.forRoot([], {onSameUrlNavigation: 'reload'}),
-    RestangularModule.forRoot(RestangularConfigFactory),
+    RestangularModule.forRoot([AuthService], RestangularConfigFactory),
     BrowserAnimationsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFireAuthGuardModule
+
+
   ],
   providers: [
     {provide: REST_FULL_RESPONSE, useFactory: RestFullResponseFactory, deps: [Restangular]}

@@ -1,13 +1,12 @@
 import {InjectionToken} from '@angular/core';
 
 import {Restangular} from 'ngx-restangular';
-import {Cookie} from 'ng2-cookies';
-import {environment} from '../environments/environment';
-import {CreatureService} from "./shared/creature/creature.service";
+import {environment} from '../../../environments/environment';
+import {CreatureService} from '../creature/creature.service';
 
 export function RestangularConfigFactory(RestangularProvider) {
   RestangularProvider.setBaseUrl(environment.serverUrl);
-  RestangularProvider.setDefaultHeaders({Authorization: 'Bearer ' + Cookie.get('access_token')});
+
   RestangularProvider.addResponseInterceptor((data, operation, what, url, response) => {
 
     // this is a count
@@ -16,12 +15,11 @@ export function RestangularConfigFactory(RestangularProvider) {
     }
 
     if (operation === 'getList') {
+      // todo add items count
       if (what === 'creatures') {
-        // todo if response.url contains &sex ... is filter
         CreatureService.setTotalElements(data.page.totalElements);
         CreatureService.setFilterElements(data.page.totalElements);
       }
-
 
       if (!data._embedded) {
         return [];

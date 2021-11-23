@@ -56,6 +56,8 @@ export class BarnComponent implements OnInit, OnDestroy {
   // flag so 2 calls do not compute at the same time
   computing = false;
 
+  detailsOpen = false;
+
   interval;
   inReload = false;
 
@@ -90,8 +92,8 @@ export class BarnComponent implements OnInit, OnDestroy {
     this.interval = setInterval(() => {
       this.filterDate = TimerUtil.utc(new Date());
 
-      // do not update stats if list already in computing (filter change) or if still in reload
-      if (!this.computing && !this.inReload) {
+      // do not update stats if list already in computing (filter change) or if still in reload or if details opened
+      if (!this.computing && !this.inReload && !this.detailsOpen) {
         this.computing = true;
         this.inReload = true;
         let computeForLoop = true; // flag to only compute once
@@ -244,6 +246,7 @@ export class BarnComponent implements OnInit, OnDestroy {
   }
 
   openDetails(creature: Creature) {
+    this.detailsOpen = true;
     this.dialog.open(CreatureDetailsDialogComponent, {
       data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
       disableClose: true,
@@ -263,7 +266,8 @@ export class BarnComponent implements OnInit, OnDestroy {
         if (response.removeFromPen && this.inPen) {
           this.deleteFromList(response.creatureId);
         }
-      }
+      },
+      complete: () => this.detailsOpen = false
     });
   }
 

@@ -1,18 +1,16 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Restangular} from 'ngx-restangular';
 import {Creature} from './creature.interface';
 import {Page} from '../page/page.interface';
 import {CreatureSearch} from './creature-search.interface';
+import {RestService} from '../rest/rest.service';
 
 @Injectable()
 export class CreatureService {
   private static totalElements;
   private static filterElements;
 
-  baseRest = this.restangular.all('creatures');
-
-  constructor(private restangular: Restangular) {
+  constructor(private restService: RestService) {
   }
 
   static getTotalElements(): number {
@@ -46,11 +44,11 @@ export class CreatureService {
   }
 
   get(id: string, compute: boolean = true): Observable<Creature> {
-    return this.restangular.one('creatures', id).get({compute});
+    return this.restService.rest().one('creatures', id).get({compute});
   }
 
   count(compute: boolean = true): Observable<Page> {
-    return this.baseRest.customGET('', {size: 1, compute});
+    return this.restService.rest().all('creatures').customGET('', {size: 1, compute});
   }
 
   list(size: number, page: number, compute: boolean = true, search?: CreatureSearch): Observable<Creature[]> {
@@ -78,18 +76,18 @@ export class CreatureService {
         param.ids = search.ids;
       }
     }
-    return this.baseRest.getList(param);
+    return this.restService.rest().all('creatures').getList(param);
   }
 
   update(creature: any): Observable<any> {
-    return creature.put();
+    return this.restService.rest(creature).put();
   }
 
   delete(creature: any): Observable<any> {
-    return creature.remove();
+    return this.restService.rest(creature).remove();
   }
 
   redeem(id: string): Observable<Creature> {
-    return this.baseRest.customPOST({}, id + '/action/redeem');
+    return this.restService.rest().all('creatures').customPOST({}, id + '/action/redeem');
   }
 }

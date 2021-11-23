@@ -6,7 +6,6 @@ import {UserResolve} from './shared/user/user.resolve';
 import {CaptureResolve} from './capture/capture.resolve';
 import {LoginComponent} from './login/login.component';
 import {AuthGuard} from './shared/auth/auth.guard';
-import {LoginGuard} from './login/login.guard';
 import {AccountComponent} from './account/account.component';
 import {ShopComponent} from './shop/shop.component';
 import {ShopItemResolve} from './shop/item/shop-item.resolve';
@@ -16,11 +15,13 @@ import {ItemCountResolve} from './shared/item/item-count.resolve';
 import {NetCountResolve} from './capture/launch/net-count.resolve';
 import {BarnComponent} from './barn/barn.component';
 import {CreatureListResolve} from './barn/creature-list.resolve';
-import {CreatureCountResolve} from './barn/creature-count.resolve';
 import {PenComponent} from './pen/pen.component';
 import {PenListResolve} from './pen/pen-list.resolve';
 import {PenListContentResolve} from './pen/pen-list-content.resolve';
+import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
+const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
 
 const routes: Routes = [
   {
@@ -29,19 +30,20 @@ const routes: Routes = [
     resolve: {
       user: UserResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [LoginGuard]
+    ...canActivate(redirectLoggedInToHome)
   },
   {
     path: 'account',
     component: AccountComponent,
     resolve: {
       user: UserResolve
-    }
+    },
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'shop',
@@ -72,7 +74,7 @@ const routes: Routes = [
       captures: CaptureResolve,
       netCount: NetCountResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'barn',
@@ -82,7 +84,7 @@ const routes: Routes = [
       creatures: CreatureListResolve,
       pens: PenListResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'pen',

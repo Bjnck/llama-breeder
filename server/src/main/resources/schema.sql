@@ -1,15 +1,11 @@
 create table if not exists user (
     id int not null auto_increment,
     name varchar(15) not null default 'Breeder',
+    uid varchar(255) unique not null,
+    issuer varchar(255) not null,
+    email varchar(255),
+    deleted tinyint(1) not null default 0,
     primary key (id)
-);
-
-create table if not exists user_registration (
-    id bigint not null auto_increment,
-    user_id int not null,
-    registration_key varchar(255) not null unique,
-    primary key (id),
-    foreign key (user_id) REFERENCES user(id)
 );
 
 create table if not exists user_details (

@@ -4,6 +4,9 @@ import {Pipe, PipeTransform} from '@angular/core';
 export class RomanPipe implements PipeTransform {
 
   transform(value: number): string {
+    if (value === 0) {
+      return '0';
+    }
     if (value === 1) {
       return 'I';
     }

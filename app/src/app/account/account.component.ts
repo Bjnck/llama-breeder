@@ -13,8 +13,8 @@ import {HeaderService} from '../shared/header/header.service';
 export class AccountComponent implements OnInit {
   user: User;
   invalidSubmit = false;
-  validSubmit = false;
   showDeleteConfirmation = false;
+  name: string;
 
   constructor(private headerService: HeaderService,
               private authService: AuthService,
@@ -25,19 +25,27 @@ export class AccountComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.route.snapshot.data.user;
+    this.name = this.user.name;
   }
 
-  submit() {
-    this.userService.update(this.user)
-      .subscribe(
-        (user: User) => {
-          this.invalidSubmit = false;
-          this.validSubmit = true;
-        },
-        err => {
-          this.invalidSubmit = true;
-          this.validSubmit = false;
+  onNameChange(value: string) {
+    if (value !== this.name) {
+      this.name = value;
+      this.user.name = value;
+      this.userService.update(this.user)
+        .subscribe({
+          next: user => {
+            this.invalidSubmit = false;
+          },
+          error: () => {
+            this.invalidSubmit = true;
+          }
         });
+    }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   toggleDeleteConfirmation() {
@@ -46,6 +54,6 @@ export class AccountComponent implements OnInit {
 
   delete() {
     this.userService.delete(this.user);
-    this.authService.logout();
+    this.authService.delete();
   }
 }

@@ -1,30 +1,28 @@
 import {Inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Restangular} from 'ngx-restangular';
 import {Capture} from './capture.interface';
-import {REST_FULL_RESPONSE} from '../restangular.custom';
+import {REST_FULL_RESPONSE} from '../shared/rest/restangular.custom';
 import {flatMap} from 'rxjs/operators';
+import {RestService} from '../shared/rest/rest.service';
 
 @Injectable()
 export class CaptureService {
 
-  baseRest = this.restangular.all('captures');
-
   constructor(@Inject(REST_FULL_RESPONSE) public restFullResponse,
-              private restangular: Restangular) {
+              private restService: RestService) {
   }
 
   list(size: number): Observable<Capture[]> {
-    return this.baseRest.getList({size});
+    return this.restService.rest().all('captures').getList({size});
   }
 
   create(quality: number): Observable<Capture> {
-    return this.restFullResponse.all('captures').post({quality})
+    return this.restService.restFull().all('captures').post({quality})
       .pipe(flatMap((response: any) =>
-        this.baseRest.oneUrl('captures', response.headers.headers.get('location')).get()));
+        this.restService.rest().oneUrl('captures', response.headers.headers.get('location')).get()));
   }
 
   redeem(id: string): Observable<Capture> {
-    return this.baseRest.customPOST({}, id + '/action/redeem');
+    return this.restService.rest().all('captures').customPOST({}, id + '/action/redeem');
   }
 }

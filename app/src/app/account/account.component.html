@@ -1,31 +1,29 @@
-<div id="account-page">
+<div id="page" class="account">
 
-  <div class="form-group">
-    <label for="name">Name:</label>
-    <input type="text" class="form-control" id="name" required [(ngModel)]="user.name" name="name">
-  </div>
-
+  <input id="name" type="text" maxlength="15" [value]="name" (focusout)="onNameChange($event.target.value)">
   <div id="submit-message">
-    <span id="error-message" *ngIf="invalidSubmit">Invalid username</span>
-    <span *ngIf="validSubmit">Account updated</span>
+    <span class="error" *ngIf="invalidSubmit">Error</span>
   </div>
 
-  <div id="submit">
-    <button mat-raised-button (click)="submit()">Update</button>
+  <div class="details">
+    <div>Max generation reached: {{user.level | roman}}</div>
+    <div>{{user.email}}</div>
   </div>
 
-  <div id="delete-account">
+  <div id="logout">
+    <button mat-raised-button (click)="logout()">Logout</button>
+  </div>
+
+  <div id="delete">
     <button mat-raised-button color="warn" *ngIf="!showDeleteConfirmation" (click)="toggleDeleteConfirmation()">
       Delete account
     </button>
 
-    <div id="delete-confirmation" *ngIf="showDeleteConfirmation">
-      <div id="delete-confirmation-message">Are you sure that you want to delete your account ?</div>
-      <button mat-raised-button class="btn-confirmation" (click)="toggleDeleteConfirmation()">No</button>
-      <button mat-raised-button color="warn" class="btn-confirmation" (click)="delete()">Yes</button>
+    <div id="confirmation" *ngIf="showDeleteConfirmation">
+      <div class="message">Are you sure ?</div>
+      <button mat-raised-button (click)="toggleDeleteConfirmation()">No</button>
+      <button mat-raised-button color="warn" (click)="delete()">Yes</button>
     </div>
-
   </div>
-
 
 </div>

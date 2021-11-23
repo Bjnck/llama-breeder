@@ -11,15 +11,6 @@
           net
         </div>
       </div>
-
-      <div class="elt">
-        <div class="logo" [ngClass]="{'obscure': capture.bait <= 0}">
-          <mat-icon svgIcon="bait"></mat-icon>
-        </div>
-        <div class="obscure" *ngIf="capture.bait <= 0">No bait</div>
-        <div *ngIf="capture.bait > 0">
-          Bait lvl.{{capture.bait}}</div>
-      </div>
     </div>
 
     <div id="loot">

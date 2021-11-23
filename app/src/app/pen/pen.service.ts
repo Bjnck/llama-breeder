@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Restangular} from 'ngx-restangular';
 import {forkJoin, Observable} from 'rxjs';
 import {Pen, PenContent} from './pen.interface';
 import {Item} from '../shared/item/item.interface';
@@ -9,13 +8,12 @@ import {map, switchMap} from 'rxjs/operators';
 import {Creature} from '../shared/creature/creature.interface';
 import {ItemService} from '../shared/item/item.service';
 import {CreatureService} from '../shared/creature/creature.service';
+import {RestService} from '../shared/rest/rest.service';
 
 @Injectable()
 export class PenService {
 
-  baseRest = this.restangular.all('pens');
-
-  constructor(private restangular: Restangular,
+  constructor(private restService: RestService,
               private itemService: ItemService,
               private creatureService: CreatureService) {
   }
@@ -25,11 +23,11 @@ export class PenService {
   }
 
   update(pen: any): Observable<any> {
-    return pen.put();
+    return this.restService.rest(pen).put();
   }
 
   get(id: string): Observable<Pen> {
-    return this.restangular.one('pens', id).get();
+    return this.restService.rest().one('pens', id).get();
   }
 
   getWithContent(id: string): Observable<PenWithContent> {
@@ -39,7 +37,7 @@ export class PenService {
   }
 
   list(compute: boolean = true): Observable<Pen[]> {
-    return this.baseRest.getList({compute});
+    return this.restService.rest().all('pens').getList({compute});
   }
 
   listWithContent(): Observable<PenWithContent[]> {
@@ -54,7 +52,7 @@ export class PenService {
   }
 
   activateItem(pen: Pen, item: Item): Observable<PenActivation> {
-    return this.baseRest.customPOST({}, pen.id + '/action/activate-item/' + item.id);
+    return this.restService.rest().all('pens').customPOST({}, pen.id + '/action/activate-item/' + item.id);
   }
 
 

@@ -25,7 +25,7 @@ metadata:
   labels:
     app: llama-breeder
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: llama-breeder
@@ -43,13 +43,13 @@ spec:
             httpGet:
               path: "/health-check"
               port: 8081
-            initialDelaySeconds: 30
+            initialDelaySeconds: 45
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: "/health-check"
               port: 8081
-            initialDelaySeconds: 30
+            initialDelaySeconds: 45
             timeoutSeconds: 5
           env:
             - name: SERVER_PORT

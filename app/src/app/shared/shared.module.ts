@@ -25,6 +25,7 @@ import {RomanPipe} from './creature/details/roman.pipe';
 import {MatDividerModule} from '@angular/material/divider';
 import {RedeemCreatureDialogComponent} from './creature/redeem/redeem-creature.dialog';
 import {UtcPipe} from './timer/utc.pipe';
+import {RestService} from "./rest/rest.service";
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {UtcPipe} from './timer/utc.pipe';
     ItemService,
     ItemCountResolve,
     CreatureService,
-    AuthService
+    AuthService,
+    RestService
   ]
 })
 export class SharedModule {

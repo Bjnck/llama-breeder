@@ -12,5 +12,5 @@ public interface UserRepository extends CrudRepository<User, Integer> {
         return findById(OAuthUserUtil.getUserId()).orElseThrow();
     }
 
-    Optional<User> findOneByRegistrationKeys(String registrationKey);
+    Optional<User> findOneByUid(String uid);
 }

@@ -25,7 +25,9 @@ import {RomanPipe} from './creature/details/roman.pipe';
 import {MatDividerModule} from '@angular/material/divider';
 import {RedeemCreatureDialogComponent} from './creature/redeem/redeem-creature.dialog';
 import {UtcPipe} from './timer/utc.pipe';
-import {RestService} from "./rest/rest.service";
+import {RestService} from './rest/rest.service';
+import {CreaturePriceResolve} from './creature/creature-price.resolve';
+import {CreaturePricesPipe} from "./creature/details/creature-prices.pipe";
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import {RestService} from "./rest/rest.service";
     CreatureDetailsDialogComponent,
     RedeemCreatureDialogComponent,
     CreatureGeneComponent,
+    CreaturePricesPipe,
     RomanPipe,
     UtcPipe
   ],
@@ -67,6 +70,7 @@ import {RestService} from "./rest/rest.service";
     ItemService,
     ItemCountResolve,
     CreatureService,
+    CreaturePriceResolve,
     AuthService,
     RestService
   ]

@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {forkJoin, Observable} from 'rxjs';
-import {Pen, PenContent} from './pen.interface';
+import {Pen, PenContent, PenInfo} from './pen.interface';
 import {Item} from '../shared/item/item.interface';
 import {PenActivation} from './pen-activation.interface';
 import {PenWithContent} from './pen-with-content.interface';
-import {map, switchMap} from 'rxjs/operators';
+import {flatMap, map, switchMap} from 'rxjs/operators';
 import {Creature} from '../shared/creature/creature.interface';
 import {ItemService} from '../shared/item/item.service';
 import {CreatureService} from '../shared/creature/creature.service';
@@ -20,6 +20,13 @@ export class PenService {
 
   private static getPenWithContent(pen: Pen, items: Item[], creatures: Creature[]): PenWithContent {
     return {pen, creatures, items};
+  }
+
+  create(): Observable<PenWithContent> {
+    return this.restService.restFull().all('pens').post()
+      .pipe(flatMap((response: any) =>
+        this.restService.rest().oneUrl('pens', response.headers.headers.get('location')).get()
+          .pipe(map((pen: Pen) => PenService.getPenWithContent(pen, [], [])))));
   }
 
   update(pen: any): Observable<any> {
@@ -68,14 +75,13 @@ export class PenService {
           .toPromise());
     });
 
-    const creatures: Creature[] = [];
-    pen.creatures.map((content: PenContent) => {
-      promises.push(
-        this.creatureService.get(content.id, false)
-          .pipe(
-            map((creature: Creature) => creatures.push(creature)))
-          .toPromise());
-    });
+    let creatures: Creature[] = [];
+    if (pen.creatures.length > 0) {
+      promises.push(this.creatureService.list(20, 0, false,
+        {ids: pen.creatures.map(content => content.id)})
+        .pipe(map((c: Creature[]) => creatures = c))
+        .toPromise());
+    }
 
     await Promise.all(promises).catch(error => {
       throw error;
@@ -85,5 +91,9 @@ export class PenService {
       observer.next(PenService.getPenWithContent(pen, items, creatures));
       observer.complete();
     }).toPromise();
+  }
+
+  getPrices(): Observable<PenInfo[]> {
+    return this.restService.rest().all('pens/info').getList();
   }
 }

@@ -1,6 +1,5 @@
 package hrpg.server.capture.service;
 
-import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.CaptureNotFoundException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
@@ -12,8 +11,7 @@ import java.util.Optional;
 
 public interface CaptureService {
 
-    CaptureDto create(int quality, Integer baitLevel)
-            throws NetUnavailableException, RunningCaptureException, BaitUnavailableException;
+    CaptureDto create(int quality) throws NetUnavailableException, RunningCaptureException;
 
     Optional<CaptureDto> findById(long id);
 

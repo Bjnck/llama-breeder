@@ -13,6 +13,5 @@ public interface CaptureResourceMapper {
     @Mapping(target = "sex", source = "creatureInfo.sex")
     @Mapping(target = "color", source = "creatureInfo.color1")
     @Mapping(target = "gene", source = "creatureInfo.gene1")
-    @Mapping(target = "bait", source = "baitGeneration")
     CaptureResponse toResponse(CaptureDto dto);
 }

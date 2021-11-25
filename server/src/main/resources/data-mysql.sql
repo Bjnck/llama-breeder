@@ -1,6 +1,6 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 5) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 50) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 150) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 5, 75) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 8, 500) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 2) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);

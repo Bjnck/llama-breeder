@@ -1,7 +1,5 @@
 package hrpg.server.pen.resource;
 
-import hrpg.server.pen.service.PenComputor;
-import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.resource.SortValues;
 import hrpg.server.common.resource.exception.ResourceNotFoundException;
 import hrpg.server.common.resource.exception.ValidationCode;
@@ -15,9 +13,14 @@ import hrpg.server.item.resource.ItemController;
 import hrpg.server.item.service.exception.ItemInUseException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
+import hrpg.server.pen.service.PenComputor;
+import hrpg.server.pen.service.PenInfoService;
 import hrpg.server.pen.service.PenService;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
+import hrpg.server.pen.service.exception.PenNotFullyExtendedException;
+import hrpg.server.pen.service.exception.TooManyPenException;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -34,6 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -42,26 +46,42 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RequestMapping(path = "pens")
 @ExposesResourceFor(PenResponse.class)
 public class PenController {
-
-    public static final String COLLECTION_REF = "pens";
-
     private final TypedEntityLinks<PenResponse> links;
     private final PagedResourcesAssembler<PenResponse> pagedResourcesAssembler;
 
     private final PenService penService;
+    private final PenInfoService penInfoService;
     private final PenResourceMapper penResourceMapper;
     private final PenComputor penComputor;
 
     public PenController(EntityLinks entityLinks,
                          PenService penService,
-                         PenResourceMapper penResourceMapper,
+                         PenInfoService penInfoService, PenResourceMapper penResourceMapper,
                          PagedResourcesAssembler<PenResponse> pagedResourcesAssembler,
                          PenComputor penComputor) {
         this.links = entityLinks.forType(PenResponse::getId);
         this.penService = penService;
+        this.penInfoService = penInfoService;
         this.penResourceMapper = penResourceMapper;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
         this.penComputor = penComputor;
+    }
+
+    @PostMapping()
+    public ResponseEntity<Object> create() {
+        try {
+            PenResponse response = penResourceMapper.toResponse(penService.create());
+            return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
+        } catch (TooManyPenException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code(ValidationCode.MAX_SIZE.getCode()).build()));
+        } catch (PenNotFullyExtendedException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code(ValidationCode.MIN_SIZE.getCode()).build()));
+        } catch (InsufficientCoinsException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code(ValidationCode.INSUFFICIENT_COINS.getCode()).build()));
+        }
     }
 
     @PutMapping("{id}")
@@ -121,7 +141,7 @@ public class PenController {
     public PagedModel<EntityModel<PenResponse>> search(@RequestParam(defaultValue = "true") boolean compute,
                                                        @SortDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         if (compute) penComputor.compute();
-        
+
         Page<PenResponse> responses = penService.search(pageable)
                 .map(penResourceMapper::toResponse)
                 .map(response -> {
@@ -145,5 +165,10 @@ public class PenController {
                 creature.add(linkTo(CreatureController.class).slash(creature.getId()).withSelfRel()));
         response.getItems().forEach(item ->
                 item.add(linkTo(ItemController.class).slash(item.getId()).withSelfRel()));
+    }
+
+    @GetMapping("info")
+    public List<PenInfo> info() {
+        return penInfoService.getInfo();
     }
 }

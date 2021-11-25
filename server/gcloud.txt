@@ -1,0 +1,48 @@
+Firebase
+Setup: https://firebase.google.com/docs/admin/setup#windows
+
+
+---------
+Deployment procedure:
+1. create archive
+    mvn clean install -U
+    docker build --tag=llama-breeder:latest --label=llama-breeder .
+    docker save llama-breeder:latest -o target/llama-breeder.tar
+
+2. authenticate to gcloud
+	gcloud auth login
+2.a configure cloud zone (only the first time)
+	gcloud auth configure-docker europe-west1-docker.pkg.dev
+
+3. push to repository
+	docker tag llama-breeder europe-west1-docker.pkg.dev/llamabreeder/server/llama-breeder
+	docker image prune --force --filter="label=llama-breeder
+	docker push europe-west1-docker.pkg.dev/llamabreeder/server/llama-breeder
+
+4. delete old image on cloud console
+
+5. update database
+    kubectl exec -it podName -- bin/bash
+    mysql -uroot -pxxx
+
+6. restart pod
+
+7. check all good
+    kubectl logs podName
+
+
+---------
+Init database procedure:
+1. connect to mysql
+	kubectl exec -it mysql-xxx -- bin/bash
+	mysql -uroot -pxxx
+2. add schema, user and grant
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+	FLUSH PRIVILEGES;
+	CREATE SCHEMA llama;
+	CREATE USER 'llama' IDENTIFIED BY 'xxx';
+	GRANT ALL PRIVILEGES ON llama.* TO 'llama';
+	FLUSH PRIVILEGES;
+
+
+

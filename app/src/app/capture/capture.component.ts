@@ -2,12 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {User} from '../shared/user/user.interface';
 import {Capture} from './capture.interface';
-import {CaptureService} from './capture.service';
 import {AuthService} from '../shared/auth/auth.service';
 import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
 import {TimerUtil} from '../shared/timer/timer.util';
-import {CreatureService} from "../shared/creature/creature.service";
+import {CreatureCacheService} from '../shared/creature/creature-cache.service';
 
 @Component({
   templateUrl: './capture.component.html',
@@ -35,8 +34,6 @@ export class CaptureComponent implements OnInit {
     this.headerService.showHeader('Wild Lands', false);
     this.user = this.route.snapshot.data.user;
     const captures: Capture[] = this.route.snapshot.data.captures;
-    // todo remove this when bait is managed by server
-    captures.forEach(capture => capture.bait = 0);
 
     this.activeCapture = captures.find(capture => !capture.sex);
     if (this.activeCapture) {
@@ -56,7 +53,7 @@ export class CaptureComponent implements OnInit {
   onRedeem(capture: Capture) {
     this.activeCapture = null;
     this.redeem = false;
-    CreatureService.incrementTotalElements();
+    CreatureCacheService.incrementTotalElements();
 
     if (this.history.length >= this.historyMaxLength) {
       this.history.pop();

@@ -31,4 +31,6 @@ public interface PenRepository extends WithUserRepository<Pen, Long> {
     Optional<Pen> findByCreaturesContaining(Creature creature);
 
     Optional<Pen> findByItemsContaining(Item item);
+
+    long countBySize(int size);
 }

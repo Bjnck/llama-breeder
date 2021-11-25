@@ -2,7 +2,6 @@ package hrpg.server.capture.service;
 
 import hrpg.server.capture.dao.Capture;
 import hrpg.server.capture.dao.CaptureRepository;
-import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.CaptureNotFoundException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
@@ -17,6 +16,7 @@ import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.item.service.ItemDto;
 import hrpg.server.item.service.ItemSearch;
 import hrpg.server.item.service.ItemService;
+import hrpg.server.item.service.exception.ItemInUseException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.type.ItemCode;
 import hrpg.server.user.dao.User;
@@ -40,7 +40,6 @@ public class CaptureServiceImpl implements CaptureService {
     private final CreatureRepository creatureRepository;
     private final CaptureMapper captureMapper;
     private final ItemService itemService;
-    private final BaitService baitService;
     private final CreatureFactory creatureFactory;
     private final CapturesProperties capturesProperties;
 
@@ -49,7 +48,6 @@ public class CaptureServiceImpl implements CaptureService {
                               CreatureRepository creatureRepository,
                               CaptureMapper captureMapper,
                               ItemService itemService,
-                              BaitService baitService,
                               CreatureFactory creatureFactory,
                               ParametersProperties parametersProperties) {
         this.captureRepository = captureRepository;
@@ -57,19 +55,16 @@ public class CaptureServiceImpl implements CaptureService {
         this.creatureRepository = creatureRepository;
         this.captureMapper = captureMapper;
         this.itemService = itemService;
-        this.baitService = baitService;
         this.creatureFactory = creatureFactory;
         this.capturesProperties = parametersProperties.getCaptures();
     }
 
     @Transactional(rollbackFor = {
             NetUnavailableException.class,
-            RunningCaptureException.class,
-            BaitUnavailableException.class
+            RunningCaptureException.class
     })
     @Override
-    public CaptureDto create(int quality, Integer baitGeneration)
-            throws NetUnavailableException, RunningCaptureException, BaitUnavailableException {
+    public CaptureDto create(int quality) throws NetUnavailableException, RunningCaptureException {
         //validate net with quality is available and delete it
         if (quality > 0) {
             ItemDto net = itemService.search(
@@ -78,17 +73,10 @@ public class CaptureServiceImpl implements CaptureService {
                     .stream().findAny().orElseThrow(NetUnavailableException::new);
             try {
                 itemService.delete(net.getId());
-            } catch (ItemNotFoundException e) {
+            } catch (ItemNotFoundException | ItemInUseException e) {
                 //item found already deleted -> conflict with other operation
                 throw new ConflictException();
             }
-
-            //validate bait is available and decrease it
-            if (baitGeneration != null)
-                baitService.decreaseCount(baitGeneration);
-        } else {
-            //can't use bait if no quality
-            baitGeneration = null;
         }
 
         //validate no running capture
@@ -115,7 +103,6 @@ public class CaptureServiceImpl implements CaptureService {
 
         return captureMapper.toDto(captureRepository.save(Capture.builder()
                 .quality(quality)
-                .baitGeneration(baitGeneration)
                 .startTime(current)
                 .endTime(endTime)
                 .build()));
@@ -153,7 +140,6 @@ public class CaptureServiceImpl implements CaptureService {
         CreatureDto creatureDto = creatureFactory.generateForCapture(
                 user.getDetails().getLevel(),
                 capture.getQuality(),
-                capture.getBaitGeneration(),
                 capture.getEndTime().toLocalDate());
         Creature creature = creatureRepository.findById(creatureDto.getId()).orElseThrow();
         capture.setCreatureInfo(creature.getInfo().toBuilder().id(null).build());

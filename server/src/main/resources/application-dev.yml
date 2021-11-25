@@ -14,3 +14,14 @@ parameters:
   pens:
     activation-time-unit: MILLIS
     activation-time-value: 100
+    prices:
+      pen-1:
+        size-3: 0
+        size-4: 0
+        size-5: 0
+        size-6: 0
+      pen-2:
+        size-3: 0
+        size-4: 0
+        size-5: 0
+        size-6: 0

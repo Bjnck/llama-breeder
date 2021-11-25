@@ -7,9 +7,6 @@ export const environment = {
 
   serverUrl: 'http://localhost:8080',
 
-  googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-  googleClientId: '932356479055-koogrkg18qg06ccbp02ngbp5fkd4k0cc.apps.googleusercontent.com',
-
   energyMin: 0,
   energyMax: 1000,
   energyDivider: 10,
@@ -20,16 +17,12 @@ export const environment = {
   statsMax: 100,
   statsLoveRequirement: 75,
   breedingMax: 3,
+  penMaxSize: 6,
 
   firebase: {
     apiKey: 'AIzaSyBrq7lRwYNpFlGtce0PTTRvgz14JvS2WlQ',
-    authDomain: 'llamabreeder.firebaseapp.com',
-    databaseURL: '<your-database-URL>',
+    authDomain: 'play.llamabreedergame.com',
     projectId: 'llamabreeder',
-    storageBucket: '<your-storage-bucket>',
-    messagingSenderId: '<your-messaging-sender-id>',
-    appId: '<your-app-id>',
-    measurementId: '<your-measurement-id>'
   }
 };
 

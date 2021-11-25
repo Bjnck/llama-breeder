@@ -2,7 +2,6 @@ package hrpg.server.capture.resource;
 
 import hrpg.server.capture.service.CaptureDto;
 import hrpg.server.capture.service.CaptureService;
-import hrpg.server.capture.service.exception.BaitUnavailableException;
 import hrpg.server.capture.service.exception.CaptureNotFoundException;
 import hrpg.server.capture.service.exception.NetUnavailableException;
 import hrpg.server.capture.service.exception.RunningCaptureException;
@@ -57,16 +56,13 @@ public class CaptureController {
     public ResponseEntity<?> create(@Valid @RequestBody CaptureRequest request) {
         CaptureResponse response;
         try {
-            response = captureResourceMapper.toResponse(captureService.create(request.getQuality(), request.getBait()));
+            response = captureResourceMapper.toResponse(captureService.create(request.getQuality()));
         } catch (RunningCaptureException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code("runningCapture").build()));
         } catch (NetUnavailableException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("quality").code("unavailable").build()));
-        } catch (BaitUnavailableException e) {
-            throw new ValidationException(Collections.singletonList(
-                    ValidationError.builder().field("bait").code("unavailable").build()));
         }
         return ResponseEntity.created(links.linkToItemResource(response).toUri())
                 .header("Access-Control-Expose-Headers", HttpHeaders.LOCATION).build();

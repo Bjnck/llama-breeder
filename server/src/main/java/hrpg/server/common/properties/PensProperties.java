@@ -14,6 +14,6 @@ public class PensProperties {
 
     private int itemActivationChance;
 
-    private Map<String, Integer> price;
+    private Map<String, Map<String, Integer>> prices;
 }
 

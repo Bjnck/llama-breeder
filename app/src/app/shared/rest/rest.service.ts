@@ -13,6 +13,9 @@ export class RestService {
 
   rest(elt?: any): any {
     if (elt) {
+      if (!elt.reqParams) {
+        elt.reqParams = {headers: {}};
+      }
       elt.reqParams.headers = {Authorization: this.authService.getTokenId()};
       return elt;
     } else {

@@ -108,23 +108,11 @@ create table if not exists capture (
     creature_info_id bigint,
     version bigint not null default 0,
     quality tinyint(1) not null default 0, check (quality between 0 and 3),
-    bait_generation tinyint(1), check (bait_generation between 1 and 8),
     start_time datetime not null,
     end_time datetime not null,
     primary key (id),
     foreign key (user_id) REFERENCES user(id),
     foreign key (creature_info_id) REFERENCES creature_info(id)
-);
-
-create table if not exists bait (
-    id bigint not null auto_increment,
-    user_id int not null,
-    generation tinyint(1) not null, check (generation between 1 and 8),
-    version bigint not null default 0,
-    count int not null default 0,
-    primary key (id),
-    foreign key (user_id) REFERENCES user(id),
-    unique key user_generation (user_id, generation)
 );
 
 create table if not exists pen (

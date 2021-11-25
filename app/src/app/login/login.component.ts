@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     const random = this.randomIntFromInterval(1, 3);
-    console.log(random)
     if (random === 1) {
       this.color = 'crimson';
     } else if (random === 2) {

@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseToken;
 import hrpg.server.user.service.UserDto;
 import hrpg.server.user.service.UserService;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ public class FirebaseAuthenticationProvider implements AuthenticationProvider {
         try {
             return FirebaseAuth.getInstance().verifyIdToken(idToken);
         } catch (FirebaseAuthException e) {
-            throw new FirebaseAuthenticationException("invalid idToken", e);
+            throw new BadCredentialsException("invalid idToken", e);
         }
     }
 }

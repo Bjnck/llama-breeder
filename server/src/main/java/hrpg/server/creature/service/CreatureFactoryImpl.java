@@ -45,7 +45,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
     }
 
     @Override
-    public CreatureDto generateForCapture(int userLevel, int netQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
+    public CreatureDto generateForCapture(int userLevel, int netQuality, @NotNull LocalDate captureEndDate)
             throws MaxCreaturesException {
         validateMaxCreaturesReached();
 
@@ -80,7 +80,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
             creatureBuilder.info(CreatureInfo.builder()
                     .sex(randomSex())
                     .color1(colorFactory.getForCapture(null))
-                    .gene1(geneFactory.getForCapture(netQuality, baitGeneration).orElse(null))
+                    .gene1(geneFactory.getForCapture(netQuality).orElse(null))
                     .build());
         }
 

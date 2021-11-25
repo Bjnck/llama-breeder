@@ -21,14 +21,14 @@ parameters:
     max: 100
   captures:
     time-unit: HOURS
-    time-value: 1
+    time-value: 3
     time-unit-first: SECONDS
     time-value-first: 5
-    max: 20
+    max: 10
   creatures:
     max: 250
     chance-female: 50
-    chance-cross-breed: 20
+    chance-cross-breed: 30
     chance-bi-color: 50
     max-babies: 1
     energy-time-unit: SECONDS
@@ -36,31 +36,31 @@ parameters:
     pregnancy-time-unit: MINUTES
     pregnancy-time-values:
       gen-1: 5
-      gen-2: 60
-      gen-3: 120
-      gen-4: 180
-      gen-5: 300
+      gen-2: 20
+      gen-3: 60
+      gen-4: 120
+      gen-5: 240
       gen-6: 480
       gen-7: 720
       gen-8: 1440
     maturity-increments:
       gen-1: 500
-      gen-2: 50
-      gen-3: 25
-      gen-4: 15
-      gen-5: 15
-      gen-6: 10
-      gen-7: 10
-      gen-8: 5
+      gen-2: 250
+      gen-3: 83
+      gen-4: 55
+      gen-5: 55
+      gen-6: 40
+      gen-7: 27
+      gen-8: 20
     energy-increments:
       gen-1: 100
-      gen-2: 10
-      gen-3: 5
-      gen-4: 3
-      gen-5: 3
-      gen-6: 2
-      gen-7: 2
-      gen-8: 1
+      gen-2: 50
+      gen-3: 16
+      gen-4: 11
+      gen-5: 11
+      gen-6: 8
+      gen-7: 5
+      gen-8: 4
     stats-increments:
       gen-1: 5
       gen-2: 3
@@ -81,35 +81,28 @@ parameters:
       gen-8: 100
   genes:
     chance-quality-0: 10
-    chance-quality-1: 20
-    chance-quality-2: 30
-    chance-quality-3: 40
+    chance-quality-2: 20
+    chance-quality-5: 30
+    chance-quality-8: 40
     chance-love: 25
     chance-hunger: 25
     chance-thirst: 25
     chance-fertile: 25
-    special-chance-quality-1: 20
-    special-chance-quality-2: 25
-    special-chance-quality-3: 30
+    special-chance-quality-2: 20
+    special-chance-quality-5: 25
+    special-chance-quality-8: 30
   pens:
     activation-time-unit: SECONDS
     activation-time-value: 30
     item-activation-chance: 100
-    price:
-      size-4: 1
-      size-5: 1
-      size-6: 1
-      size-7: 1
-      size-8: 1
-      size-9: 1
-      size-10: 1
-      size-11: 1
-      size-12: 1
-      size-13: 1
-      size-14: 1
-      size-15: 1
-      size-16: 1
-      size-17: 1
-      size-18: 1
-      size-19: 1
-      size-20: 1
+    prices:
+      pen-1:
+        size-3: 0
+        size-4: 20
+        size-5: 40
+        size-6: 80
+      pen-2:
+        size-3: 150
+        size-4: 300
+        size-5: 600
+        size-6: 1000

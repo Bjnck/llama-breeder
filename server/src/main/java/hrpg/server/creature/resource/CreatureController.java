@@ -6,6 +6,7 @@ import hrpg.server.common.resource.exception.ValidationCode;
 import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.creature.service.CreatureComputor;
+import hrpg.server.creature.service.CreatureInfoService;
 import hrpg.server.creature.service.CreatureService;
 import hrpg.server.creature.service.exception.*;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,18 +39,21 @@ public class CreatureController {
     private final PagedResourcesAssembler<CreatureResponse> pagedResourcesAssembler;
 
     private final CreatureService creatureService;
+    private final CreatureInfoService creatureInfoService;
     private final CreatureResourceMapper creatureResourceMapper;
     private final CreatureComputor creatureComputor;
 
     public CreatureController(EntityLinks entityLinks,
                               PagedResourcesAssembler<CreatureResponse> pagedResourcesAssembler,
                               CreatureService creatureService,
+                              CreatureInfoService creatureInfoService,
                               CreatureResourceMapper creatureResourceMapper,
                               CreatureComputor creatureComputor) {
         this.links = entityLinks.forType(CreatureResponse::getId);
         this.pagedResourcesAssembler = pagedResourcesAssembler;
 
         this.creatureService = creatureService;
+        this.creatureInfoService = creatureInfoService;
         this.creatureResourceMapper = creatureResourceMapper;
         this.creatureComputor = creatureComputor;
     }
@@ -118,5 +123,10 @@ public class CreatureController {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code("maxCreatures").build()));
         }
+    }
+
+    @GetMapping("info")
+    public List<CreatureInfo> info() {
+        return creatureInfoService.getInfo();
     }
 }

@@ -24,7 +24,6 @@ export class LaunchCaptureComponent implements OnInit, OnDestroy {
   timeLeft: number;
   interval;
   quality = 0;
-  bait = 0;
 
   @Output() captureStarted: EventEmitter<Capture> = new EventEmitter<Capture>();
   @Output() captureFinished: EventEmitter<void> = new EventEmitter<void>();
@@ -48,9 +47,6 @@ export class LaunchCaptureComponent implements OnInit, OnDestroy {
   launch() {
     this.captureService.create(this.quality)
       .subscribe(capture => {
-        // todo remove this when server manage bait
-        capture.bait = 0;
-
         this.setTimer(capture);
         // this.capture = capture;
         this.captureStarted.emit(capture);

@@ -1,0 +1,19 @@
+<div id="purchase">
+  <div class="logo">
+    <mat-icon>foundation</mat-icon>
+  </div>
+  <div class="text" *ngIf="pens | construct">
+    All existing pens must be fully extended before constructing a new one
+  </div>
+  <div class="construct">
+    <button mat-raised-button (click)="construct()"
+            [disabled]="((price | price: 3) > user.coins) || (pens | construct)">
+      <mat-icon>construction</mat-icon>
+      {{price | price: 3}} ¤
+    </button>
+  </div>
+</div>
+
+
+
+

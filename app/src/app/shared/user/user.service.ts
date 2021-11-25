@@ -33,6 +33,11 @@ export class UserService {
     this.userChangeEventEmitter.emit(this.user);
   }
 
+  updateLevel(level: number) {
+    this.user.level = level;
+    this.userChangeEventEmitter.emit(this.user);
+  }
+
   delete(user: any) {
     this.user = null;
     this.userChangeEventEmitter.emit(this.user);

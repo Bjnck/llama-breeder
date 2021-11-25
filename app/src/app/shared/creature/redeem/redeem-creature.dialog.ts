@@ -4,6 +4,8 @@ import {Creature} from '../creature.interface';
 import {CreatureService} from '../creature.service';
 import {User} from '../../user/user.interface';
 import {RedeemCreatureData} from './redeem-creature-data.interface';
+import {UserService} from '../../user/user.service';
+import {CreatureCacheService} from '../creature-cache.service';
 
 @Component({
   templateUrl: './redeem-creature.dialog.html',
@@ -20,7 +22,8 @@ export class RedeemCreatureDialogComponent implements OnInit, OnDestroy {
   step = 0;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: RedeemCreatureData,
-              private creatureService: CreatureService) {
+              private creatureService: CreatureService,
+              private userService: UserService) {
     this.user = data.user;
     this.creature = {
       ...data.creature,
@@ -33,7 +36,10 @@ export class RedeemCreatureDialogComponent implements OnInit, OnDestroy {
     this.creatureService.redeem(this.creature.id).subscribe({
       next: creature => {
         this.baby = creature;
-        CreatureService.incrementTotalElements();
+        CreatureCacheService.incrementTotalElements();
+        if (this.user.level < creature.generation) {
+          this.userService.updateLevel(creature.generation);
+        }
       }
     });
   }

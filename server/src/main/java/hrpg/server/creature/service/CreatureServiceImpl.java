@@ -75,9 +75,9 @@ public class CreatureServiceImpl implements CreatureService {
         if (penRepository.existsByCreaturesContaining(creature)) throw new CreatureInUseException(creature.getId());
 
         //sell creature
-        int price;
-        if (creature.isWild() || creature.getInfo().getColor2() == null) price = 0;
-        else price = creaturesProperties.getPrice(creature.getGeneration());
+        int price = creaturesProperties.getPrice(creature.getGeneration());
+        if (creature.getInfo().getColor2() != null) price *= 2;
+
         userService.addCoins(price);
 
         //delete creature

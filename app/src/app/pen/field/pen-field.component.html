@@ -34,14 +34,23 @@
   </div>
 
   <div class="details">
-    <div class="detail">Llamas {{pen.creatures.length}}/{{pen.pen.size}}</div>
-    <div class="detail add">
-      <button mat-raised-button disabled>
-        <mat-icon>fence</mat-icon>
+    <div class="detail">Spaces {{pen.pen.size}}/{{maxSize}}</div>
+    <div class="detail">
+      <button mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
       </button>
     </div>
-    <div class="detail right">Items {{pen.items.length}}/{{pen.pen.size}}</div>
   </div>
+
+  <mat-menu #options="matMenu">
+    <button mat-menu-item class="pen-option" *ngIf="pen.pen.size < maxSize" (click)="extend(pen.pen.size + 1)"
+            [disabled]="(price | price: (pen.pen.size + 1)) > user.coins">
+      Extend pen ({{price | price: (pen.pen.size + 1)}} ¤)
+    </button>
+    <button mat-menu-item class="pen-option" *ngIf="pen.pen.size === maxSize" disabled>
+      No more space available
+    </button>
+  </mat-menu>
 </div>
 
 

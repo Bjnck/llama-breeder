@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface CreatureFactory {
-    CreatureDto generateForCapture(int userLevel, int netQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
+    CreatureDto generateForCapture(int userLevel, int netQuality, @NotNull LocalDate captureEndDate)
             throws MaxCreaturesException;
 
     List<CreatureDto> generateForBirth(long id) throws MaxCreaturesException, CreatureNotFoundException;

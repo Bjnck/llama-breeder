@@ -23,9 +23,7 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     @Override
-    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality, Integer baitGeneration) {
-        //todo use bait for calcul
-
+    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality) {
         Gene gene = null;
         if (new Random().nextInt(100) < getChance(netQuality)) {
             //check get normal gene
@@ -51,23 +49,23 @@ public class GeneFactoryImpl implements GeneFactory {
     private int getChance(int netQuality) {
         if (netQuality == 0)
             return genesParameters.getChanceQuality0();
-        else if (netQuality == 1)
-            return genesParameters.getChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getChanceQuality2();
+        else if (netQuality == 5)
+            return genesParameters.getChanceQuality5();
         else
-            return genesParameters.getChanceQuality3();
+            return genesParameters.getChanceQuality8();
     }
 
     private int getSpecialChance(int netQuality) {
         if (netQuality == 0)
             return 0;
-        else if (netQuality == 1)
-            return genesParameters.getSpecialChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getSpecialChanceQuality2();
+        else if (netQuality == 5)
+            return genesParameters.getSpecialChanceQuality5();
         else
-            return genesParameters.getSpecialChanceQuality3();
+            return genesParameters.getSpecialChanceQuality8();
     }
 
     @Override

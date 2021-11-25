@@ -49,4 +49,9 @@ export interface Parent {
   genes: Genes;
 }
 
+export interface CreatureInfo {
+  generation: number;
+  price: number;
+}
+
 

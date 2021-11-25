@@ -3,7 +3,7 @@ import {User} from '../shared/user/user.interface';
 import {ActivatedRoute} from '@angular/router';
 import {HeaderService} from '../shared/header/header.service';
 import {UserService} from '../shared/user/user.service';
-import {Creature} from '../shared/creature/creature.interface';
+import {Creature, CreatureInfo} from '../shared/creature/creature.interface';
 import {CreatureService} from '../shared/creature/creature.service';
 import {MatDialog} from '@angular/material/dialog';
 import {CreatureDetailsDialogComponent} from '../shared/creature/details/creature-details.dialog';
@@ -13,6 +13,7 @@ import {CreatureDetailsResponse} from '../shared/creature/details/creature-detai
 import {TimerUtil} from '../shared/timer/timer.util';
 import {CreatureSearch} from '../shared/creature/creature-search.interface';
 import {CreatureUtil} from '../shared/creature/creature.util';
+import {CreatureCacheService} from '../shared/creature/creature-cache.service';
 
 @Component({
   templateUrl: './barn.component.html',
@@ -32,10 +33,11 @@ export class BarnComponent implements OnInit, OnDestroy {
 
   user: User;
   creatures: Creature[];
+  prices: CreatureInfo[];
   totalCount: number;
   filterCount: number;
-  pen: Pen;
-  creaturesInPen: string[];
+  pens: Pen[];
+  creaturesInPen: string[] = [];
   // date updated at each list reset or timer, use to display baby ready status
   filterDate: Date;
 
@@ -72,14 +74,16 @@ export class BarnComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.user = this.route.snapshot.data.user;
     this.creatures = this.route.snapshot.data.creatures;
+    this.prices = this.route.snapshot.data.prices;
 
-    this.totalCount = CreatureService.getTotalElements();
-    this.filterCount = CreatureService.getFilterElements();
+    this.totalCount = CreatureCacheService.getTotalElements();
+    this.filterCount = CreatureCacheService.getFilterElements();
 
     this.filterDate = TimerUtil.utc(new Date());
 
-    this.pen = this.route.snapshot.data.pens[0];
-    this.creaturesInPen = this.pen.creatures.map(creature => creature.id);
+    this.pens = this.route.snapshot.data.pens;
+    this.pens.sort((a, b) => a.id.toString().localeCompare(b.id));
+    this.pens.forEach(pen => pen.creatures.forEach(creature => this.creaturesInPen.push(creature.id)));
 
     this.setTimer();
   }
@@ -205,7 +209,7 @@ export class BarnComponent implements OnInit, OnDestroy {
           this.computing = false;
         }
         this.creatures = creatures;
-        this.filterCount = CreatureService.getFilterElements();
+        this.filterCount = CreatureCacheService.getFilterElements();
       });
   }
 
@@ -248,7 +252,7 @@ export class BarnComponent implements OnInit, OnDestroy {
   openDetails(creature: Creature) {
     this.detailsOpen = true;
     this.dialog.open(CreatureDetailsDialogComponent, {
-      data: {user: this.user, creature, pen: this.pen, creaturesIdInPen: this.creaturesInPen},
+      data: {user: this.user, creature, pens: this.pens, creaturesIdInPen: this.creaturesInPen, prices: this.prices},
       disableClose: true,
       position: {top: '50px'},
       width: '100%',

@@ -2,13 +2,12 @@ import {InjectionToken} from '@angular/core';
 
 import {Restangular} from 'ngx-restangular';
 import {environment} from '../../../environments/environment';
-import {CreatureService} from '../creature/creature.service';
+import {CreatureCacheService} from '../creature/creature-cache.service';
 
 export function RestangularConfigFactory(RestangularProvider) {
   RestangularProvider.setBaseUrl(environment.serverUrl);
 
   RestangularProvider.addResponseInterceptor((data, operation, what, url, response) => {
-
     // this is a count
     if (operation === 'get' && data.page && data.page.size === 1) {
       return data.page;
@@ -17,8 +16,11 @@ export function RestangularConfigFactory(RestangularProvider) {
     if (operation === 'getList') {
       // todo add items count
       if (what === 'creatures') {
-        CreatureService.setTotalElements(data.page.totalElements);
-        CreatureService.setFilterElements(data.page.totalElements);
+        CreatureCacheService.setTotalElements(data.page.totalElements);
+        CreatureCacheService.setFilterElements(data.page.totalElements);
+      }
+      if (what === 'pens/info' || what === 'creatures/info') {
+        return data;
       }
 
       if (!data._embedded) {

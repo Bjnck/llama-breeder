@@ -1,46 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
-import {Creature} from './creature.interface';
+import {Creature, CreatureInfo} from './creature.interface';
 import {Page} from '../page/page.interface';
 import {CreatureSearch} from './creature-search.interface';
 import {RestService} from '../rest/rest.service';
 
 @Injectable()
 export class CreatureService {
-  private static totalElements;
-  private static filterElements;
-
   constructor(private restService: RestService) {
-  }
-
-  static getTotalElements(): number {
-    return this.totalElements;
-  }
-
-  static setTotalElements(elements: number) {
-    if (!this.totalElements) {
-      this.totalElements = elements;
-    }
-  }
-
-  static incrementTotalElements() {
-    if (this.totalElements) {
-      this.totalElements++;
-    }
-  }
-
-  static decrementTotalElements() {
-    if (this.totalElements) {
-      this.totalElements--;
-    }
-  }
-
-  static getFilterElements(): number {
-    return CreatureService.filterElements;
-  }
-
-  static setFilterElements(elements: number) {
-    CreatureService.filterElements = elements;
   }
 
   get(id: string, compute: boolean = true): Observable<Creature> {
@@ -89,5 +56,9 @@ export class CreatureService {
 
   redeem(id: string): Observable<Creature> {
     return this.restService.rest().all('creatures').customPOST({}, id + '/action/redeem');
+  }
+
+  getPrices(): Observable<CreatureInfo[]> {
+    return this.restService.rest().all('creatures/info').getList();
   }
 }

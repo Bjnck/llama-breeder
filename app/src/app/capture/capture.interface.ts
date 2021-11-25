@@ -5,7 +5,6 @@ export interface Capture {
   endTime: string;
 
   quality: number;
-  bait: number;
 
   sex: string;
   color: Color;

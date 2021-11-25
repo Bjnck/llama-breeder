@@ -64,16 +64,4 @@ public class WithUserAspect {
             return Optional.empty();
         return withUser;
     }
-
-//    @Pointcut("execution(* hrpg.server.common.dao.WithUserRepository+.existsBy*(..))")
-//    public void existsByPointCut() {
-//    }
-//
-//    @Around("existsByPointCut()")
-//    public Object onExists(ProceedingJoinPoint point) throws Throwable {
-//        boolean exists = (boolean) point.proceed();
-//        if (withUser.isPresent() && !withUser.get().getUserId().equals(OAuthUserUtil.getUserId()))
-//            return Optional.empty();
-//        return withUser;
-//    }
 }

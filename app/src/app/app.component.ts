@@ -11,18 +11,12 @@ import {DomSanitizer} from '@angular/platform-browser';
 export class AppComponent {
   loading = true;
 
-
   constructor(private router: Router,
               private matIconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer) {
     this.matIconRegistry.addSvgIcon('best', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/best.svg'));
-    this.matIconRegistry.addSvgIcon('genders', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/genders.svg'));
-    this.matIconRegistry.addSvgIcon('barn', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/barn.svg'));
     this.matIconRegistry.addSvgIcon('net', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/net.svg'));
     this.matIconRegistry.addSvgIcon('hay', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/hay.svg'));
-    this.matIconRegistry.addSvgIcon('bait', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/bait.svg'));
-    this.matIconRegistry.addSvgIcon('baby', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/baby.svg'));
-    this.matIconRegistry.addSvgIcon('pregnant', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/pregnant.svg'));
 
     this.router.events.subscribe((event: Event) => {
       switch (true) {

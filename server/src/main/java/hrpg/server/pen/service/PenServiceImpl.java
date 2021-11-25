@@ -16,10 +16,10 @@ import hrpg.server.item.service.ItemMapper;
 import hrpg.server.item.service.exception.ItemInUseException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
+import hrpg.server.item.type.ItemCode;
 import hrpg.server.pen.dao.Pen;
 import hrpg.server.pen.dao.PenRepository;
-import hrpg.server.pen.service.exception.InvalidPenSizeException;
-import hrpg.server.pen.service.exception.PenNotFoundException;
+import hrpg.server.pen.service.exception.*;
 import hrpg.server.user.service.UserService;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
@@ -33,6 +33,7 @@ import java.util.*;
 
 @Service
 public class PenServiceImpl implements PenService {
+    private static final int MAX_SIZE = 6;
 
     private final PenRepository penRepository;
     private final PenMapper penMapper;
@@ -42,6 +43,7 @@ public class PenServiceImpl implements PenService {
     private final UserService userService;
     private final CreatureService creatureService;
     private final PensProperties pensProperties;
+    private final PenInfoService penInfoService;
 
     public PenServiceImpl(PenRepository penRepository,
                           PenMapper penMapper,
@@ -50,7 +52,8 @@ public class PenServiceImpl implements PenService {
                           ItemRepository itemRepository,
                           UserService userService,
                           CreatureService creatureService,
-                          ParametersProperties parametersProperties) {
+                          ParametersProperties parametersProperties,
+                          PenInfoService penInfoService) {
         this.penRepository = penRepository;
         this.penMapper = penMapper;
         this.itemMapper = itemMapper;
@@ -59,6 +62,7 @@ public class PenServiceImpl implements PenService {
         this.userService = userService;
         this.creatureService = creatureService;
         this.pensProperties = parametersProperties.getPens();
+        this.penInfoService = penInfoService;
     }
 
     @Override
@@ -69,6 +73,32 @@ public class PenServiceImpl implements PenService {
     @Override
     public Page<PenDto> search(@NotNull Pageable pageable) {
         return penRepository.findAll(pageable).map(penMapper::toDto);
+    }
+
+    @Transactional(rollbackFor = {
+            TooManyPenException.class,
+            PenNotFullyExtendedException.class,
+            InsufficientCoinsException.class,
+            InsufficientCoinsException.class
+    })
+    @Override
+    public PenDto create() throws TooManyPenException, PenNotFullyExtendedException, InsufficientCoinsException {
+        Page<Pen> pens = penRepository.findAll(Pageable.unpaged());
+        //max 2 pens
+        if (pens.getTotalElements() > 1) throw new TooManyPenException();
+        //first pen must be fully extended
+        if (pens.get().findFirst().orElseThrow().getSize() < MAX_SIZE) throw new PenNotFullyExtendedException();
+
+        try {
+            int purchasePrice = penInfoService.getPurchasePrice(((Long) (pens.getTotalElements() + 1)).intValue());
+            userService.removeCoins(purchasePrice);
+        } catch (PriceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Pen pen = Pen.builder().build();
+        pen.setUserId(userService.get().getId());
+        return penMapper.toDto(penRepository.save(pen));
     }
 
     @Transactional(rollbackFor = {
@@ -94,14 +124,18 @@ public class PenServiceImpl implements PenService {
     }
 
     private void updateSize(Pen pen, int size) throws InvalidPenSizeException, InsufficientCoinsException {
-        //max size is 20
-        if (size > 20) size = 20;
+        if (size > MAX_SIZE) size = MAX_SIZE;
 
         if (size < pen.getSize()) throw new InvalidPenSizeException();
         else if (size > pen.getSize()) {
+            int penCount = ((Long) penRepository.countBySize(MAX_SIZE)).intValue() + 1;
             int priceForUpdate = 0;
             for (int i = pen.getSize() + 1; i <= size; i++) {
-                priceForUpdate += pensProperties.getPrice().get("size-" + i);
+                try {
+                    priceForUpdate += penInfoService.getExtendPrice(penCount, i);
+                } catch (PriceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
             userService.removeCoins(priceForUpdate);
             pen.setSize(size);
@@ -117,7 +151,9 @@ public class PenServiceImpl implements PenService {
 
         Set<Item> items = new HashSet<>();
         for (Long itemId : itemIds) {
-            Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+            Item item = itemRepository.findById(itemId)
+                    .filter(i -> !ItemCode.NET.equals(i.getCode()))
+                    .orElseThrow(() -> new ItemNotFoundException(itemId));
             if (penRepository.existsByItemsContainingAndIdNot(item, pen.getId())) throw new ItemInUseException(itemId);
             //reset penActivationTime to added item
             item.setPenActivationTime(ZonedDateTime.now());

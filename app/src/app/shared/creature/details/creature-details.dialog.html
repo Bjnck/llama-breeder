@@ -22,7 +22,7 @@
               <mat-icon *ngIf="creature.sex === 'M'" class="male">male</mat-icon>
               <mat-icon *ngIf="creature.sex === 'F'" class="female">female</mat-icon>
             </div>
-            <div class="detail wild" *ngIf="creature.wild">wild</div>
+            <div class="detail wild" *ngIf="creature.wild">Wild</div>
             <div class="detail generation">Generation {{creature.generation | roman}}</div>
           </div>
           <div class="line">
@@ -199,31 +199,14 @@
 
   <div mat-dialog-actions>
     <div id="buttons">
-      <button mat-raised-button *ngIf="!creature.wild && creature.colors.color2" class="icon-button"
-              [matMenuTriggerFor]="menu_delete">
-        <mat-icon>attach_money</mat-icon>
-      </button>
-
-      <button mat-raised-button *ngIf="creature.wild" class="icon-button" [matMenuTriggerFor]="menu_delete">
-        <mat-icon>delete_sweep</mat-icon>
-      </button>
-
-      <button mat-raised-button *ngIf="!creature.wild && !creature.colors.color2" class="icon-button"
-              [matMenuTriggerFor]="menu_delete">
-        <mat-icon>delete_sweep</mat-icon>
-        <!--todo use this when baits available-->
-        <!--      <mat-icon>recycle</mat-icon>-->
-      </button>
-
+      <button mat-raised-button class="icon-button sell" [matMenuTriggerFor]="menu_delete">¤</button>
 
       <button mat-raised-button (click)="onClose()" cdkFocusRegionstart>Back</button>
-
 
       <button mat-raised-button [matMenuTriggerFor]="menu_pen_add" class="icon-button"
               *ngIf="creaturesIdInPen.indexOf(creature.id) === -1">
         <mat-icon>fence</mat-icon>
       </button>
-
 
       <button mat-raised-button (click)="removeFromPen(creature)" class="in-pen icon-button"
               *ngIf="creaturesIdInPen.indexOf(creature.id) > -1">
@@ -232,23 +215,18 @@
     </div>
 
     <mat-menu #menu_pen_add="matMenu">
-      <button mat-menu-item (click)="addToPen(creature)" class="creature-details-menu-item"
-              [disabled]="pen.creatures.length >= pen.size">
+      <button mat-menu-item *ngFor="let pen of pens"  class="creature-details-menu-item"
+              (click)="addToPen(creature, pen)" [disabled]="pen.creatures.length >= pen.size">
         Add to pen ({{pen.creatures.length}}/{{pen.size}})
       </button>
     </mat-menu>
     <mat-menu #menu_delete="matMenu">
-      <button mat-menu-item (click)="onDelete(creature)" *ngIf="creature.colors.color2"
-              class="creature-details-menu-item">Sell llama
+      <button mat-menu-item (click)="onDelete(creature)" class="creature-details-menu-item">
+        Sell llama (
+        <span *ngIf="!creature.colors.color2">{{prices | creaturePrice: creature.generation}}</span>
+        <span *ngIf="creature.colors.color2">{{(prices | creaturePrice: creature.generation) * 2}}</span>
+         ¤)
       </button>
-      <!--todo romove !creature.colors.color2 condition when bait available-->
-      <button mat-menu-item (click)="onDelete(creature)" *ngIf="creature.wild || !creature.colors.color2"
-              class="creature-details-menu-item">Release llama
-      </button>
-      <!--todo use this when baits available-->
-      <!--        <button mat-menu-item (click)="onDelete(creature)" *ngIf="!creature.wild && !creature.colors.color2" class="creature-details-menu-item">-->
-      <!--          Collect wool and release-->
-      <!--        </button>-->
     </mat-menu>
   </div>
 </div>

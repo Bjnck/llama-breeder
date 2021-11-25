@@ -18,11 +18,11 @@ import {ShopModule} from './shop/shop.module';
 import {InventoryModule} from './inventory/inventory.module';
 import {BarnModule} from './barn/barn.module';
 import {PenModule} from './pen/pen.module';
-import {AngularFireModule} from "@angular/fire";
-import {environment} from "../environments/environment";
-import {AngularFireAuthModule} from "@angular/fire/auth";
-import {AngularFireAuthGuardModule} from "@angular/fire/auth-guard";
-import {AuthService} from "./shared/auth/auth.service";
+import {AngularFireModule} from '@angular/fire';
+import {environment} from '../environments/environment';
+import {AngularFireAuthModule} from '@angular/fire/auth';
+import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
+import {AuthService} from './shared/auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -38,22 +38,20 @@ import {AuthService} from "./shared/auth/auth.service";
     CaptureModule,
     BarnModule,
     PenModule,
+
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule,
-
-
-
-    RouterModule.forRoot([], {onSameUrlNavigation: 'reload'}),
-    RestangularModule.forRoot([AuthService], RestangularConfigFactory),
     BrowserAnimationsModule,
     MatProgressBarModule,
+
+    AppRoutingModule,
+    RouterModule.forRoot([], {onSameUrlNavigation: 'reload'}),
+
+    RestangularModule.forRoot([AuthService], RestangularConfigFactory),
 
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFireAuthGuardModule
-
-
   ],
   providers: [
     {provide: REST_FULL_RESPONSE, useFactory: RestFullResponseFactory, deps: [Restangular]}

@@ -19,6 +19,8 @@ import {PenComponent} from './pen/pen.component';
 import {PenListResolve} from './pen/pen-list.resolve';
 import {PenListContentResolve} from './pen/pen-list-content.resolve';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
+import {PenPriceResolve} from './pen/pen-price.resolve';
+import {CreaturePriceResolve} from "./shared/creature/creature-price.resolve";
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
@@ -53,7 +55,7 @@ const routes: Routes = [
       shopItems: ShopItemResolve,
       itemCount: ItemCountResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'inventory',
@@ -64,7 +66,7 @@ const routes: Routes = [
       itemCount: ItemCountResolve,
       pens: PenListResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   },
   {
     path: 'capture',
@@ -82,7 +84,8 @@ const routes: Routes = [
     resolve: {
       user: UserResolve,
       creatures: CreatureListResolve,
-      pens: PenListResolve
+      pens: PenListResolve,
+      prices: CreaturePriceResolve
     },
     ...canActivate(redirectUnauthorizedToLogin)
   },
@@ -91,9 +94,11 @@ const routes: Routes = [
     component: PenComponent,
     resolve: {
       user: UserResolve,
-      pens: PenListContentResolve
+      pens: PenListContentResolve,
+      prices: PenPriceResolve,
+      creaturePrices: CreaturePriceResolve
     },
-    canActivate: [AuthGuard]
+    ...canActivate(redirectUnauthorizedToLogin)
   }
 ];
 

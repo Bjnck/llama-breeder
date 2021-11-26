@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {CreatureInfo} from '../creature.interface';
+import {Creature, CreatureInfo} from '../creature.interface';
 
 @Pipe({name: 'creaturePrice'})
 export class CreaturePricesPipe implements PipeTransform {

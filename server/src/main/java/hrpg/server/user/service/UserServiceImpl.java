@@ -116,6 +116,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public void addPoints(int points) {
+        User user = userRepository.get();
+        user.getDetails().setPoints(user.getDetails().getPoints() + points);
+    }
+
+    @Transactional
+    @Override
     public void delete() {
         User user = userRepository.get();
 

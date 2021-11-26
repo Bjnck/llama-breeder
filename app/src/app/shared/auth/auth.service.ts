@@ -3,9 +3,11 @@ import {AngularFireAuth} from '@angular/fire/auth';
 import {Router} from '@angular/router';
 import firebase from 'firebase/app';
 import {TimerUtil} from '../timer/timer.util';
+import {environment} from '../../../environments/environment';
 
 @Injectable()
 export class AuthService {
+  production = environment.production;
 
   private tokenId: string;
   private user: firebase.User;
@@ -54,6 +56,10 @@ export class AuthService {
   }
 
   delete() {
-    this.user.delete().then(() => this.logout());
+    if (this.production) {
+      this.user.delete().then(() => this.logout());
+    } else {
+      this.logout();
+    }
   }
 }

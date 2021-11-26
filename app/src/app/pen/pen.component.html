@@ -4,7 +4,8 @@
 
     <mat-tab label="Pen 1">
       <app-pen-field [user]="user" [pen]="pens[0]" [price]="price1" [updatedCreatures]="updatedCreatures"
-                     [creaturePrices]="creaturePrices"></app-pen-field>
+                     [creaturePrices]="creaturePrices" (detailsDialogEventEmitter)="setDetailsOpen($event)">
+      </app-pen-field>
       <app-pen-items [pen]="pens[0]"
                      (creatureUpdate)="onCreatureUpdate($event)"
                      (creaturesUpdate)="onCreaturesUpdate($event)"
@@ -18,7 +19,7 @@
       </div>
       <div *ngIf="pens.length > 1">
         <app-pen-field [user]="user" [pen]="pens[1]" [price]="price2" [updatedCreatures]="updatedCreatures"
-                       [creaturePrices]="creaturePrices">
+                       [creaturePrices]="creaturePrices" (detailsDialogEventEmitter)="setDetailsOpen($event)">
         </app-pen-field>
         <app-pen-items [pen]="pens[1]"
                        (creatureUpdate)="onCreatureUpdate($event)"

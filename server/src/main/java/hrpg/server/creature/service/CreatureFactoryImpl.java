@@ -1,5 +1,6 @@
 package hrpg.server.creature.service;
 
+import hrpg.server.collection.service.CollectionService;
 import hrpg.server.common.properties.CreaturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.security.OAuthUserUtil;
@@ -14,7 +15,6 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -29,24 +29,26 @@ public class CreatureFactoryImpl implements CreatureFactory {
     private final GeneFactory geneFactory;
     private final ColorFactory colorFactory;
     private final UserService userService;
+    private final CollectionService collectionService;
 
     public CreatureFactoryImpl(CreatureRepository creatureRepository,
                                CreatureMapper creatureMapper,
                                ParametersProperties parametersProperties,
                                GeneFactory geneFactory,
                                ColorFactory colorFactory,
-                               UserService userService) {
+                               UserService userService,
+                               CollectionService collectionService) {
         this.creatureRepository = creatureRepository;
         this.creatureMapper = creatureMapper;
         this.creaturesProperties = parametersProperties.getCreatures();
         this.geneFactory = geneFactory;
         this.colorFactory = colorFactory;
         this.userService = userService;
+        this.collectionService = collectionService;
     }
 
     @Override
-    public CreatureDto generateForCapture(int userLevel, int netQuality, @NotNull LocalDate captureEndDate)
-            throws MaxCreaturesException {
+    public CreatureDto generateForCapture(int userLevel, int netQuality) throws MaxCreaturesException {
         validateMaxCreaturesReached();
 
         Creature.CreatureBuilder creatureBuilder = Creature.builder();
@@ -87,10 +89,17 @@ public class CreatureFactoryImpl implements CreatureFactory {
         //set creature parameters for capture and save
         Creature creature = creatureBuilder
                 .originalUserId(OAuthUserUtil.getUserId())
-                .createDate(captureEndDate)
+                .createDate(LocalDate.now())
                 .wild(true)
                 .maturity(MATURITY_MAX)
                 .build();
+
+        //register capture to collection
+        collectionService.registerCollection(
+                creature.getInfo().getColor1(),
+                creature.getInfo().getGene1() != null ? creature.getInfo().getGene1().getCode() : null,
+                null);
+
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }
 
@@ -122,7 +131,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
             Creature baby = Creature.builder()
                     .originalUserId(OAuthUserUtil.getUserId())
-                    .createDate(mother.getPregnancyEndTime().toLocalDate())
+                    .createDate(LocalDate.now())
                     .generation(Math.max(colors.getFirst().getGeneration(),
                             colors.getSecond().map(Color::getGeneration).orElse(0)))
                     .info(CreatureInfo.builder()
@@ -135,6 +144,15 @@ public class CreatureFactoryImpl implements CreatureFactory {
                     .parentInfo1(mother.getInfo().toBuilder().id(null).build())
                     .parentInfo2(father.toBuilder().id(null).build())
                     .build();
+
+            //register birth to collection
+            if (baby.getInfo().getColor2() == null) {
+                collectionService.registerCollection(
+                        baby.getInfo().getColor1(),
+                        baby.getInfo().getGene1() != null ? baby.getInfo().getGene1().getCode() : null,
+                        baby.getInfo().getGene2() != null ? baby.getInfo().getGene2().getCode() : null);
+            }
+
             babies.add(creatureMapper.toDto(creatureRepository.save(baby), userService));
         }
 

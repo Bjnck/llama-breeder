@@ -35,7 +35,7 @@ public class GeneFactoryImpl implements GeneFactory {
             else if (random < genesParameters.getChanceLove() + genesParameters.getChanceHunger() + genesParameters.getChanceThirst())
                 gene = Gene.THIRST;
             else
-                gene = Gene.FERTILE;
+                gene = Gene.CRESUS;
         } else if (new Random().nextInt(100) < getSpecialChance(netQuality)) {
             //check get special gene
         }
@@ -78,6 +78,14 @@ public class GeneFactoryImpl implements GeneFactory {
         else if (parent1Gene2 != null && chanceOfGene()) genes.add(parent1Gene2);
         if (parent2Gene1 != null && chanceOfGene()) genes.add(parent2Gene1);
         else if (parent2Gene2 != null && chanceOfGene()) genes.add(parent2Gene2);
+
+        //only one special gene allowed
+        if (genes.size() == 2 &&
+                (genes.stream().allMatch(hrpg.server.creature.dao.Gene::isSpecial) ||
+                        genes.get(0).getCode().equals(genes.get(1).getCode()))) {
+            Collections.shuffle(genes);
+            genes.remove(0);
+        }
 
         genes = genes.stream()
                 .sorted(Comparator.comparingLong(hrpg.server.creature.dao.Gene::getId))

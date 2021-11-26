@@ -31,6 +31,9 @@ public class UserDetails {
     @Builder.Default
     @Column(nullable = false)
     private long coins = 0;
+    @Builder.Default
+    @Column(nullable = false)
+    private long points = 0;
 
     @Column(name = "last_purchase_timestamp")
     private Instant lastPurchase;

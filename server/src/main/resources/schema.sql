@@ -11,8 +11,9 @@ create table if not exists user (
 create table if not exists user_details (
     user_id int not null,
     version bigint not null default 0,
-    level tinyint(1) not null default 0, check (level between 0 and 7),
+    level tinyint(1) not null default 0, check (level between 0 and 8),
     coins int not null default 0, check (coins >= 0),
+    points int not null default 0, check (points >= 0),
     last_purchase_timestamp timestamp,
     last_capture_timestamp timestamp,
     primary key (user_id),
@@ -51,7 +52,8 @@ create table if not exists color (
 
 create table if not exists gene (
     id int not null auto_increment,
-    code enum('FERTILE', 'THIRST', 'HUNGER', 'LOVE') not null unique,
+    code varchar(20) not null unique,
+    special tinyint(1) not null,
     primary key (id)
 );
 
@@ -140,4 +142,16 @@ create table if not exists pen_creature (
     primary key (id),
     foreign key (pen_id) REFERENCES pen(id),
     foreign key (creature_id) REFERENCES creature(id)
+);
+
+create table if not exists collection (
+    id int not null auto_increment,
+    user_id int not null,
+    color_id int not null,
+    version bigint not null default 0,
+    christmas tinyint(1) not null default 0,
+    primary key (id),
+    foreign key (user_id) REFERENCES user(id),
+    foreign key (color_id) REFERENCES color(id),
+    unique key user_color (user_id, color_id)
 );

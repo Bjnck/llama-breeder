@@ -14,7 +14,7 @@ public class GenesProperties {
     private int chanceLove;
     private int chanceHunger;
     private int chanceThirst;
-    private int chanceFertile;
+    private int chanceCresus;
 
     private int specialChanceQuality2;
     private int specialChanceQuality5;

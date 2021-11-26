@@ -5,15 +5,15 @@
       <button mat-raised-button class="inactive mat-elevation-z2" *ngIf="capture == null" (click)="launch()">
         Capture<br/>
         <span class="info">
-          <span *ngIf="quality <= 0">No </span>
-          <span *ngIf="quality > 0"><app-item-name code="net" [quality]="quality"></app-item-name> </span>net</span>
+          <span *ngIf="quality <= 0">No</span>
+          <span *ngIf="quality > 0"><app-item-name code="net" [quality]="quality"></app-item-name></span> net</span>
       </button>
       <button mat-button disabled class="active" *ngIf="capture != null && !redeem">
         {{timeLeft | date:'HH:mm:ss' : 'UTC'}}<br/>
         <span class="info">
-          <span *ngIf="capture.quality <= 0">No </span>
+          <span *ngIf="capture.quality <= 0">No</span>
           <span *ngIf="capture.quality > 0">
-            <app-item-name code="net" [quality]="capture.quality"></app-item-name> </span>net</span>
+            <app-item-name code="net" [quality]="capture.quality"></app-item-name></span> net</span>
       </button>
       <button mat-raised-button class="loot mat-elevation-z2" *ngIf="redeem" (click)="redeemCapture()">
         <mat-icon>redeem</mat-icon>

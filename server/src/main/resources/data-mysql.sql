@@ -1,3 +1,4 @@
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 1) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 5, 75) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 INSERT INTO shop (code, quality, coins) VALUES ('NET', 8, 500) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
@@ -36,10 +37,11 @@ INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 450) ON DUPLICATE KEY
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 750) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 
-INSERT INTO gene (code) VALUES ('FERTILE') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('THIRST') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('HUNGER') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('LOVE') ON DUPLICATE KEY UPDATE code=VALUES(code);
+INSERT INTO gene (code, special) VALUES ('THIRST', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('HUNGER', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('LOVE', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('CRESUS', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('CHRISTMAS', 1) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
 
 
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Crimson', 1, '#DC143C', '#DC143C') ON DUPLICATE KEY UPDATE name=VALUES(name), generation=VALUES(generation), code=VALUES(code), parent_code=VALUES(parent_code);

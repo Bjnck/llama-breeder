@@ -98,6 +98,8 @@ public class CaptureServiceImpl implements CaptureService {
         ZonedDateTime endTime;
         if (user.getDetails().getLevel() <= 0)
             endTime = current.plus(capturesProperties.getTimeValueFirst(), capturesProperties.getTimeUnitFirst());
+        else if (quality > 0)
+            endTime = current.plus(capturesProperties.getTimeValueNet(), capturesProperties.getTimeUnitNet());
         else
             endTime = current.plus(capturesProperties.getTimeValue(), capturesProperties.getTimeUnit());
 
@@ -137,10 +139,7 @@ public class CaptureServiceImpl implements CaptureService {
         User user = userRepository.get();
 
         //generate new creature and add info to capture
-        CreatureDto creatureDto = creatureFactory.generateForCapture(
-                user.getDetails().getLevel(),
-                capture.getQuality(),
-                capture.getEndTime().toLocalDate());
+        CreatureDto creatureDto = creatureFactory.generateForCapture(user.getDetails().getLevel(), capture.getQuality());
         Creature creature = creatureRepository.findById(creatureDto.getId()).orElseThrow();
         capture.setCreatureInfo(creature.getInfo().toBuilder().id(null).build());
 

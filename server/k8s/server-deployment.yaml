@@ -1,13 +1,4 @@
-apiVersion: v1
-kind: Secret
-metadata:
-  name: llama-breeder-secret
-type: Opaque
-data:
-  mysqlUsername: bGxhbWE=
-  mysqlPassword: VGtQTzU5MVNUNDM=
-  googleSecretKey: SXN0dnZoWlBJQ2NTMUJQbTdTOTNCUnlw
----
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -15,7 +6,6 @@ metadata:
 data:
   serverPort: "8081"
   databaseUrl: mysql-service
-  googleClientId: 932356479055-bmtb7dp5j2irr9vibl50s0smpb2ug5n7.apps.googleusercontent.com
 
 ---
 apiVersion: apps/v1
@@ -72,16 +62,11 @@ spec:
                 configMapKeyRef:
                   name: llama-breeder-configmap
                   key: databaseUrl
-            - name: GOOGLE_CLIENT_ID
-              valueFrom:
-                configMapKeyRef:
-                  name: llama-breeder-configmap
-                  key: googleClientId
-            - name: GOOGLE_SECRET_KEY
+            - name: FIREBASE_CREDENTIALS
               valueFrom:
                 secretKeyRef:
                   name: llama-breeder-secret
-                  key: googleSecretKey
+                  key: firebaseConfig
 ---
 apiVersion: v1
 kind: Service

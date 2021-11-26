@@ -7,6 +7,7 @@ import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.dao.CreatureSpecification;
 import hrpg.server.creature.service.exception.*;
+import hrpg.server.creature.type.Gene;
 import hrpg.server.item.type.ItemCode;
 import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.UserService;
@@ -75,8 +76,11 @@ public class CreatureServiceImpl implements CreatureService {
         if (penRepository.existsByCreaturesContaining(creature)) throw new CreatureInUseException(creature.getId());
 
         //sell creature
-        int price = creaturesProperties.getPrice(creature.getGeneration());
+        int price = 0;
+        if (!creature.isWild()) price = creaturesProperties.getPrice(creature.getGeneration());
         if (creature.getInfo().getColor2() != null) price *= 2;
+
+        if(hasGene(creature, Gene.CRESUS)) price *= 3;
 
         userService.addCoins(price);
 
@@ -100,17 +104,17 @@ public class CreatureServiceImpl implements CreatureService {
                 switch (itemCode) {
                     case HUNGER:
                         creature.setHunger(increaseStat(creature.getHunger(),
-                                increaseLevel(creature.getGeneration(), itemQuality)));
+                                increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.HUNGER))));
                         break;
                     case THIRST:
                         creature.setThirst(increaseStat(creature.getThirst(),
-                                increaseLevel(creature.getGeneration(), itemQuality)));
+                                increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.THIRST))));
                         break;
                     case LOVE:
                         //must not increase more than hunger/thirst available
                         int increaseLevel = Math.min(
                                 Math.min(
-                                        increaseLevel(creature.getGeneration(), itemQuality),
+                                        increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.LOVE)),
                                         creature.getHunger() - (STATS_LOVE_REQUIREMENT - 1)),
                                 creature.getThirst() - (STATS_LOVE_REQUIREMENT - 1));
 
@@ -125,13 +129,24 @@ public class CreatureServiceImpl implements CreatureService {
         return creatureMapper.toDto(creature, userService);
     }
 
-    private int increaseLevel(int generation, int itemQuality) {
+    private int increaseLevel(int generation, int itemQuality, boolean geneIncrement) {
+        int statsIncrement = creaturesProperties.getStatsIncrement(generation);
+        if (geneIncrement) statsIncrement *= 3;
+
         //max 3 itemQuality above generation effectiveness
-        return creaturesProperties.getStatsIncrement(generation) + Math.max(0, Math.min(3, itemQuality - generation));
+        return statsIncrement + Math.max(0, Math.min(3, itemQuality - generation));
     }
 
     private int increaseStat(int stat, int increaseLevel) {
         return Math.min(stat + increaseLevel, STATS_MAX);
+    }
+
+    private boolean hasGene(Creature creature, Gene gene) {
+        if (creature.getInfo().getGene1() != null && creature.getInfo().getGene1().getCode().equals(gene))
+            return true;
+        if (creature.getInfo().getGene2() != null && creature.getInfo().getGene2().getCode().equals(gene))
+            return true;
+        return false;
     }
 
     //todo send to computor

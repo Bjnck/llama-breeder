@@ -10,15 +10,6 @@ spec:
       storage: 5Gi
 
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-secret
-type: Opaque
-data:
-  rootPassword: S0Q1OWRvcE1YNDU=
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -1,37 +1,60 @@
-#buttons
+#launch-capture
+  height: 100%
   display: flex
+  flex-direction: column
   justify-content: space-between
 
-.launch
-  height: auto
-  width: 100%
-  margin-right: 10px
 
-.launch button
+#launch-capture #buttons
+  display: flex
+  justify-content: space-between
+  height: 100%
+
+#launch-capture #buttons #launch
+  width: 100%
+  //padding-right: 10px
+#launch-capture #buttons #launch button
+  height: 100%
+  width: 95%
+  font-size: 32px
+#launch-capture #buttons #launch button .info
+  font-size: 16px
+
+#launch-capture #buttons #launch .inactive
+  background-color: seagreen
+#launch-capture #buttons #launch .active
+  background-color: darkorange
+  color: white !important
+#launch-capture #buttons #launch .loot
+  background-color: goldenrod
+#launch-capture #buttons #launch button mat-icon
+  height: 50%
+  width: 50%
+  font-size: 64px
+
+
+#launch-capture #buttons #parameters
+  width: 40%
+  max-width: 65px
+  //margin-left: 5%
+  display: flex
+  flex-direction: column
+  justify-content: center
+#launch-capture #buttons #parameters .parameter
+  height: 80%
+  max-height: 65px
+#launch-capture #buttons #parameters .parameter button
   height: 100%
   width: 100%
+  padding: 0 !important
+#launch-capture #buttons #parameters .parameter button mat-icon
+  height: 50%
+  width: 50%
 
-.launch-raised
-  background-color: #f17f00
-
-.launch-stroked
-  background-color: rgba(241, 127, 0, 0.8)
-  color: white !important
-
-.net
-  margin-bottom: 5px
-
-.net-raised
+#launch-capture #buttons #parameters .parameter .no-selection.inactive.enable
   color: seagreen
-
-.net-stroked
+#launch-capture #buttons #parameters .parameter .selection
   background-color: seagreen
 
-#info
-  margin-top: 10px
-  padding: 1px
-  width: 100%
-  text-align: center
-  background-color: #3b3b3b
-  border-radius: 4px
-  font-size: 12px
+.launch-capture-menu-item
+  font-size: 16px

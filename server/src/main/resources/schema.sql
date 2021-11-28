@@ -1,22 +1,19 @@
 create table if not exists user (
     id int not null auto_increment,
     name varchar(15) not null default 'Breeder',
+    uid varchar(255) unique not null,
+    issuer varchar(255) not null,
+    email varchar(255),
+    deleted tinyint(1) not null default 0,
     primary key (id)
-);
-
-create table if not exists user_registration (
-    id bigint not null auto_increment,
-    user_id int not null,
-    registration_key varchar(255) not null unique,
-    primary key (id),
-    foreign key (user_id) REFERENCES user(id)
 );
 
 create table if not exists user_details (
     user_id int not null,
     version bigint not null default 0,
-    level tinyint(1) not null default 0, check (level between 0 and 7),
+    level tinyint(1) not null default 0, check (level between 0 and 8),
     coins int not null default 0, check (coins >= 0),
+    points int not null default 0, check (points >= 0),
     last_purchase_timestamp timestamp,
     last_capture_timestamp timestamp,
     primary key (user_id),
@@ -29,7 +26,7 @@ create table if not exists item (
     version bigint not null default 0,
     code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
-    life int not null default 100, check (life between 0 and 100),
+    life int not null default 500, check (life between 0 and 500),
     pen_activation_time datetime,
     primary key (id),
     foreign key (user_id) REFERENCES user(id)
@@ -55,7 +52,8 @@ create table if not exists color (
 
 create table if not exists gene (
     id int not null auto_increment,
-    code enum('FERTILE', 'THIRST', 'HUNGER', 'LOVE') not null unique,
+    code varchar(20) not null unique,
+    special tinyint(1) not null,
     primary key (id)
 );
 
@@ -111,8 +109,7 @@ create table if not exists capture (
     user_id int not null,
     creature_info_id bigint,
     version bigint not null default 0,
-    quality tinyint(1) not null default 0, check (quality between 0 and 3),
-    bait_generation tinyint(1), check (bait_generation between 1 and 8),
+    quality tinyint(1) not null default 0, check (quality between 0 and 8),
     start_time datetime not null,
     end_time datetime not null,
     primary key (id),
@@ -120,22 +117,11 @@ create table if not exists capture (
     foreign key (creature_info_id) REFERENCES creature_info(id)
 );
 
-create table if not exists bait (
-    id bigint not null auto_increment,
-    user_id int not null,
-    generation tinyint(1) not null, check (generation between 1 and 8),
-    version bigint not null default 0,
-    count int not null default 0,
-    primary key (id),
-    foreign key (user_id) REFERENCES user(id),
-    unique key user_generation (user_id, generation)
-);
-
 create table if not exists pen (
     id int not null auto_increment,
     user_id int not null,
     version bigint not null default 0,
-    size int not null default 3, check (size between 3 and 20),
+    size int not null default 3, check (size between 3 and 6),
     primary key (id),
     foreign key (user_id) REFERENCES user(id)
 );
@@ -156,4 +142,16 @@ create table if not exists pen_creature (
     primary key (id),
     foreign key (pen_id) REFERENCES pen(id),
     foreign key (creature_id) REFERENCES creature(id)
+);
+
+create table if not exists collection (
+    id int not null auto_increment,
+    user_id int not null,
+    color_id int not null,
+    version bigint not null default 0,
+    christmas tinyint(1) not null default 0,
+    primary key (id),
+    foreign key (user_id) REFERENCES user(id),
+    foreign key (color_id) REFERENCES color(id),
+    unique key user_color (user_id, color_id)
 );

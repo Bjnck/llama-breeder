@@ -1,5 +1,7 @@
 export interface User {
-  name: String;
+  name: string;
   level: number;
   coins: number;
+
+  email: string;
 }

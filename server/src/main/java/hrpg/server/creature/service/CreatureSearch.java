@@ -5,16 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Set;
+
 @Data
 @Builder
 @AllArgsConstructor
 public class CreatureSearch {
-    private Sex sex;
     private Integer generation;
-    private String color1;
-    private String color2;
-    private String gene1;
-    private String gene2;
-    private Boolean wild;
+    private Sex sex;
+    private Boolean inPen;
+    private Integer maxMaturity;
     private Boolean pregnant;
+    private Integer minPregnancyCount;
+    private Set<Long> ids;
 }

@@ -9,13 +9,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface WithUserRepository<T extends WithUser, ID>
         extends PagingAndSortingRepository<T, ID>, JpaSpecificationExecutor<T> {
 
-//    Optional<T> findByIdAndUserId(ID id, int userId);
-//
-//    @Override
-//    default Optional<T> findById(ID id) {
-//        return findByIdAndUserId(id, OAuthUserUtil.getUserId());
-//    }
-
     void deleteByIdAndUserId(ID id, int userId);
 
     @Override

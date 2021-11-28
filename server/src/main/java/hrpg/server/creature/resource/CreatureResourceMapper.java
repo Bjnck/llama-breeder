@@ -16,6 +16,7 @@ public interface CreatureResourceMapper {
     @Mapping(target = "genes", source = "info")
     @Mapping(target = "parents", source = "dto")
     @Mapping(target = "statistics", source = "dto")
+    @Mapping(target = "pregnancyMale", source = "pregnancyMaleInfo")
     CreatureResponse toResponse(CreatureDto dto);
 
     Colors toColors(CreatureInfoDto dto);

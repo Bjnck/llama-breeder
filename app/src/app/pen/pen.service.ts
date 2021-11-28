@@ -1,22 +1,19 @@
 import {Injectable} from '@angular/core';
-import {Restangular} from 'ngx-restangular';
 import {forkJoin, Observable} from 'rxjs';
-import {Pen, PenContent} from './pen.interface';
+import {Pen, PenContent, PenInfo} from './pen.interface';
 import {Item} from '../shared/item/item.interface';
 import {PenActivation} from './pen-activation.interface';
-import {ActivatedRouteSnapshot} from "@angular/router";
-import {PenWithContent} from "./pen-with-content.interface";
-import {map, switchMap} from "rxjs/operators";
-import {Creature} from "../shared/creature/creature.interface";
-import {ItemService} from "../shared/item/item.service";
-import {CreatureService} from "../shared/creature/creature.service";
+import {PenWithContent} from './pen-with-content.interface';
+import {flatMap, map, switchMap} from 'rxjs/operators';
+import {Creature} from '../shared/creature/creature.interface';
+import {ItemService} from '../shared/item/item.service';
+import {CreatureService} from '../shared/creature/creature.service';
+import {RestService} from '../shared/rest/rest.service';
 
 @Injectable()
 export class PenService {
 
-  baseRest = this.restangular.all('pens');
-
-  constructor(private restangular: Restangular,
+  constructor(private restService: RestService,
               private itemService: ItemService,
               private creatureService: CreatureService) {
   }
@@ -25,12 +22,19 @@ export class PenService {
     return {pen, creatures, items};
   }
 
+  create(): Observable<PenWithContent> {
+    return this.restService.restFull().all('pens').post()
+      .pipe(flatMap((response: any) =>
+        this.restService.rest().oneUrl('pens', response.headers.headers.get('location')).get()
+          .pipe(map((pen: Pen) => PenService.getPenWithContent(pen, [], [])))));
+  }
+
   update(pen: any): Observable<any> {
-    return pen.put();
+    return this.restService.rest(pen).put();
   }
 
   get(id: string): Observable<Pen> {
-    return this.restangular.one('pens', id).get();
+    return this.restService.rest().one('pens', id).get();
   }
 
   getWithContent(id: string): Observable<PenWithContent> {
@@ -40,7 +44,7 @@ export class PenService {
   }
 
   list(compute: boolean = true): Observable<Pen[]> {
-    return this.baseRest.getList({compute});
+    return this.restService.rest().all('pens').getList({compute});
   }
 
   listWithContent(): Observable<PenWithContent[]> {
@@ -55,7 +59,7 @@ export class PenService {
   }
 
   activateItem(pen: Pen, item: Item): Observable<PenActivation> {
-    return this.baseRest.customPOST({}, pen.id + '/action/activate-item/' + item.id);
+    return this.restService.rest().all('pens').customPOST({}, pen.id + '/action/activate-item/' + item.id);
   }
 
 
@@ -71,14 +75,13 @@ export class PenService {
           .toPromise());
     });
 
-    const creatures: Creature[] = [];
-    pen.creatures.map((content: PenContent) => {
-      promises.push(
-        this.creatureService.get(content.id, false)
-          .pipe(
-            map((creature: Creature) => creatures.push(creature)))
-          .toPromise());
-    });
+    let creatures: Creature[] = [];
+    if (pen.creatures.length > 0) {
+      promises.push(this.creatureService.list(20, 0, false,
+        {ids: pen.creatures.map(content => content.id)})
+        .pipe(map((c: Creature[]) => creatures = c))
+        .toPromise());
+    }
 
     await Promise.all(promises).catch(error => {
       throw error;
@@ -88,5 +91,9 @@ export class PenService {
       observer.next(PenService.getPenWithContent(pen, items, creatures));
       observer.complete();
     }).toPromise();
+  }
+
+  getPrices(): Observable<PenInfo[]> {
+    return this.restService.rest().all('pens/info').getList();
   }
 }

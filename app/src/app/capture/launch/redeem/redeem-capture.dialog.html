@@ -1,0 +1,62 @@
+<div id="redeem-capture">
+  <div mat-dialog-content>
+    <div id="info">
+      <div class="elt">
+        <div class="logo" [ngClass]="{'obscure': capture.quality <= 0}">
+          <mat-icon svgIcon="net"></mat-icon>
+        </div>
+        <div class="obscure" *ngIf="capture.quality <= 0">No net</div>
+        <div *ngIf="capture.quality > 0">
+          <app-item-name code="net" [quality]="capture.quality"></app-item-name>
+          net
+        </div>
+      </div>
+    </div>
+
+    <div id="loot">
+      <div class="redeem-logo step-0" *ngIf="step <= 0">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-1" *ngIf="step === 1">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-2" *ngIf="step === 2">
+        <mat-icon>redeem</mat-icon>
+      </div>
+      <div class="redeem-logo step-3" *ngIf="step === 3">
+        <mat-icon>redeem</mat-icon>
+      </div>
+
+      <div id="creature" *ngIf="step > 3 && capture.color">
+        <div class="image-wrapper">
+          <div class="image">
+            <app-llama [color1]="capture.color.code" [color2]="capture.color.code"></app-llama>
+          </div>
+        </div>
+        <div class="info">
+          <div class="sex">
+            <mat-icon class="male" *ngIf="capture.sex === 'M'">male</mat-icon>
+            <mat-icon *ngIf="capture.sex === 'F'" class="female">female</mat-icon>
+          </div>
+          <div class="gene obscure" *ngIf="!capture.gene">No gene</div>
+          <div class="gene" *ngIf="capture.gene">
+            <app-creature-gene *ngIf="capture.gene" code="{{capture.gene}}"></app-creature-gene>
+          </div>
+        </div>
+      </div>
+
+      <div class="message" *ngIf="step > 3 && capture.color">
+        Yeah, you captured a new llama !
+      </div>
+      <div class="message" *ngIf="step > 3 && !capture.color">
+        An error occurred, try again later...
+      </div>
+    </div>
+
+  </div>
+
+  <div mat-dialog-actions id="buttons">
+    <button mat-raised-button [mat-dialog-close]="capture" cdkFocusRegionstart [disabled]="step <= 3">Continue</button>
+  </div>
+
+</div>

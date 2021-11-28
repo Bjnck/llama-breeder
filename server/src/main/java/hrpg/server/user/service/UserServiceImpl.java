@@ -1,15 +1,15 @@
 package hrpg.server.user.service;
 
 import hrpg.server.capture.dao.CaptureRepository;
+import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.item.dao.ItemRepository;
 import hrpg.server.pen.dao.Pen;
 import hrpg.server.pen.dao.PenRepository;
-import hrpg.server.user.service.exception.InsufficientCoinsException;
-import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.user.dao.User;
 import hrpg.server.user.dao.UserDetails;
 import hrpg.server.user.dao.UserRepository;
+import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDto create(@NotNull String registrationKey) {
-        User user = User.builder().registrationKey(registrationKey).build();
+    public UserDto create(@NotNull String uid, @NotNull String issuer, String email) {
+        User user = User.builder().uid(uid).issuer(issuer).email(email).build();
         user.setDetails(UserDetails.builder()
                 .user(user)
                 .coins(parametersProperties.getUser().getStartCoins())
@@ -64,8 +64,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDto> findByRegistrationKey(String registrationKey) {
-        return userRepository.findOneByRegistrationKeys(registrationKey).map(userMapper::toDto);
+    public Optional<UserDto> findByUid(String uid) {
+        return userRepository.findOneByUid(uid).map(userMapper::toDto);
     }
 
     @Override
@@ -116,6 +116,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public void addPoints(int points) {
+        User user = userRepository.get();
+        user.getDetails().setPoints(user.getDetails().getPoints() + points);
+    }
+
+    @Transactional
+    @Override
     public void delete() {
         User user = userRepository.get();
 
@@ -124,10 +131,10 @@ public class UserServiceImpl implements UserService {
         captureRepository.deleteAll();
         creatureRepository.deleteAll();
 
-        //todo if user has no creatures + for every delete creature, check if riginalUserId still has creature, otherwise delete it
+        //todo if user has no creatures + for every delete creature, check if originalUserId still has creature, otherwise delete it
         // userRepository.delete(user);
         // else remove extra info
-        user.setRegistrationKeys(null);
         user.setDetails(null);
+        user.setDeleted(true);
     }
 }

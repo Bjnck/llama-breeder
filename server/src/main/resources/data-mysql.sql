@@ -1,45 +1,47 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 1000) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 1) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 5, 75) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 8, 500) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 1) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 3, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 4, 20) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 5, 40) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 6, 80) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 7, 160) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 8, 320) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 9, 640) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 10, 2000) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 2) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 3, 4) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 4, 8) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 5, 12) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 6, 25) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 7, 50) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 8, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 9, 300) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 10, 500) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 2, 1) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 3, 10) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 4, 20) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 5, 40) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 6, 80) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 7, 160) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 8, 320) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 9, 640) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 10, 2000) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 2, 2) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 3, 4) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 4, 8) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 5, 12) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 6, 25) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 7, 50) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 8, 100) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 9, 300) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('THIRST', 10, 500) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 1, 0) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 2) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 3, 20) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 4, 40) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 5, 80) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 6, 160) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 7, 320) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 8, 640) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 1280) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
-INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 4000) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 2, 3) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 3, 6) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 4, 12) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 5, 18) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 6, 35) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 7, 75) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 8, 150) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 450) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
+INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 750) ON DUPLICATE KEY UPDATE code=VALUES(code), quality=VALUES(quality), coins=VALUES(coins);
 
 
-INSERT INTO gene (code) VALUES ('FERTILE') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('THIRST') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('HUNGER') ON DUPLICATE KEY UPDATE code=VALUES(code);
-INSERT INTO gene (code) VALUES ('LOVE') ON DUPLICATE KEY UPDATE code=VALUES(code);
+INSERT INTO gene (code, special) VALUES ('THIRST', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('HUNGER', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('LOVE', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('CRESUS', 0) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
+INSERT INTO gene (code, special) VALUES ('CHRISTMAS', 1) ON DUPLICATE KEY UPDATE code=VALUES(code), special=VALUES(special);
 
 
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Crimson', 1, '#DC143C', '#DC143C') ON DUPLICATE KEY UPDATE name=VALUES(name), generation=VALUES(generation), code=VALUES(code), parent_code=VALUES(parent_code);

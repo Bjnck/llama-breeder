@@ -21,4 +21,7 @@ public class Gene {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, updatable = false)
     private hrpg.server.creature.type.Gene code;
+
+    @Column(nullable = false)
+    private boolean special;
 }

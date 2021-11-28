@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,10 +28,11 @@ public class CreatureResponse extends RepresentationModel<CreatureResponse> {
 
     private boolean wild;
 
-    private int breedingCount;
+    private int pregnancyCount;
     private boolean pregnant;
-    private LocalDateTime pregnancyStartTime;
-    private LocalDateTime pregnancyEndTime;
+    private ZonedDateTime pregnancyStartTime;
+    private ZonedDateTime pregnancyEndTime;
+    private Parent pregnancyMale;
 
     private Statistics statistics;
 }

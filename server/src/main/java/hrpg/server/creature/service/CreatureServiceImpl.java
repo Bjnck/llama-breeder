@@ -6,9 +6,8 @@ import hrpg.server.common.util.DurationUtil;
 import hrpg.server.creature.dao.Creature;
 import hrpg.server.creature.dao.CreatureRepository;
 import hrpg.server.creature.dao.CreatureSpecification;
-import hrpg.server.creature.service.exception.CreatureInUseException;
-import hrpg.server.creature.service.exception.CreatureNotFoundException;
-import hrpg.server.creature.service.exception.MaxCreaturesException;
+import hrpg.server.creature.service.exception.*;
+import hrpg.server.creature.type.Gene;
 import hrpg.server.item.type.ItemCode;
 import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.UserService;
@@ -19,11 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static hrpg.server.creature.type.CreatureConstant.*;
 
@@ -65,11 +61,6 @@ public class CreatureServiceImpl implements CreatureService {
     }
 
     @Override
-    public long count() {
-        return creatureRepository.count();
-    }
-
-    @Override
     public Page<CreatureDto> search(CreatureSearch search, Pageable pageable) {
         return creatureRepository.findAll(new CreatureSpecification(creatureMapper.toCriteria(search)), pageable)
                 .map(creature -> creatureMapper.toDto(creature, userService));
@@ -85,9 +76,12 @@ public class CreatureServiceImpl implements CreatureService {
         if (penRepository.existsByCreaturesContaining(creature)) throw new CreatureInUseException(creature.getId());
 
         //sell creature
-        int price;
-        if (creature.isWild() || creature.getInfo().getColor2() == null) price = 0;
-        else price = creaturesProperties.getPrice(creature.getGeneration());
+        int price = 0;
+        if (!creature.isWild()) price = creaturesProperties.getPrice(creature.getGeneration());
+        if (creature.getInfo().getColor2() != null) price *= 2;
+
+        if(hasGene(creature, Gene.CRESUS)) price *= 3;
+
         userService.addCoins(price);
 
         //delete creature
@@ -101,7 +95,7 @@ public class CreatureServiceImpl implements CreatureService {
     public CreatureDto hit(long id, @NotNull ItemCode itemCode, int itemQuality) throws CreatureNotFoundException {
         Creature creature = creatureRepository.findById(id).orElseThrow(() -> new CreatureNotFoundException(id));
 
-        if (CreatureUtil.isHittable(creature, itemCode)) {
+        if (CreatureUtil.isHittable(creature, itemCode, itemQuality)) {
             //remove energy
             creature.setEnergy(creature.getEnergy() - ENERGY_DIVIDER);
             //check item quality is valid for creature generation
@@ -110,17 +104,17 @@ public class CreatureServiceImpl implements CreatureService {
                 switch (itemCode) {
                     case HUNGER:
                         creature.setHunger(increaseStat(creature.getHunger(),
-                                increaseLevel(creature.getGeneration(), itemQuality)));
+                                increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.HUNGER))));
                         break;
                     case THIRST:
                         creature.setThirst(increaseStat(creature.getThirst(),
-                                increaseLevel(creature.getGeneration(), itemQuality)));
+                                increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.THIRST))));
                         break;
                     case LOVE:
                         //must not increase more than hunger/thirst available
                         int increaseLevel = Math.min(
                                 Math.min(
-                                        increaseLevel(creature.getGeneration(), itemQuality),
+                                        increaseLevel(creature.getGeneration(), itemQuality, hasGene(creature, Gene.LOVE)),
                                         creature.getHunger() - (STATS_LOVE_REQUIREMENT - 1)),
                                 creature.getThirst() - (STATS_LOVE_REQUIREMENT - 1));
 
@@ -135,13 +129,24 @@ public class CreatureServiceImpl implements CreatureService {
         return creatureMapper.toDto(creature, userService);
     }
 
-    private int increaseLevel(int generation, int itemQuality) {
+    private int increaseLevel(int generation, int itemQuality, boolean geneIncrement) {
+        int statsIncrement = creaturesProperties.getStatsIncrement(generation);
+        if (geneIncrement) statsIncrement *= 3;
+
         //max 3 itemQuality above generation effectiveness
-        return creaturesProperties.getStatsIncrement(generation) + Math.max(0, Math.min(3, itemQuality - generation));
+        return statsIncrement + Math.max(0, Math.min(3, itemQuality - generation));
     }
 
     private int increaseStat(int stat, int increaseLevel) {
         return Math.min(stat + increaseLevel, STATS_MAX);
+    }
+
+    private boolean hasGene(Creature creature, Gene gene) {
+        if (creature.getInfo().getGene1() != null && creature.getInfo().getGene1().getCode().equals(gene))
+            return true;
+        if (creature.getInfo().getGene2() != null && creature.getInfo().getGene2().getCode().equals(gene))
+            return true;
+        return false;
     }
 
     //todo send to computor
@@ -168,32 +173,28 @@ public class CreatureServiceImpl implements CreatureService {
         }
     }
 
-    //todo send to computor
-    @Transactional(rollbackFor = CreatureNotFoundException.class)
+    @Transactional(rollbackFor = {
+            CreatureNotFoundException.class,
+            CreatureNotPregnantException.class,
+            CreatureInPregnancyException.class,
+            MaxCreaturesException.class
+    })
     @Override
-    public List<CreatureDto> calculateBirth(List<Long> ids) throws CreatureNotFoundException {
-        List<CreatureDto> babies = new ArrayList<>();
+    public CreatureDto redeem(long id)
+            throws CreatureNotFoundException, CreatureNotPregnantException, CreatureInPregnancyException, MaxCreaturesException {
+        ZonedDateTime now = ZonedDateTime.now();
 
-        for (long id : ids) {
-            Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
-            if (creature.getPregnancyEndTime().isBefore(ZonedDateTime.now()))
-                babies.addAll(getBabies(creature));
-        }
+        Creature creature = creatureRepository.findById(id).orElseThrow(CreatureNotFoundException::new);
 
-        //update user level if new generation discovered
-        if (!babies.isEmpty()) {
-            int maxGen = Collections.max(babies.stream().map(CreatureDto::getGeneration).collect(Collectors.toList()));
-            userService.updateLevel(maxGen);
-        }
+        if (creature.getPregnancyEndTime() == null) throw new CreatureNotPregnantException();
+        if (creature.getPregnancyEndTime().isAfter(now)) throw new CreatureInPregnancyException();
 
-        return babies;
-    }
+        //get first as for now only 1 baby is generated, but the factory can be setup to generate many
+        CreatureDto baby = creatureFactory.generateForBirth(creature.getId()).stream().findFirst().orElseThrow();
 
-    private List<CreatureDto> getBabies(Creature creature) throws CreatureNotFoundException {
-        try {
-            return creatureFactory.generateForBirth(creature.getId());
-        } catch (MaxCreaturesException e) {
-            return Collections.emptyList();
-        }
+        //update level if needed
+        userService.updateLevel(baby.getGeneration());
+
+        return baby;
     }
 }

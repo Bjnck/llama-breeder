@@ -21,8 +21,13 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {FormsModule} from '@angular/forms';
 import {CreatureGeneComponent} from './creature/creature-gene.component';
 import {MatMenuModule} from '@angular/material/menu';
-import {RomanPipe} from "./creature/details/roman.pipe";
-import {MatDividerModule} from "@angular/material/divider";
+import {RomanPipe} from './creature/details/roman.pipe';
+import {MatDividerModule} from '@angular/material/divider';
+import {RedeemCreatureDialogComponent} from './creature/redeem/redeem-creature.dialog';
+import {UtcPipe} from './timer/utc.pipe';
+import {RestService} from './rest/rest.service';
+import {CreaturePriceResolve} from './creature/creature-price.resolve';
+import {CreaturePricesPipe} from "./creature/details/creature-prices.pipe";
 
 @NgModule({
   declarations: [
@@ -31,8 +36,11 @@ import {MatDividerModule} from "@angular/material/divider";
     ItemIconComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
+    RedeemCreatureDialogComponent,
     CreatureGeneComponent,
-    RomanPipe
+    CreaturePricesPipe,
+    RomanPipe,
+    UtcPipe
   ],
   imports: [
     BrowserModule,
@@ -51,7 +59,9 @@ import {MatDividerModule} from "@angular/material/divider";
     ItemIconComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
-    CreatureGeneComponent
+    CreatureGeneComponent,
+    RomanPipe,
+    UtcPipe
   ],
   providers: [
     HeaderService,
@@ -60,7 +70,9 @@ import {MatDividerModule} from "@angular/material/divider";
     ItemService,
     ItemCountResolve,
     CreatureService,
-    AuthService
+    CreaturePriceResolve,
+    AuthService,
+    RestService
   ]
 })
 export class SharedModule {

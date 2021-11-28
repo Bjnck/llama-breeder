@@ -7,6 +7,7 @@ import hrpg.server.common.resource.exception.ValidationError;
 import hrpg.server.common.resource.exception.ValidationException;
 import hrpg.server.item.service.ItemComputor;
 import hrpg.server.item.service.ItemService;
+import hrpg.server.item.service.exception.ItemInUseException;
 import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.item.service.exception.ShopItemNotFoundException;
@@ -105,6 +106,9 @@ public class ItemController {
             itemService.delete(id);
         } catch (ItemNotFoundException e) {
             throw new ResourceNotFoundException();
+        } catch (ItemInUseException e) {
+            throw new ValidationException(Collections.singletonList(
+                    ValidationError.builder().field("_self").code(ValidationCode.CONFLICT.getCode()).build()));
         }
     }
 }

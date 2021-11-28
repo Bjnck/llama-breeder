@@ -1,6 +1,0 @@
-mvn clean install -U
-
-docker build --tag=llama-breeder:latest .
-
-docker save llama-breeder:latest -o target/llama-breeder.tar
-

@@ -11,18 +11,26 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {PenService} from './pen.service';
 import {PenListResolve} from './pen-list.resolve';
 import {PenListContentResolve} from './pen-list-content.resolve';
-import {MatRippleModule} from "@angular/material/core";
-import {PenFieldCreatureComponent} from "./field/pen-field-creature.component";
-import {MatMenuModule} from "@angular/material/menu";
-import {RouterModule} from "@angular/router";
-import {MatBadgeModule} from "@angular/material/badge";
+import {MatRippleModule} from '@angular/material/core';
+import {PenFieldCreatureComponent} from './field/pen-field-creature.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {RouterModule} from '@angular/router';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatTabsModule} from '@angular/material/tabs';
+import {PenPriceResolve} from './pen-price.resolve';
+import {PenPricePipe} from './field/pen-price.pipe';
+import {PenPurchaseComponent} from './purchase/pen-purchase.component';
+import {PenConstructiblePipe} from "./purchase/pen-consctructible.pipe";
 
 @NgModule({
   declarations: [
     PenComponent,
     PenFieldComponent,
     PenFieldCreatureComponent,
-    PenItemsComponent
+    PenItemsComponent,
+    PenPurchaseComponent,
+    PenPricePipe,
+    PenConstructiblePipe
   ],
     imports: [
         SharedModule,
@@ -33,14 +41,17 @@ import {MatBadgeModule} from "@angular/material/badge";
         MatRippleModule,
         MatMenuModule,
         RouterModule,
-        MatBadgeModule
+        MatBadgeModule,
+        MatTabsModule
     ],
   exports: [
   ],
   providers: [
     PenService,
     PenListResolve,
-    PenListContentResolve
+    PenListContentResolve,
+    PenPriceResolve,
+    PenConstructiblePipe
   ]
 })
 export class PenModule {

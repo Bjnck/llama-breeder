@@ -17,7 +17,4 @@ public class CaptureRequest {
     @Max(3)
     @Builder.Default
     private int quality = 0;
-    @Min(1)
-    @Max(8)
-    private Integer bait;
 }

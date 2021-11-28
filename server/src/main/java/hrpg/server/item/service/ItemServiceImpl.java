@@ -1,5 +1,8 @@
 package hrpg.server.item.service;
 
+import hrpg.server.item.service.exception.ItemInUseException;
+import hrpg.server.pen.dao.Pen;
+import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.item.dao.Item;
@@ -29,6 +32,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final PenRepository penRepository;
     private final ItemMapper itemMapper;
     private final ShopItemService shopItemService;
     private final UserService userService;
@@ -36,12 +40,13 @@ public class ItemServiceImpl implements ItemService {
 
     public ItemServiceImpl(ItemRepository itemRepository,
                            UserRepository userRepository,
-                           ItemMapper itemMapper,
+                           PenRepository penRepository, ItemMapper itemMapper,
                            ShopItemService shopItemService,
                            UserService userService,
                            ParametersProperties parametersProperties) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
+        this.penRepository = penRepository;
         this.itemMapper = itemMapper;
         this.shopItemService = shopItemService;
         this.userService = userService;
@@ -97,8 +102,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public void delete(long id) throws ItemNotFoundException {
+    public void delete(long id) throws ItemNotFoundException, ItemInUseException {
         Item item = itemRepository.findById(id).orElseThrow(ItemNotFoundException::new);
+
+        Optional<Pen> pen = penRepository.findByItemsContaining(item);
+        if (pen.isPresent()) throw new ItemInUseException();
+
         itemRepository.delete(item);
     }
 }

@@ -1,5 +1,6 @@
 package hrpg.server.creature.service;
 
+import hrpg.server.collection.service.CollectionService;
 import hrpg.server.common.properties.CreaturesProperties;
 import hrpg.server.common.properties.ParametersProperties;
 import hrpg.server.common.security.OAuthUserUtil;
@@ -9,11 +10,11 @@ import hrpg.server.creature.service.exception.MaxCreaturesException;
 import hrpg.server.creature.type.Sex;
 import hrpg.server.user.service.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -28,64 +29,84 @@ public class CreatureFactoryImpl implements CreatureFactory {
     private final GeneFactory geneFactory;
     private final ColorFactory colorFactory;
     private final UserService userService;
+    private final CollectionService collectionService;
 
     public CreatureFactoryImpl(CreatureRepository creatureRepository,
                                CreatureMapper creatureMapper,
                                ParametersProperties parametersProperties,
                                GeneFactory geneFactory,
                                ColorFactory colorFactory,
-                               UserService userService) {
+                               UserService userService,
+                               CollectionService collectionService) {
         this.creatureRepository = creatureRepository;
         this.creatureMapper = creatureMapper;
         this.creaturesProperties = parametersProperties.getCreatures();
         this.geneFactory = geneFactory;
         this.colorFactory = colorFactory;
         this.userService = userService;
+        this.collectionService = collectionService;
     }
 
     @Override
-    public CreatureDto generateForCapture(int userLevel, int netQuality, Integer baitGeneration, @NotNull LocalDate captureEndDate)
-            throws MaxCreaturesException {
+    public CreatureDto generateForCapture(int userLevel, int netQuality) throws MaxCreaturesException {
         validateMaxCreaturesReached();
 
         Creature.CreatureBuilder creatureBuilder = Creature.builder();
 
         //tutorial - always get female then male of different color, no gene
         if (userLevel == 0) {
-            if (creatureRepository.count() == 0) {
+            long creatureCount = creatureRepository.count();
+            if (creatureCount == 0) {
                 //if first creature
                 creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.F)
                         .color1(colorFactory.getForCapture(null))
                         .build());
-            } else {
+            } else if (creatureCount == 1) {
                 //second creature
-                Creature creature = creatureRepository.findAll(PageRequest.of(0, 1))
-                        .stream().findFirst().orElseThrow();
+                Creature creature = creatureRepository.findAll(Pageable.unpaged()).stream().findFirst().orElseThrow();
                 creatureBuilder.info(CreatureInfo.builder()
                         .sex(Sex.M)
-                        .color1(colorFactory.getForCapture(creature.getInfo().getColor1().getCode()))
+                        .color1(colorFactory.getForCapture(Collections.singletonList(creature.getInfo().getColor1().getCode())))
+                        .build());
+            } else {
+                List<String> colors = creatureRepository.findAll(PageRequest.of(0, 2))
+                        .map(c -> c.getInfo().getColor1().getCode())
+                        .getContent();
+                creatureBuilder.info(CreatureInfo.builder()
+                        .sex(randomSex())
+                        .color1(colorFactory.getForCapture(colors))
                         .build());
             }
         } else {
             creatureBuilder.info(CreatureInfo.builder()
                     .sex(randomSex())
                     .color1(colorFactory.getForCapture(null))
-                    .gene1(geneFactory.getForCapture(netQuality, baitGeneration).orElse(null))
+                    .gene1(geneFactory.getForCapture(netQuality).orElse(null))
                     .build());
         }
 
         //set creature parameters for capture and save
         Creature creature = creatureBuilder
                 .originalUserId(OAuthUserUtil.getUserId())
-                .createDate(captureEndDate)
+                .createDate(LocalDate.now())
                 .wild(true)
                 .maturity(MATURITY_MAX)
                 .build();
+
+        //register capture to collection
+        collectionService.registerCollection(
+                creature.getInfo().getColor1(),
+                creature.getInfo().getGene1() != null ? creature.getInfo().getGene1().getCode() : null,
+                null);
+
         return creatureMapper.toDto(creatureRepository.save(creature), userService);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = {
+            MaxCreaturesException.class,
+            CreatureNotFoundException.class
+    })
     @Override
     public List<CreatureDto> generateForBirth(long id) throws MaxCreaturesException, CreatureNotFoundException {
         validateMaxCreaturesReached();
@@ -110,7 +131,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
             Creature baby = Creature.builder()
                     .originalUserId(OAuthUserUtil.getUserId())
-                    .createDate(mother.getPregnancyEndTime().toLocalDate())
+                    .createDate(LocalDate.now())
                     .generation(Math.max(colors.getFirst().getGeneration(),
                             colors.getSecond().map(Color::getGeneration).orElse(0)))
                     .info(CreatureInfo.builder()
@@ -123,6 +144,15 @@ public class CreatureFactoryImpl implements CreatureFactory {
                     .parentInfo1(mother.getInfo().toBuilder().id(null).build())
                     .parentInfo2(father.toBuilder().id(null).build())
                     .build();
+
+            //register birth to collection
+            if (baby.getInfo().getColor2() == null) {
+                collectionService.registerCollection(
+                        baby.getInfo().getColor1(),
+                        baby.getInfo().getGene1() != null ? baby.getInfo().getGene1().getCode() : null,
+                        baby.getInfo().getGene2() != null ? baby.getInfo().getGene2().getCode() : null);
+            }
+
             babies.add(creatureMapper.toDto(creatureRepository.save(baby), userService));
         }
 

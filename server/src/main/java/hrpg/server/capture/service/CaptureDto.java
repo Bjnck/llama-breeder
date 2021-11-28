@@ -16,7 +16,6 @@ public class CaptureDto {
     private CreatureInfoDto creatureInfo;
 
     private int quality;
-    private Integer baitGeneration;
 
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;

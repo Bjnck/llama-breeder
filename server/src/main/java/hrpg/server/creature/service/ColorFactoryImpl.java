@@ -24,14 +24,16 @@ public class ColorFactoryImpl implements ColorFactory {
     }
 
     @Override
-    public Color getForCapture(String previousColorCode) {
+    public Color getForCapture(List<String> previousColorCodes) {
         List<Color> colors = colorRepository.findAllByGeneration(1);
+        Collections.shuffle(colors);
+        return getColor(colors, previousColorCodes, 0);
+    }
 
-        int random = new Random().nextInt(colors.size());
-        Color color = colors.get(random);
-        if (previousColorCode != null && previousColorCode.equals(color.getCode()))
-            color = colors.get((random + 1) % colors.size());
-
+    private Color getColor(List<Color> colors, List<String> previousColorCodes, int index) {
+        Color color = colors.get(index);
+        if (previousColorCodes != null && previousColorCodes.contains(color.getCode()))
+            return getColor(colors, previousColorCodes, ++index);
         return color;
     }
 

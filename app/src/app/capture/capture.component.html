@@ -2,14 +2,27 @@
 
   <div id="space-top"></div>
 
-  <app-launch-capture [activeCapture]="activeCapture"
-                      (captureFinishedEventEmitter)="onCaptureFinished()"></app-launch-capture>
+  <app-launch-capture [capture]="activeCapture" [redeem]="redeem"
+                      (captureFinished)="onCaptureFinished()"
+                      (captureStarted)="onCaptureStarted($event)"
+                      (redeemEvent)="onRedeem($event)">
+  </app-launch-capture>
 
-  <div id="history-title" *ngIf="history.length > 0"></div>
+  <div id="help">
+    <div *ngIf="redeem; then redeemBlock else regularBlock"></div>
+    <ng-template #redeemBlock>Oh! What's this ?</ng-template>
+    <ng-template #regularBlock>
+      <div *ngIf="history.length == 0">Capture your first llama</div>
+      <div *ngIf="history.length == 1">Capture a second llama</div>
+      <div *ngIf="history.length == 2">There are 3 types of llama in the wild, try again to capture the missing one and then let's start breeding
+      </div>
+      <div *ngIf="history.length > 2">Use a net to increase your chances to capture a llama with a gene</div>
+    </ng-template>
+  </div>
 
   <div id="list-wrapper">
     <div id="list-content">
-      <app-history-capture [captures]="history" ></app-history-capture>
+      <app-history-capture [captures]="history"></app-history-capture>
     </div>
   </div>
 

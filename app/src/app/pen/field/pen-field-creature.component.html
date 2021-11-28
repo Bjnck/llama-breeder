@@ -1,28 +1,30 @@
-<div class="pen-field-creature">
-  <div class="pen-field-creature-exists" *ngIf="creature" (click)="openDetails(creature)">
-    <div class="image" [ngClass]="{'baby': creature.statistics.maturity < maturityMax}" matRipple
-         [matRippleDisabled]="true">
-      <app-llama [color1]="creature.colors.color1.code"
-                 [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
-      </app-llama>
-    </div>
-
+<div class="creature-wrapper">
+  <div class="creature" *ngIf="creature" (click)="openDetails(creature)">
     <div class="stats">
-      <div class="stats-details" [ngClass]="{'stats-thirst': creature.statistics.thirst >= statsLoveRequirement}"></div>
-      <div class="stats-details" [ngClass]="{'stats-hunger': creature.statistics.hunger >= statsLoveRequirement}"></div>
-      <div class="stats-details" [ngClass]="{'stats-love': creature.statistics.love >= statsMax}"></div>
+      <div class="detail" [ngClass]="{'stat-thirst': creature.statistics.thirst >= statsLoveRequirement}"></div>
+      <div class="detail" [ngClass]="{'stat-hunger': creature.statistics.hunger >= statsLoveRequirement}"></div>
+      <div class="detail" [ngClass]="{'stat-love': creature.statistics.love >= statsMax}"></div>
     </div>
 
-    <div class="stats-energy-wrapper" *ngIf="creature.statistics.maturity >= maturityMax">
-      <div class="stats-energy"
-           [style.width.%]="creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1">
+    <div class="image-wrapper">
+      <div class="image" [ngClass]="{'baby': creature.statistics.maturity < maturityMax}"
+           matRipple [matRippleDisabled]="true">
+        <app-llama [color1]="creature.colors.color1.code"
+                   [color2]="creature.colors.color2 ? creature.colors.color2.code : creature.colors.color1.code">
+        </app-llama>
       </div>
     </div>
 
-    <div class="stats-maturity-wrapper" *ngIf="creature.statistics.maturity < maturityMax">
-      <div class="stats-maturity"
+    <div class="bar-wrapper">
+      <div class="bar energy" *ngIf="creature.statistics.maturity >= maturityMax"
+           [style.width.%]="creature.statistics.energy / energyDivider - (creature.statistics.energy / energyDivider) % 1">
+      </div>
+      <div class="bar maturity" *ngIf="creature.statistics.maturity < maturityMax"
            [style.width.%]="creature.statistics.maturity / maturityDivider - (creature.statistics.maturity / maturityDivider) % 1"></div>
     </div>
+  </div>
 
+  <div *ngIf="isAddButton" class="add-creature">
+    <button mat-flat-button routerLink="/barn"><mat-icon>add</mat-icon></button>
   </div>
 </div>

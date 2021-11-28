@@ -1,69 +1,58 @@
-<div id="pen-field">
+<div id="field" class="mat-elevation-z1">
 
-  <div class="no-creatures-message" *ngIf="pen.creatures.length === 0">
-    <div>No llamas in the pen</div>
-    <div><button mat-raised-button class="add-button" routerLink="/barn">Add llamas</button></div>
+  <div class="creatures">
+    <ng-container>
+      <div class="line line1">
+        <app-pen-field-creature [creature]="creatures[0]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 0">
+        </app-pen-field-creature>
+        <app-pen-field-creature [creature]="creatures[1]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 1 && pen.pen.creatures.length < pen.pen.size">
+        </app-pen-field-creature>
+        <app-pen-field-creature [creature]="creatures[2]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 2 && pen.pen.creatures.length < pen.pen.size">
+        </app-pen-field-creature>
+      </div>
+      <div class="line line2">
+        <app-pen-field-creature [creature]="creatures[3]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 3 && pen.pen.creatures.length < pen.pen.size">
+        </app-pen-field-creature>
+        <app-pen-field-creature [creature]="creatures[4]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 4 && pen.pen.creatures.length < pen.pen.size">
+        </app-pen-field-creature>
+        <app-pen-field-creature [creature]="creatures[5]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
+                                (detailsEventEmitter)="openDetails($event)"
+                                [isAddButton]="pen.pen.creatures.length === 5 && pen.pen.creatures.length < pen.pen.size">
+        </app-pen-field-creature>
+      </div>
+    </ng-container>
   </div>
 
-  <ng-container *ngIf="pen.creatures.length > 0">
-    <div class="creature-line">
-      <app-pen-field-creature [creature]="creatures[0]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[1]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[2]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[3]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[4]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
+  <div class="details">
+    <div class="detail">Spaces {{pen.pen.size}}/{{maxSize}}</div>
+    <div class="detail">
+      <button mat-icon-button [matMenuTriggerFor]="options">
+        <mat-icon>more_vert</mat-icon>
+      </button>
     </div>
+  </div>
 
-    <div class="creature-line">
-      <app-pen-field-creature [creature]="creatures[5]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[6]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[7]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[8]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[9]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-    </div>
-
-    <div class="creature-line">
-      <app-pen-field-creature [creature]="creatures[11]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[12]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[13]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[14]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[15]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-    </div>
-
-    <div class="creature-line">
-      <app-pen-field-creature [creature]="creatures[16]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[17]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[18]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[19]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-      <app-pen-field-creature [creature]="creatures[20]" [pen]="pen.pen" [updatedCreatures]="updatedCreatures"
-                              (detailsEventEmitter)="openDetails($event)"></app-pen-field-creature>
-    </div>
-  </ng-container>
-
+  <mat-menu #options="matMenu">
+    <button mat-menu-item class="pen-option" *ngIf="pen.pen.size < maxSize" (click)="extend(pen.pen.size + 1)"
+            [disabled]="(price | price: (pen.pen.size + 1)) > user.coins">
+      Extend pen ({{price | price: (pen.pen.size + 1)}} ¤)
+    </button>
+    <button mat-menu-item class="pen-option" *ngIf="pen.pen.size === maxSize" disabled>
+      No more space available
+    </button>
+  </mat-menu>
 </div>
 
-<div class="pen-field-details mat-elevation-z1">
-  <div>Llamas {{pen.creatures.length}}/{{pen.pen.size}}</div>
-  <div>Items {{pen.items.length}}/{{pen.pen.size}}</div>
-</div>
+
 
 

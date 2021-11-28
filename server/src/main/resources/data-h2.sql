@@ -1,6 +1,7 @@
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 10);
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 100) ;
-INSERT INTO shop (code, quality, coins) VALUES ('NET', 3, 1000) ;
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 1, 1);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 2, 10);
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 5, 100) ;
+INSERT INTO shop (code, quality, coins) VALUES ('NET', 8, 1000) ;
 
 INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 1, 0);
 INSERT INTO shop (code, quality, coins) VALUES ('HUNGER', 2, 1);
@@ -36,12 +37,11 @@ INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 9, 1280) ;
 INSERT INTO shop (code, quality, coins) VALUES ('LOVE', 10, 4000) ;
 
 
-
-
-INSERT INTO gene (code) VALUES ('FERTILE') ;;
-INSERT INTO gene (code) VALUES ('THIRST') ;;
-INSERT INTO gene (code) VALUES ('HUNGER') ;;
-INSERT INTO gene (code) VALUES ('LOVE') ;;
+INSERT INTO gene (code, special) VALUES ('THIRST', 0) ;
+INSERT INTO gene (code, special) VALUES ('HUNGER', 0) ;
+INSERT INTO gene (code, special) VALUES ('LOVE', 0) ;
+INSERT INTO gene (code, special) VALUES ('CRESUS', 0) ;
+INSERT INTO gene (code, special) VALUES ('CHRISTMAS', 1) ;
 
 
 INSERT INTO color (name, generation, code, parent_code) VALUES ('Crimson', 1, '#DC143C', '#DC143C') ;

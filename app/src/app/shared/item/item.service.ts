@@ -1,23 +1,21 @@
 import {Injectable} from '@angular/core';
-import {Restangular} from 'ngx-restangular';
 import {Observable} from 'rxjs';
 import {Page} from '../page/page.interface';
 import {Item} from './item.interface';
+import {RestService} from '../rest/rest.service';
 
 @Injectable()
 export class ItemService {
 
-  baseRest = this.restangular.all('items');
-
-  constructor(private restangular: Restangular) {
+  constructor(private restService: RestService) {
   }
 
   get(id: string, compute: boolean = true): Observable<Item> {
-    return this.restangular.one('items', id).get({compute});
+    return this.restService.rest().one('items', id).get({compute});
   }
 
   add(code: string, quality: number): Observable<any> {
-    return this.baseRest.post({code, quality});
+    return this.restService.rest().all('items').post({code, quality});
   }
 
   count(code?: string, quality?: number, compute: boolean = true): Observable<Page> {
@@ -29,7 +27,7 @@ export class ItemService {
       params.quality = quality;
     }
 
-    return this.baseRest.customGET('', params);
+    return this.restService.rest().all('items').customGET('', params);
   }
 
   list(size: number, page: number, code: string, compute: boolean = true): Observable<Item[]> {
@@ -39,10 +37,10 @@ export class ItemService {
     } else {
       param = {size, page, sort: 'id,asc', compute};
     }
-    return this.baseRest.getList(param);
+    return this.restService.rest().all('items').getList(param);
   }
 
   delete(item: any): Observable<any> {
-    return item.remove();
+    return this.restService.rest(item).remove();
   }
 }

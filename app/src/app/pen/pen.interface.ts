@@ -8,3 +8,13 @@ export interface Pen {
 export interface PenContent {
   id: string;
 }
+
+export interface PenInfo {
+  count: number;
+  sizes: Price[];
+}
+
+export interface Price {
+  count: number;
+  price: number;
+}

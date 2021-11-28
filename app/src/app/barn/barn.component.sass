@@ -1,143 +1,167 @@
-#filter
-  margin-bottom: 10px
+.barn-menu-item
+  font-size: 16px
 
-.no-creatures-message
-  text-align: center
+.barn .obscure
+  color: #777
 
-.creature
+
+.barn #filters
   display: flex
   justify-content: space-between
+  width: 100%
+  overflow-x: scroll
+.barn #filters .filter button
+  font-size: 16px
+  height: 40px
+  width: 64px
+.barn #filters .filter .icon-button
+  padding: 0
+.barn #filters .filter .icon-button mat-icon
+  height: 36px
+  width: 40px
+  font-size: 32px
+  margin-top: 4px
+.barn #filters .filter .icon-button.icon-svg mat-icon
+  height: 30px
+  width: 30px
+  margin-top: 0
+  margin-bottom: 4px
+
+.barn #filters .filter.space
+  margin-left: 5px
+
+.barn #filters .filter.generation .selected
+  color: darkorange
+.barn #filters .filter.sex .male.selected
+  color: lightblue
+.barn #filters .filter.sex .female.selected
+  color: pink
+.barn #filters .filter.pen .selected
+  color: brown
+.barn #filters .filter.love .selected
+  color: palevioletred
+.barn #filters .filter.pregnant .selected
+  color: mediumpurple
+.barn #filters .filter.baby .selected
+  color: dodgerblue
+.barn #filters .filter.old .selected
+  color: orangered
+
+
+.barn #count
+  display: flex
+  justify-content: space-between
+  font-size: 14px
+  margin-bottom: 5px
+
+
+.barn .empty-message
+  text-align: center
+  font-size: 16px
+
+
+.barn .creature
   border-radius: 4px
   background-color: #3b3b3b
   padding: 5px
   margin-bottom: 10px
+  height: 76px
+.barn .creature:hover
+  cursor: pointer
 
-.details
+.barn .creature .status
   display: flex
-
-.image
-  width: 40px
-  height: 40px
-  margin-right: 15px
-
-.line1
+  justify-content: space-between
+  height: 26px
+.barn .creature .status .left, .barn .creature .status .right
   display: flex
-  overflow: hidden
-
-.male
-  color: lightblue
-.female
-  color: pink
-.sex-icon-barn
-  height: 20px
-  margin-right: 5px
-::ng-deep .sex-icon-barn mat-icon
-  height: 20px
+.barn .creature .status .icon mat-icon
   font-size: 20px
+.barn .creature .status .icon.sex mat-icon
+  font-size: 24px
+.barn .creature .status .icon.space
+  margin-left: 5px
 
-.status
-  display: flex
-.status-icon-barn
-  height: 20px
-  width: 20px
-.status-icon-barn mat-icon
-  font-size: 18px
-  height: 18px
-::ng-deep .status-icon-barn mat-icon svg
-  height: 14px
-
-.name
-  margin-right: 10px
-  width: 260px
-  overflow: hidden
-@media only screen and (max-width: 350px)
-  .name
-    width: 90px
-@media only screen and (min-width: 350px) and (max-width: 360px)
-  .name
-    width: 100px
-@media only screen and (min-width: 360px) and (max-width: 370px)
-  .name
-    width: 110px
-@media only screen and (min-width: 370px) and (max-width: 380px)
-  .name
-    width: 120px
-@media only screen and (min-width: 380px) and (max-width: 390px)
-  .name
-    width: 130px
-@media only screen and (min-width: 390px) and (max-width: 400px)
-  .name
-    width: 140px
-@media only screen and (min-width: 400px) and (max-width: 410px)
-  .name
-    width: 150px
-@media only screen and (min-width: 410px) and (max-width: 420px)
-  .name
-    width: 160px
-@media only screen and (min-width: 420px) and (max-width: 430px)
-  .name
-    width: 180px
-@media only screen and (min-width: 430px) and (max-width: 440px)
-  .name
-    width: 190px
-@media only screen and (min-width: 440px) and (max-width: 450px)
-  .name
-    width: 200px
-@media only screen and (min-width: 450px) and (max-width: 460px)
-  .name
-    width: 210px
-@media only screen and (min-width: 460px) and (max-width: 470px)
-  .name
-    width: 220px
-@media only screen and (min-width: 470px) and (max-width: 480px)
-  .name
-    width: 230px
-@media only screen and (min-width: 480px) and (max-width: 490px)
-  .name
-    width: 240px
-@media only screen and (min-width: 490px) and (max-width: 500px)
-  .name
-    width: 250px
-
-.line2
-  display: flex
-  font-size: 12px
-  height: 20px
-
-.energy, .thirst, .hunger, .love, .maturity
-  display: flex
-  width: 35px
-.energy
-  color: lightyellow
-.maturity
-  color: skyblue
-.thirst
-  color: cornflowerblue
-.hunger
-  color: sandybrown
-.love
+.barn .creature .status .icon.sex .male
+  color: lightblue
+.barn .creature .status .icon.sex .female
+  color: pink
+.barn .creature .status .icon.pen
+  color: brown
+.barn .creature .status .icon.love
   color: palevioletred
-.energy mat-icon, .thirst mat-icon, .love mat-icon
-  font-size: 12px
-  width: 12px
-  height: 12px
-  margin-top: 3px
-.hunger mat-icon, .maturity mat-icon
-  height: 12px
-  width: 12px
-  margin-top: 2px
-  margin-right: 2px
-.thirst .stat-icon, .love .stat-icon
-  margin-right: 2px
-
-.genes
-  margin-left: 10px
+.barn .creature .status .icon.redeem
+  color: goldenrod
+.barn .creature .status .icon.pregnant
+  color: mediumpurple
+.barn .creature .status .icon.baby
+  color: dodgerblue
+.barn .creature .status .icon.old
+  color: orangered
+.barn .creature .status .icon.wild
+  color: seagreen
 
 
-.button button
-  height: 100%
-  width: 40px
-  min-width: 0
-  padding: 0
-.buttonSpace
+.barn .creature .details
+  display: flex
+
+.barn .creature .details .image
+  width: 50px
+  height: 50px
+  margin-right: 10px
+
+
+.barn .creature .details .info .name
+  font-size: 16px
+  height: 20px
+  line-height: 20px
+  vertical-align: center
+
+.barn .creature .details .info .under-name
+  display: flex
+.barn .creature .details .info .under-name .stats
+  display: flex
+  margin-right: 10px
+  height: 30px
+  width: 100px
+.barn .creature .details .info .under-name .stats .stat
+  display: flex
+  font-size: 14px
+  line-height: 30px
+  vertical-align: center
+.barn .creature .details .info .under-name .stats .stat .icon
+  height: 16px
+  width: 16px
   margin-right: 5px
+  padding-top: 3px
+.barn .creature .details .info .under-name .stats .stat.energy .icon
+  margin-right: 2px
+.barn .creature .details .info .under-name .stats .stat .value
+  width: 30px
+.barn .creature .details .info .under-name .stats .stat .icon mat-icon
+  font-size: 16px
+
+.barn .creature .details .info .under-name .stats .stat.energy
+  color: lightyellow
+.barn .creature .details .info .under-name .stats .stat.love
+  color: palevioletred
+.barn .creature .details .info .under-name .stats .stat.maturity
+  color: dodgerblue
+
+.barn .creature .details .info .under-name .genes
+  font-size: 14px
+  height: 30px
+  line-height: 30px
+  vertical-align: middle
+  display: flex
+.barn .creature .details .info .under-name .genes .gene.space
+  margin-left: 5px
+
+
+.barn .loading
+  height: 30px
+  width: 100%
+  display: flex
+  justify-content: center
+.barn .loading ::ng-deep .mat-spinner circle
+  stroke: #3b3b3b

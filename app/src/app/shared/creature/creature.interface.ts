@@ -7,10 +7,11 @@ export interface Creature {
   genes: Genes;
   statistics: Statistics;
   wild: boolean;
-  breedingCount: number;
+  pregnancyCount: number;
   pregnant: boolean;
   pregnancyStartTime: string;
   pregnancyEndTime: string;
+  pregnancyMale: Parent;
   parents: Parents;
 }
 
@@ -46,6 +47,11 @@ export interface Parent {
   sex: string;
   colors: Colors;
   genes: Genes;
+}
+
+export interface CreatureInfo {
+  generation: number;
+  price: number;
 }
 
 

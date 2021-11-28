@@ -1,15 +1,35 @@
 <div id="page" class="pen">
 
-  <app-pen-field [pen]="pen" [updatedCreatures]="updatedCreatures"></app-pen-field>
+  <mat-tab-group mat-align-tabs="center" (focusChange)="onFocusChange($event)">
 
-  <div id="list-wrapper">
-    <div id="list-content">
-      <app-pen-items [pen]="pen"
+    <mat-tab label="Pen 1">
+      <app-pen-field [user]="user" [pen]="pens[0]" [price]="price1" [updatedCreatures]="updatedCreatures"
+                     [creaturePrices]="creaturePrices" (detailsDialogEventEmitter)="setDetailsOpen($event)">
+      </app-pen-field>
+      <app-pen-items [pen]="pens[0]"
                      (creatureUpdate)="onCreatureUpdate($event)"
                      (creaturesUpdate)="onCreaturesUpdate($event)"
                      (itemDelete)="onItemDelete($event)"></app-pen-items>
-    </div>
-  </div>
+    </mat-tab>
+
+    <mat-tab label="Pen 2">
+      <div *ngIf="pens.length === 1">
+        <app-pen-purchase [user]="user" [price]="price2" [pens]="pens"
+                          (penConstructEventEmitter)="onPenConstruct()"></app-pen-purchase>
+      </div>
+      <div *ngIf="pens.length > 1">
+        <app-pen-field [user]="user" [pen]="pens[1]" [price]="price2" [updatedCreatures]="updatedCreatures"
+                       [creaturePrices]="creaturePrices" (detailsDialogEventEmitter)="setDetailsOpen($event)">
+        </app-pen-field>
+        <app-pen-items [pen]="pens[1]"
+                       (creatureUpdate)="onCreatureUpdate($event)"
+                       (creaturesUpdate)="onCreaturesUpdate($event)"
+                       (itemDelete)="onItemDelete($event)"></app-pen-items>
+      </div>
+    </mat-tab>
+
+
+  </mat-tab-group>
 
 </div>
 

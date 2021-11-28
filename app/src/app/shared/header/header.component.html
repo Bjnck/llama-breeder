@@ -1,23 +1,20 @@
 <div id="header">
 
-<mat-toolbar *ngIf="data.display" >
-<!--  <div id="header-content">-->
-    <button mat-icon-button *ngIf="data.isHome" (click)="logout()" aria-label="Logout">
-      <mat-icon>logout</mat-icon>
-    </button>
-    <button mat-icon-button *ngIf="!data.isHome" routerLink="" aria-label="Home">
+  <mat-toolbar *ngIf="data.display">
+    <div class="image-wrapper" *ngIf="data.isHome">
+      <div class="image">
+        <app-llama color1="#363636" color2="#363636"></app-llama>
+      </div>
+    </div>
+
+    <button mat-icon-button class="back" *ngIf="!data.isHome" routerLink="" aria-label="Home">
       <mat-icon>west</mat-icon>
     </button>
-    <span id="title">{{data.title}}</span>
+    <span class="title">{{data.title}}</span>
 
     <span class="spacer"></span>
 
-    <div *ngIf="user" id="account-data" routerLink="account">
-      lvl.{{user.level}}
-      <br/>
-      {{user.coins}}$
-    </div>
-<!--  </div>-->
-</mat-toolbar>
+    <div *ngIf="user" class="coins">{{user.coins}} ¤</div>
+  </mat-toolbar>
 </div>
 

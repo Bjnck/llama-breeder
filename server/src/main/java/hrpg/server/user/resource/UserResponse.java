@@ -12,4 +12,5 @@ public class UserResponse extends RepresentationModel<UserResponse> {
     private String name;
     private int level;
     private long coins;
+    private String email;
 }

@@ -9,7 +9,6 @@ import hrpg.server.creature.service.CreatureUtil;
 import hrpg.server.creature.type.Sex;
 import hrpg.server.item.dao.Item;
 import hrpg.server.item.service.exception.ItemNotFoundException;
-import hrpg.server.item.type.ItemCode;
 import hrpg.server.pen.dao.Pen;
 import hrpg.server.pen.dao.PenRepository;
 import hrpg.server.pen.service.exception.PenNotFoundException;
@@ -66,10 +65,10 @@ public class PenComputorImpl implements PenComputor {
                     pensProperties.getActivationTimeValue(), pensProperties.getActivationTimeUnit());
             for (int i = 0; i < totalLoop; i++) {
                 //stop loop if nothing to calculate
-                Set<ItemCode> itemsCodes = pen.getItems().stream()
-                        .filter(item -> item.getLife() > LIFE_MIN).map(Item::getCode).collect(Collectors.toSet());
+                Set<Item> items = pen.getItems().stream()
+                        .filter(item -> item.getLife() > LIFE_MIN).collect(Collectors.toSet());
                 long hittable = pen.getCreatures().stream()
-                        .filter(creature -> CreatureUtil.isHittable(creature, itemsCodes)).count();
+                        .filter(creature -> CreatureUtil.isHittable(creature, items)).count();
                 long breedableMale = pen.getCreatures().stream()
                         .filter(CreatureUtil::isBreedable)
                         .filter(creature -> Sex.M.equals(creature.getInfo().getSex()))
@@ -96,8 +95,14 @@ public class PenComputorImpl implements PenComputor {
                 increaseMaturity(pen, activationTime);
 
                 //update penActivationTime
-                pen.getItems().forEach(item -> item.setPenActivationTime(activationTime));
-                pen.getCreatures().forEach(creature -> creature.setPenActivationTime(activationTime));
+                pen.getItems().stream()
+                        .filter(item -> item.getPenActivationTime().isBefore(activationTime))
+                        .sorted(Comparator.comparingLong(Item::getId))
+                        .forEach(item -> item.setPenActivationTime(activationTime));
+                pen.getCreatures().stream()
+                        .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
+                        .sorted(Comparator.comparingLong(Creature::getId))
+                        .forEach(creature -> creature.setPenActivationTime(activationTime));
             }
         }
     }
@@ -107,9 +112,9 @@ public class PenComputorImpl implements PenComputor {
                 .filter(item -> item.getLife() > LIFE_MIN)
                 .filter(item -> item.getPenActivationTime().isBefore(activationTime))
                 .collect(Collectors.toSet());
-        items.forEach(item -> {
+        items.stream().sorted(Comparator.comparingLong(Item::getId)).forEach(item -> {
             try {
-                penService.activateItem(pen.getId(), item.getId());
+                penService.activateItem(pen.getId(), item.getId(), activationTime);
             } catch (PenNotFoundException | ItemNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -118,7 +123,9 @@ public class PenComputorImpl implements PenComputor {
 
     private void increaseMaturity(Pen pen, ZonedDateTime activationTime) {
         //verify if adult in pen
-        boolean adultPresent = pen.getCreatures().stream().anyMatch(creature -> creature.getMaturity() >= MATURITY_MAX);
+        boolean adultPresent = pen.getCreatures().stream()
+                .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
+                .anyMatch(creature -> creature.getMaturity() >= MATURITY_MAX);
         if (adultPresent) {
             //get all babies for activationTime
             Set<Creature> creatures = pen.getCreatures().stream()
@@ -126,7 +133,7 @@ public class PenComputorImpl implements PenComputor {
                     .filter(creature -> creature.getPenActivationTime().isBefore(activationTime))
                     .collect(Collectors.toSet());
             //increase maturity
-            creatures.forEach(creature -> {
+            creatures.stream().sorted(Comparator.comparingLong(Creature::getId)).forEach(creature -> {
                 int increment = creaturesProperties.getMaturityIncrement(creature.getGeneration());
                 int maturity = creature.getMaturity() + increment;
                 creature.setMaturity(Math.min(maturity, MATURITY_MAX));

@@ -1,61 +1,53 @@
-<div id="capture-launch">
+<div id="launch-capture">
 
-    <div id="buttons">
-      <div class="launch">
-        <button mat-raised-button class="launch-raised" *ngIf="!active" (click)="launch()">Capture</button>
-        <button mat-button disabled class="launch-stroked"
-                *ngIf="active && !maxCreatureReached">{{timeLeft | date:'HH:mm:ss':'UTC'}}</button>
-        <button mat-button disabled class="launch-stroked"
-                *ngIf="active && maxCreatureReached">Max llamas reached</button>
-      </div>
-
-      <div>
-        <div>
-          <button mat-raised-button class="net net-raised" *ngIf="quality == 0"
-                  [disabled]="active != null ||
-                (netCount.quality_1 <= 0 && netCount.quality_2 <= 0 && netCount.quality_3 <= 0)"
-                  [matMenuTriggerFor]="menu">
-            <mat-icon svgIcon="net"></mat-icon>
-          </button>
-          <button mat-stroked-button class="net net-stroked" *ngIf="quality != 0" (click)="setNet(0)">
-            <mat-icon svgIcon="net"></mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item *ngIf="netCount.quality_1 > 0" (click)="setNet(1)">Basic ({{netCount.quality_1}})
-            </button>
-            <button mat-menu-item *ngIf="netCount.quality_2 > 0" (click)="setNet(2)">Super ({{netCount.quality_2}})
-            </button>
-            <button mat-menu-item *ngIf="netCount.quality_3 > 0" (click)="setNet(3)">Mega ({{netCount.quality_3}})
-            </button>
-          </mat-menu>
-        </div>
-
-        <div>
-          <button mat-raised-button disabled>
-            <mat-icon svgIcon="bait"></mat-icon>
-          </button>
-        </div>
-      </div>
+  <div id="buttons">
+    <div id="launch">
+      <button mat-raised-button class="inactive mat-elevation-z2" *ngIf="capture == null" (click)="launch()">
+        Capture<br/>
+        <span class="info">
+          <span *ngIf="quality <= 0">No</span>
+          <span *ngIf="quality > 0"><app-item-name code="net" [quality]="quality"></app-item-name></span> net</span>
+      </button>
+      <button mat-button disabled class="active" *ngIf="capture != null && !redeem">
+        {{timeLeft | date:'HH:mm:ss' : 'UTC'}}<br/>
+        <span class="info">
+          <span *ngIf="capture.quality <= 0">No</span>
+          <span *ngIf="capture.quality > 0">
+            <app-item-name code="net" [quality]="capture.quality"></app-item-name></span> net</span>
+      </button>
+      <button mat-raised-button class="loot mat-elevation-z2" *ngIf="redeem" (click)="redeemCapture()">
+        <mat-icon>redeem</mat-icon>
+      </button>
     </div>
 
-  <div id="info" class="mat-elevation-z1">
-    <div *ngIf="active == null">
-      <span *ngIf="quality == 0 && bait == 0">No items used for capture</span>
-      <span *ngIf="quality > 0 || bait > 0">
-      <span *ngIf="quality > 0"><app-item-name code="net" [quality]="quality"></app-item-name> net</span>
-      <span *ngIf="quality > 0 && bait > 0"> / </span>
-      <span *ngIf="bait > 0">xxx bait</span>
-    </span>
-    </div>
+    <div id="parameters">
+      <div class="parameter">
+        <button mat-raised-button class="no-selection" *ngIf="quality <= 0"
+                [ngClass]="{'inactive': !capture, 'enable': netCount.quality_1 > 0 || netCount.quality_2 > 0 || netCount.quality_3 > 0}"
+                [disabled]="capture != null || (netCount.quality_1 <= 0 && netCount.quality_2 <= 0 && netCount.quality_3 <= 0)"
+                [matMenuTriggerFor]="menu_net">
+          <mat-icon svgIcon="net"></mat-icon>
+        </button>
+        <button mat-raised-button class="selection" *ngIf="quality > 0" (click)="setNet(0)">
+          <mat-icon svgIcon="net"></mat-icon>
+        </button>
 
-    <div *ngIf="active != null">
-      <span *ngIf="active.quality == 0 && active.bait == 0">No items used for capture</span>
-      <span *ngIf="active.quality > 0 || active.bait > 0">
-      <span *ngIf="active.quality > 0">
-        <app-item-name code="net" [quality]="active.quality"></app-item-name> net</span>
-      <span *ngIf="active.quality > 0 && active.bait > 0"> / </span>
-      <span *ngIf="active.bait > 0">xxx bait</span>
-    </span>
+        <mat-menu #menu_net="matMenu">
+          <button mat-menu-item class="launch-capture-menu-item" *ngIf="netCount.quality_1 > 0" (click)="setNet(1)">
+            <app-item-name code="net" [quality]=1></app-item-name>
+            net ({{netCount.quality_1}})
+          </button>
+          <button mat-menu-item class="launch-capture-menu-item" *ngIf="netCount.quality_2 > 0" (click)="setNet(2)">
+            <app-item-name code="net" [quality]=2></app-item-name>
+            net ({{netCount.quality_2}})
+          </button>
+          <button mat-menu-item class="launch-capture-menu-item" *ngIf="netCount.quality_3 > 0" (click)="setNet(3)">
+            <app-item-name code="net" [quality]=3></app-item-name>
+            net ({{netCount.quality_3}})
+          </button>
+        </mat-menu>
+      </div>
     </div>
   </div>
+
 </div>

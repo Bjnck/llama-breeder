@@ -1,33 +1,40 @@
-#pen-field
+#field
   height: 250px
   background-image: url('../../../assets/img/grass.png')
   background-repeat: repeat
+  border-bottom-left-radius: 8px
+  border-bottom-right-radius: 8px
 
-.no-creatures-message
-  text-align: center
-  height: 100%
-  padding-top: 70px
+#field .creatures
+  height: 200px
+  padding-top: 5px
+  padding-bottom: 5px
 
-.add-button
-  margin-top: 10px
-  background-color: indianred
-
-.creature-line
+#field .creatures .line
   display: flex
   flex-wrap: wrap
   justify-content: space-evenly
-
-.creature
-  height: 50px
-  width: 50px
-  background-color: #3b3b3b
+  height: 100px
+#field .creatures .line1
+  margin-bottom: 10px
+#field .creatures .line2
   margin-top: 10px
 
-.pen-field-details
+#field .details
   display: flex
   justify-content: space-between
-  padding: 10px
-  border-bottom-left-radius: 2px
-  border-bottom-right-radius: 2px
-  margin-bottom: 1px
+  line-height: 36px
+  height: 36px
+  vertical-align: middle
+  padding: 2px 10px
+  border-bottom-left-radius: 5px
+  border-bottom-right-radius: 5px
   background-color: #3b3b3b
+  font-size: 16px
+#field .details .detail button mat-icon
+  height: 30px
+  width: 30px
+
+.pen-option
+  font-size: 16px
+

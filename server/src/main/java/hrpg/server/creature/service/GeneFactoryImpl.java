@@ -23,9 +23,7 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     @Override
-    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality, Integer baitGeneration) {
-        //todo use bait for calcul
-
+    public Optional<hrpg.server.creature.dao.Gene> getForCapture(int netQuality) {
         Gene gene = null;
         if (new Random().nextInt(100) < getChance(netQuality)) {
             //check get normal gene
@@ -37,7 +35,7 @@ public class GeneFactoryImpl implements GeneFactory {
             else if (random < genesParameters.getChanceLove() + genesParameters.getChanceHunger() + genesParameters.getChanceThirst())
                 gene = Gene.THIRST;
             else
-                gene = Gene.FERTILE;
+                gene = Gene.CRESUS;
         } else if (new Random().nextInt(100) < getSpecialChance(netQuality)) {
             //check get special gene
         }
@@ -55,8 +53,10 @@ public class GeneFactoryImpl implements GeneFactory {
             return genesParameters.getChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getChanceQuality2();
+        else if (netQuality == 5)
+            return genesParameters.getChanceQuality5();
         else
-            return genesParameters.getChanceQuality3();
+            return genesParameters.getChanceQuality8();
     }
 
     private int getSpecialChance(int netQuality) {
@@ -66,8 +66,10 @@ public class GeneFactoryImpl implements GeneFactory {
             return genesParameters.getSpecialChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getSpecialChanceQuality2();
+        else if (netQuality == 5)
+            return genesParameters.getSpecialChanceQuality5();
         else
-            return genesParameters.getSpecialChanceQuality3();
+            return genesParameters.getSpecialChanceQuality8();
     }
 
     @Override
@@ -76,10 +78,16 @@ public class GeneFactoryImpl implements GeneFactory {
             hrpg.server.creature.dao.Gene parent2Gene1, hrpg.server.creature.dao.Gene parent2Gene2) {
         List<hrpg.server.creature.dao.Gene> genes = new ArrayList<>();
 
-        if (parent1Gene1 != null && chanceOfGene()) genes.add(parent1Gene1);
-        else if (parent1Gene2 != null && chanceOfGene()) genes.add(parent1Gene2);
-        if (parent2Gene1 != null && chanceOfGene()) genes.add(parent2Gene1);
-        else if (parent2Gene2 != null && chanceOfGene()) genes.add(parent2Gene2);
+        getGeneParent(parent1Gene1, parent1Gene2).ifPresent(genes::add);
+        getGeneParent(parent2Gene1, parent2Gene2).ifPresent(genes::add);
+
+        //only one special gene allowed
+        if (genes.size() == 2 &&
+                (genes.stream().allMatch(hrpg.server.creature.dao.Gene::isSpecial) ||
+                        genes.get(0).getCode().equals(genes.get(1).getCode()))) {
+            Collections.shuffle(genes);
+            genes.remove(0);
+        }
 
         genes = genes.stream()
                 .sorted(Comparator.comparingLong(hrpg.server.creature.dao.Gene::getId))
@@ -90,7 +98,17 @@ public class GeneFactoryImpl implements GeneFactory {
                 genes.size() >= 2 ? Optional.of(genes.get(1)) : Optional.empty());
     }
 
+    private Optional<hrpg.server.creature.dao.Gene> getGeneParent(hrpg.server.creature.dao.Gene gene1, hrpg.server.creature.dao.Gene gene2) {
+        List<hrpg.server.creature.dao.Gene> genes = new ArrayList<>();
+        if (chanceOfGene()) {
+            if (gene1 != null) genes.add(gene1);
+            if (gene2 != null) genes.add(gene2);
+            Collections.shuffle(genes);
+        }
+        return genes.stream().findFirst();
+    }
+
     private boolean chanceOfGene() {
-        return new Random().nextInt(100) < 50;
+        return new Random().nextInt(100) < 67;
     }
 }

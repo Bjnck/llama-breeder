@@ -1,54 +1,72 @@
-.pen-field-creature
-  height: 50px
-  width: 50px
-  margin-top: 10px
+.creature-wrapper
+  height: 90px
+  width: 60px
 
-.pen-field-creature-exists
-  height: 50px
-  width: 50px
-  margin-top: 10px
+.creature
+  height: 100%
+  width: 100%
   cursor: pointer
 
-.image
-  height: 38px
-  width: 38px
-  padding: 2px 6px
-  border-radius: 24px
 
-.baby
-  height: 24px
-  width: 24px
-  padding: 9px 13px
-
-.stats-energy-wrapper
-  height: 3px
-  width: 100%
-.stats-energy
-  height: 3px
-  background-color: lightyellow
-  border-radius: 1.5px
-
-.stats-maturity-wrapper
-  height: 3px
-  width: 100%
-.stats-maturity
-  height: 3px
-  background-color: skyblue
-  border-radius: 1.5px
-
-.stats
-  height: 5px
+.creature .stats
+  height: 15px
   display: flex
   justify-content: space-between
+.creature .stats .detail
+  height: 10px
+  width: 10px
+  border-radius: 5px
 
-.stats-details
-  width: 32%
-  height: 4px
-  border-radius: 2px
-
-.stats-hunger
+.creature .stats .stat-hunger
   background-color: sandybrown
-.stats-love
+.creature .stats .stat-love
   background-color: palevioletred
-.stats-thirst
+.creature .stats .stat-thirst
   background-color: cornflowerblue
+
+
+.creature .image-wrapper
+  height: 60px
+  width: 60px
+.creature .image
+  height: 60px
+  width: 60px
+  border-radius: 10px
+.creature .image.baby
+  height: 30px
+  width: 30px
+  border-radius: 5px
+  padding-top: 15px
+  padding-left: 15px
+
+.creature .bar-wrapper
+  height: 15px
+  width: 100%
+.creature .bar
+  height: 5px
+  border-radius: 2.5px
+  margin-top: 10px
+.creature .bar.energy
+  background-color: lightyellow
+.creature .bar.maturity
+  background-color: skyblue
+
+
+.add-creature
+  height: 90px
+  width: 60px
+  display: flex
+  flex-direction: column
+  justify-content: center
+.add-creature button
+  height: 60px
+  width: 60px
+  min-width: 60px
+  color: #2f8136
+  background-color: #3b3b3b
+  padding: 0
+  opacity: 0.7
+.add-creature button mat-icon
+  font-size: 30px
+  height: 30px
+  width: 30px

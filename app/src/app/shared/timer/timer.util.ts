@@ -1,8 +1,7 @@
 export class TimerUtil {
   public static utc(date: Date): Date {
     const utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),
-      date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-
+      date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds(), date.getUTCMilliseconds());
     return new Date(utc);
   }
 

@@ -1,10 +1,11 @@
 package hrpg.server.user.dao;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
@@ -21,11 +22,15 @@ public class User {
     @Column(nullable = false)
     private String name = "Breeder";
 
-    @Singular
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_registration", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "registration_Key")
-    private Set<String> registrationKeys = new HashSet<>();
+    @Column(nullable = false)
+    private String uid;
+    @Column(nullable = false)
+    private String issuer;
+    private String email;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserDetails details;

@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 
 import static hrpg.server.creature.type.CreatureConstant.*;
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -36,14 +38,14 @@ public class Creature extends WithUser {
     @Column(nullable = false, updatable = false)
     private int generation = 1;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = EAGER)
     @JoinColumn(name = "info_id", updatable = false)
     private CreatureInfo info;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = EAGER)
     @JoinColumn(name = "parent_one_info_id", updatable = false)
     private CreatureInfo parentInfo1;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = EAGER)
     @JoinColumn(name = "parent_two_info_id", updatable = false)
     private CreatureInfo parentInfo2;
 
@@ -65,7 +67,7 @@ public class Creature extends WithUser {
     private int breedingCount = 0;
     private ZonedDateTime pregnancyStartTime;
     private ZonedDateTime pregnancyEndTime;
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = EAGER)
     @JoinColumn(name = "pregnancy_male_info_id")
     private CreatureInfo pregnancyMaleInfo;
 

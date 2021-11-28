@@ -1,10 +1,8 @@
 export const environment = {
   production: true,
 
-  serverUrl: 'https://valduc.synology.me:9094',
-
-  googleAuthUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-  googleClientId: '932356479055-bmtb7dp5j2irr9vibl50s0smpb2ug5n7.apps.googleusercontent.com',
+  // serverUrl: 'https://valduc.synology.me:9094',
+  serverUrl: 'https://api.llamabreedergame.com',
 
   energyMin: 0,
   energyMax: 1000,
@@ -15,5 +13,12 @@ export const environment = {
   statsMin: 0,
   statsMax: 100,
   statsLoveRequirement: 75,
-  breedingMax: 3
+  breedingMax: 3,
+  penMaxSize: 6,
+
+  firebase: {
+    apiKey: 'AIzaSyBrq7lRwYNpFlGtce0PTTRvgz14JvS2WlQ',
+    authDomain: 'play.llamabreedergame.com',
+    projectId: 'llamabreeder'
+  }
 };

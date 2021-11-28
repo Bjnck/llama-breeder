@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class GenesProperties {
     private int chanceQuality0;
+    private int chanceQuality1;
     private int chanceQuality2;
     private int chanceQuality5;
     private int chanceQuality8;
@@ -16,6 +17,7 @@ public class GenesProperties {
     private int chanceThirst;
     private int chanceCresus;
 
+    private int specialChanceQuality1;
     private int specialChanceQuality2;
     private int specialChanceQuality5;
     private int specialChanceQuality8;

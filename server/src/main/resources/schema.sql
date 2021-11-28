@@ -109,7 +109,7 @@ create table if not exists capture (
     user_id int not null,
     creature_info_id bigint,
     version bigint not null default 0,
-    quality tinyint(1) not null default 0, check (quality between 0 and 3),
+    quality tinyint(1) not null default 0, check (quality between 0 and 8),
     start_time datetime not null,
     end_time datetime not null,
     primary key (id),
@@ -121,7 +121,7 @@ create table if not exists pen (
     id int not null auto_increment,
     user_id int not null,
     version bigint not null default 0,
-    size int not null default 3, check (size between 3 and 20),
+    size int not null default 3, check (size between 3 and 6),
     primary key (id),
     foreign key (user_id) REFERENCES user(id)
 );

@@ -49,6 +49,8 @@ public class GeneFactoryImpl implements GeneFactory {
     private int getChance(int netQuality) {
         if (netQuality == 0)
             return genesParameters.getChanceQuality0();
+        else if (netQuality == 1)
+            return genesParameters.getChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getChanceQuality2();
         else if (netQuality == 5)
@@ -60,6 +62,8 @@ public class GeneFactoryImpl implements GeneFactory {
     private int getSpecialChance(int netQuality) {
         if (netQuality == 0)
             return 0;
+        else if (netQuality == 1)
+            return genesParameters.getSpecialChanceQuality1();
         else if (netQuality == 2)
             return genesParameters.getSpecialChanceQuality2();
         else if (netQuality == 5)
@@ -74,10 +78,8 @@ public class GeneFactoryImpl implements GeneFactory {
             hrpg.server.creature.dao.Gene parent2Gene1, hrpg.server.creature.dao.Gene parent2Gene2) {
         List<hrpg.server.creature.dao.Gene> genes = new ArrayList<>();
 
-        if (parent1Gene1 != null && chanceOfGene()) genes.add(parent1Gene1);
-        else if (parent1Gene2 != null && chanceOfGene()) genes.add(parent1Gene2);
-        if (parent2Gene1 != null && chanceOfGene()) genes.add(parent2Gene1);
-        else if (parent2Gene2 != null && chanceOfGene()) genes.add(parent2Gene2);
+        getGeneParent(parent1Gene1, parent1Gene2).ifPresent(genes::add);
+        getGeneParent(parent2Gene1, parent2Gene2).ifPresent(genes::add);
 
         //only one special gene allowed
         if (genes.size() == 2 &&
@@ -96,7 +98,17 @@ public class GeneFactoryImpl implements GeneFactory {
                 genes.size() >= 2 ? Optional.of(genes.get(1)) : Optional.empty());
     }
 
+    private Optional<hrpg.server.creature.dao.Gene> getGeneParent(hrpg.server.creature.dao.Gene gene1, hrpg.server.creature.dao.Gene gene2) {
+        List<hrpg.server.creature.dao.Gene> genes = new ArrayList<>();
+        if (chanceOfGene()) {
+            if (gene1 != null) genes.add(gene1);
+            if (gene2 != null) genes.add(gene2);
+            Collections.shuffle(genes);
+        }
+        return genes.stream().findFirst();
+    }
+
     private boolean chanceOfGene() {
-        return new Random().nextInt(100) < 50;
+        return new Random().nextInt(100) < 67;
     }
 }

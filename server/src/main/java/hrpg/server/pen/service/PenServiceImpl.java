@@ -227,7 +227,7 @@ public class PenServiceImpl implements PenService {
                             //only activate item if it is still alive and hittable
                             if (item.getLife() > 0 && CreatureUtil.isHittable(creature, item.getCode(), item.getQuality())) {
                                 //item hits creature
-                                if (new Random().nextInt(100) < getActivationChance(creature.getGeneration())) {
+                                if (new Random().nextInt(100) < pensProperties.getItemActivationChance()) {
                                     //remove 1 life and delete if life ended
                                     item.setLife(item.getLife() - 1);
                                     //hit creature
@@ -247,10 +247,5 @@ public class PenServiceImpl implements PenService {
                 .item(itemMapper.toDto(item))
                 .creatures(creatures)
                 .build();
-    }
-
-    private int getActivationChance(int creatureGeneration) {
-        //activation chance are lower by generation
-        return pensProperties.getItemActivationChance() / creatureGeneration;
     }
 }

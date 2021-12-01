@@ -12,6 +12,5 @@ export class ShopItemResolve implements Resolve<ShopItem[]> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<ShopItem[]> {
       return this.shopItemService.list();
-
   }
 }

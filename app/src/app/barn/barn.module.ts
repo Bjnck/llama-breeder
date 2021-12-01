@@ -7,29 +7,27 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {BarnComponent} from './barn.component';
 import {CreatureListResolve} from './creature-list.resolve';
-import {CreatureCountResolve} from './creature-count.resolve';
-import {MatMenuModule} from "@angular/material/menu";
-import {MatRippleModule} from "@angular/material/core";
+import {MatMenuModule} from '@angular/material/menu';
+import {MatRippleModule} from '@angular/material/core';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
     BarnComponent
   ],
-    imports: [
-        SharedModule,
-        InfiniteScrollModule,
-        CommonModule,
-        MatIconModule,
-        MatButtonModule,
-        MatMenuModule,
-        MatRippleModule,
-        MatProgressSpinnerModule
-    ],
+  imports: [
+    SharedModule,
+    InfiniteScrollModule,
+    CommonModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatRippleModule,
+    MatProgressSpinnerModule,
+  ],
   exports: [],
   providers: [
-    CreatureListResolve,
-    CreatureCountResolve
+    CreatureListResolve
   ]
 })
 export class BarnModule {

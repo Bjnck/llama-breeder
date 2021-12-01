@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 @Injectable()
-export class CreatureCacheService {
+export class ItemCacheService {
   private static totalElements;
   private static filterElements;
 

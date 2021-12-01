@@ -16,5 +16,6 @@ import org.springframework.hateoas.server.core.Relation;
 public class ShopItemResponse extends RepresentationModel<ShopItemResponse> {
     private ItemCode code;
     private int quality;
+    private int availability;
     private int coins;
 }

@@ -1,0 +1,24 @@
+<div class="description">
+  <div class="text" *ngIf="code.toLowerCase() === 'net'">
+    <span *ngIf="quality === 1">Very low</span>
+    <span *ngIf="quality === 2">Low</span>
+    <span *ngIf="quality === 3">High</span>
+    <span *ngIf="quality === 4">Very high</span>
+    <span> chance to capture a llama with a gene</span>
+  </div>
+  <div class="text" *ngIf="code.toLowerCase() === 'thirst'">
+    Add to a pen to increase thirst
+  </div>
+  <div class="text" *ngIf="code.toLowerCase() === 'hunger'">
+    Add to a pen to increase hunger
+  </div>
+  <div class="text" *ngIf="code.toLowerCase() === 'love'">
+    Add to a pen to increase love
+  </div>
+
+  <div class="genes" *ngIf="code.toLowerCase() !== 'net'">
+    genes
+  </div>
+</div>
+
+

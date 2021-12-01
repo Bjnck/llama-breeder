@@ -2,16 +2,20 @@ import {NgModule} from '@angular/core';
 
 import {SharedModule} from '../shared/shared.module';
 import {InventoryComponent} from './inventory.component';
-import {ItemListResolve} from './item-list.resolve';
 import {InfiniteScrollModule} from 'ngx-infinite-scroll';
 import {CommonModule} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatMenuModule} from '@angular/material/menu';
+import {ItemDetailsDialogComponent} from './details/item-details.dialog';
+import {MatRippleModule} from "@angular/material/core";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
-    InventoryComponent
+    InventoryComponent,
+    ItemDetailsDialogComponent
   ],
   imports: [
     SharedModule,
@@ -19,12 +23,14 @@ import {MatMenuModule} from '@angular/material/menu';
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatMenuModule
+    MatMenuModule,
+    MatRippleModule,
+    MatProgressSpinnerModule,
+    MatDialogModule
   ],
   exports: [
   ],
   providers: [
-    ItemListResolve
   ]
 })
 export class InventoryModule {

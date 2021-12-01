@@ -20,11 +20,14 @@ public class ShopItem {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private ItemCode code;
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private Integer quality;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
+    private Integer availability;
+
+    @Column(nullable = false, updatable = false)
     private Integer coins;
 }

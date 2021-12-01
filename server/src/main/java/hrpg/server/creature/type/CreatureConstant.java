@@ -12,5 +12,5 @@ public class CreatureConstant {
     public static int STATS_MAX = 100;
     public static int STATS_LOVE_REQUIREMENT = 75;
 
-    public static int BREEDING_MAX = 3;
+    public static int BREEDING_MAX = 2;
 }

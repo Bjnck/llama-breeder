@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Creature, CreatureInfo} from './creature.interface';
-import {Page} from '../page/page.interface';
 import {CreatureSearch} from './creature-search.interface';
 import {RestService} from '../rest/rest.service';
+import {map} from "rxjs/operators";
+import {CreatureCacheService} from "./creature-cache.service";
 
 @Injectable()
 export class CreatureService {
@@ -12,10 +13,6 @@ export class CreatureService {
 
   get(id: string, compute: boolean = true): Observable<Creature> {
     return this.restService.rest().one('creatures', id).get({compute});
-  }
-
-  count(compute: boolean = true): Observable<Page> {
-    return this.restService.rest().all('creatures').customGET('', {size: 1, compute});
   }
 
   list(size: number, page: number, compute: boolean = true, search?: CreatureSearch): Observable<Creature[]> {
@@ -51,11 +48,19 @@ export class CreatureService {
   }
 
   delete(creature: any): Observable<any> {
-    return this.restService.rest(creature).remove();
+    return this.restService.rest(creature).remove()
+      .pipe(map(value => {
+        CreatureCacheService.decrementTotalElements();
+        return value;
+      }));
   }
 
   redeem(id: string): Observable<Creature> {
-    return this.restService.rest().all('creatures').customPOST({}, id + '/action/redeem');
+    return this.restService.rest().all('creatures').customPOST({}, id + '/action/redeem')
+      .pipe(map(value => {
+        CreatureCacheService.incrementTotalElements();
+        return value;
+      }));
   }
 
   getPrices(): Observable<CreatureInfo[]> {

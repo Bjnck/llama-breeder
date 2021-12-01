@@ -1,41 +1,83 @@
-<div class="category" [ngClass]="{'first-category': categoryCode.toLowerCase() === 'net'}">
-  <div class="category-title">
-    {{categoryName}}
-  </div>
-  <div class="category-comment">
-    <span
-      *ngIf="categoryCode.toLowerCase() === 'net'">Increases the chances to capture a llama with a special feature</span>
-    <span *ngIf="categoryCode.toLowerCase() === 'thirst'">Used in a pen to increase thirst. Level must be superior or equals to llama's generation to be effective.</span>
-    <span *ngIf="categoryCode.toLowerCase() === 'hunger'">Used in a pen to increase hunger. Level must be superior or equals to llama's generation to be effective.</span>
-    <span *ngIf="categoryCode.toLowerCase() === 'love'">Used in a pen to increase love. Level must be superior or equals to llama's generation to be effective.</span>
-  </div>
-</div>
-
-
-<div class="no-items-message" *ngIf="user.level === 0">No items available</div>
-<div *ngFor="let shopItem of shopItems | shop_category:categoryCode">
-  <div class="item mat-elevation-z1"
-       *ngIf="(!bestOnly && shopItem.quality <= user.level) || (bestOnly && shopItem.quality == user.level)">
-    <div class="details">
+<div class="category">
+  <div class="title">
+    <div class="logo">
       <app-item-icon [code]="categoryCode"></app-item-icon>
-      <div class="info">
-        <div>
-          <app-item-name [code]="categoryCode" [quality]="shopItem.quality"></app-item-name>
-          - lvl.{{shopItem.quality}}
-        </div>
+    </div>
+    <div class="name">
+      <app-item-category-name [code]="categoryCode"></app-item-category-name>
+    </div>
+  </div>
 
-        <div>
-          <span *ngIf="shopItem.coins > 0">{{shopItem.coins}}$</span>
-          <span *ngIf="shopItem.coins === 0">Free</span>
+  <div class="description">
+    <span *ngIf="categoryCode.toLowerCase() === 'net'">
+      Use with a capture to get a chance to capture a llama with a gene
+    </span>
+    <span *ngIf="categoryCode.toLowerCase() === 'thirst'">
+      Add to a pen to increase thirst
+    </span>
+    <span *ngIf="categoryCode.toLowerCase() === 'hunger'">
+      Add to a pen to increase hunger
+    </span>
+    <span *ngIf="categoryCode.toLowerCase() === 'love'">
+      Add to a pen to increase love
+    </span>
+  </div>
+  <div class="items">
+    <div class="empty" *ngIf="user.level === 0">No items available</div>
+    <div *ngFor="let shopItem of shopItems | shop_category:categoryCode">
+      <div class="item" *ngIf="shopItem.availability <= user.level"
+           matRipple [matRippleDisabled]="shopItem.coins > user.coins"
+           [ngClass]="{'obscure': shopItem.coins > user.coins, 'mat-elevation-z1': shopItem.coins <= user.coins}"
+           (click)="openValidation(shopItem)">
+        <div class="name">
+          <app-item-name [code]="categoryCode" [quality]="shopItem.quality"></app-item-name>
+          <span *ngIf="categoryCode.toLowerCase() !== 'net'"> - lvl.{{shopItem.quality}}</span>
         </div>
+        <div class="price">{{shopItem.coins}} ¤</div>
       </div>
     </div>
-    <button mat-stroked-button [disabled]="shopItem.coins > user.coins || itemCount === undefined || itemCount >= 100"
-            (click)="purchase(shopItem)">
-      <mat-icon>shopping_cart</mat-icon>
-    </button>
   </div>
 </div>
+
+
+<!--<div class="category" [ngClass]="{'first-category': categoryCode.toLowerCase() === 'net'}">-->
+<!--  <div class="category-title">-->
+<!--    {{categoryName}}-->
+<!--  </div>-->
+<!--  <div class="category-comment">-->
+<!--    <span-->
+<!--      *ngIf="categoryCode.toLowerCase() === 'net'">Increases the chances to capture a llama with a special feature</span>-->
+<!--    <span *ngIf="categoryCode.toLowerCase() === 'thirst'">Used in a pen to increase thirst. Level must be superior or equals to llama's generation to be effective.</span>-->
+<!--    <span *ngIf="categoryCode.toLowerCase() === 'hunger'">Used in a pen to increase hunger. Level must be superior or equals to llama's generation to be effective.</span>-->
+<!--    <span *ngIf="categoryCode.toLowerCase() === 'love'">Used in a pen to increase love. Level must be superior or equals to llama's generation to be effective.</span>-->
+<!--  </div>-->
+<!--</div>-->
+
+
+<!--<div class="no-items-message" *ngIf="user.level === 0">No items available</div>-->
+<!--<div *ngFor="let shopItem of shopItems | shop_category:categoryCode">-->
+<!--  <div class="item mat-elevation-z1"-->
+<!--       *ngIf="(!bestOnly && shopItem.quality <= user.level) || (bestOnly && shopItem.quality == user.level)">-->
+<!--    <div class="details">-->
+<!--      <app-item-icon [code]="categoryCode"></app-item-icon>-->
+<!--      <div class="info">-->
+<!--        <div>-->
+<!--          <app-item-name [code]="categoryCode" [quality]="shopItem.quality"></app-item-name>-->
+<!--          - lvl.{{shopItem.quality}}-->
+<!--        </div>-->
+
+<!--        <div>-->
+<!--          <span *ngIf="shopItem.coins > 0">{{shopItem.coins}}$</span>-->
+<!--          <span *ngIf="shopItem.coins === 0">Free</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <button mat-stroked-button [disabled]="shopItem.coins > user.coins || itemCount === undefined || itemCount >= 100"-->
+<!--            (click)="purchase(shopItem)">-->
+<!--      <mat-icon>shopping_cart</mat-icon>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</div>-->
 
 
 

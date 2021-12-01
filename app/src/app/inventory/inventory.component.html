@@ -2,93 +2,90 @@
 
   <div id="space-top"></div>
 
-  <div id="filter">
-    <div>
-      <button mat-flat-button *ngIf="filter === 'net'" color="accent"
-              (click)="toggleFilter(null)">
-        <mat-icon svgIcon="net"></mat-icon>
+  <div id="filters">
+    <div class="filter type">
+      <button mat-raised-button class="icon-button all" *ngIf="!type" (click)="toggleTypeFilter('hunger')">
+        *
       </button>
-      <button mat-stroked-button *ngIf="filter !== 'net'" color="accent"
-              (click)="toggleFilter('net')">
-        <mat-icon svgIcon="net"></mat-icon>
+      <button mat-raised-button class="icon-button selected hunger" *ngIf="type === 'hunger'" (click)="toggleTypeFilter('thirst')">
+        <mat-icon>restaurant</mat-icon>
       </button>
-
-      <button mat-flat-button *ngIf="filter === 'thirst'" color="accent" class="filter-margin"
-              (click)="toggleFilter(null)">
+      <button mat-raised-button class="icon-button selected thirst" *ngIf="type === 'thirst'" (click)="toggleTypeFilter('love')">
         <mat-icon>local_drink</mat-icon>
       </button>
-      <button mat-stroked-button *ngIf="filter !== 'thirst'" color="accent" class="filter-margin"
-              (click)="toggleFilter('thirst')">
-        <mat-icon>local_drink</mat-icon>
-      </button>
-
-      <button mat-flat-button *ngIf="filter === 'hunger'" color="accent" class="filter-margin"
-              (click)="toggleFilter(null)">
-        <mat-icon svgIcon="hay"></mat-icon>
-      </button>
-      <button mat-stroked-button *ngIf="filter !== 'hunger'" color="accent" class="filter-margin"
-              (click)="toggleFilter('hunger')">
-        <mat-icon svgIcon="hay"></mat-icon>
-      </button>
-
-      <button mat-flat-button *ngIf="filter === 'love'" color="accent" class="filter-margin"
-              (click)="toggleFilter(null)">
+      <button mat-raised-button class="icon-button selected love" *ngIf="type === 'love'" (click)="toggleTypeFilter('net')">
         <mat-icon>favorite</mat-icon>
       </button>
-      <button mat-stroked-button *ngIf="filter !== 'love'" color="accent" class="filter-margin"
-              (click)="toggleFilter('love')">
-        <mat-icon>favorite</mat-icon>
+      <button mat-raised-button class="icon-button selected net" *ngIf="type === 'net'" (click)="toggleTypeFilter(null)">
+        <mat-icon svgIcon="net"></mat-icon>
       </button>
     </div>
-
-    <div id="item-count">{{itemCount}}/100</div>
+    <div class="filter space pen">
+      <button mat-raised-button class="icon-button" *ngIf="!inPen" (click)="toggleInPenFilter(true)">
+        <mat-icon>fence</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="inPen" (click)="toggleInPenFilter(null)">
+        <mat-icon>fence</mat-icon>
+      </button>
+    </div>
+    <div class="filter space old">
+      <button mat-raised-button class="icon-button" *ngIf="!old" (click)="toggleOldFilter(true)">
+        <mat-icon>heart_broken</mat-icon>
+      </button>
+      <button mat-raised-button class="icon-button selected" *ngIf="old" (click)="toggleOldFilter(null)">
+        <mat-icon>heart_broken</mat-icon>
+      </button>
+    </div>
   </div>
 
-  <div class="no-items-message" *ngIf="!items || items.length === 0">No items available</div>
+  <div id="count">
+    <div class="filter-count">results: {{filterCount}}</div>
+    <div class="total-count">{{totalCount}}/{{itemsMax}}</div>
+  </div>
+
+
+  <div class="empty-message" *ngIf="!items || items.length === 0">No items available</div>
 
   <div id="list-wrapper" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
        infiniteScrollContainer="#list-content" (scrolled)="onScroll()">
 
     <div id="list-content">
-
       <div *ngFor="let item of items">
-        <div class="item mat-elevation-z1">
-          <div class="details">
-            <app-item-icon [code]="item.code"></app-item-icon>
-            <div class="info">
-              <div>
-                <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
-                - lvl.{{item.quality}}
+        <div class="item mat-elevation-z2" mat-ripple (click)="openDetails(item)">
+
+          <div class="status">
+            <div class="left"></div>
+            <div class="right">
+              <div class="icon space pen" *ngIf="itemsInPen.indexOf(item.id) > -1">
+                <mat-icon>fence</mat-icon>
               </div>
-              <div *ngIf="item.code.toLowerCase() !== 'net'">{{item.life}}/500</div>
+              <div class="icon space old" *ngIf="item.life <= 0">
+                <mat-icon>heart_broken</mat-icon>
+              </div>
             </div>
           </div>
-          <div class="button">
-            <button class="buttonSpace" mat-stroked-button [matMenuTriggerFor]="menu_pen_add"
-                    *ngIf="(itemsInPen.indexOf(item.id) === -1) && item.code.toLowerCase() !== 'net'">
-              <mat-icon>fence</mat-icon>
-            </button>
-            <mat-menu #menu_pen_add="matMenu">
-              <button mat-menu-item (click)="addToPen(item)" [disabled]="pen.items.length >= pen.size">
-                Add to pen ({{pen.items.length}}/{{pen.size}})
-              </button>
-            </mat-menu>
 
-            <button class="buttonSpace button-in-pen" mat-flat-button (click)="removeFromPen(item)"
-                    *ngIf="(itemsInPen.indexOf(item.id) > -1)  && item.code.toLowerCase() !== 'net'">
-              <mat-icon>fence</mat-icon>
-            </button>
-
-            <button mat-stroked-button [matMenuTriggerFor]="menu_delete"
-                    [disabled]="itemsInPen.indexOf(item.id) > -1">
-              <mat-icon>delete</mat-icon>
-            </button>
-            <mat-menu #menu_delete="matMenu">
-              <button mat-menu-item (click)="delete(item)">Delete</button>
-            </mat-menu>
+          <div class="details">
+            <div class="image">
+              <app-item-icon [code]="item.code"></app-item-icon>
+            </div>
+            <div class="info">
+              <div class="name">
+                <app-item-name [code]="item.code" [quality]="item.quality"></app-item-name>
+                <span *ngIf="item.code.toLowerCase() !== 'net'"> - lvl.{{item.quality}}</span>
+              </div>
+              <div class="life">
+                {{item.life}}/{{itemLifeMax}}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div class="loading" *ngIf="loading">
+        <mat-spinner [diameter]="20"></mat-spinner>
+      </div>
+
     </div>
   </div>
 

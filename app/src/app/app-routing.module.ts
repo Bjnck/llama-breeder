@@ -5,13 +5,11 @@ import {CaptureComponent} from './capture/capture.component';
 import {UserResolve} from './shared/user/user.resolve';
 import {CaptureResolve} from './capture/capture.resolve';
 import {LoginComponent} from './login/login.component';
-import {AuthGuard} from './shared/auth/auth.guard';
 import {AccountComponent} from './account/account.component';
 import {ShopComponent} from './shop/shop.component';
 import {ShopItemResolve} from './shop/item/shop-item.resolve';
 import {InventoryComponent} from './inventory/inventory.component';
-import {ItemListResolve} from './inventory/item-list.resolve';
-import {ItemCountResolve} from './shared/item/item-count.resolve';
+import {ItemListResolve} from './shared/item/item-list.resolve';
 import {NetCountResolve} from './capture/launch/net-count.resolve';
 import {BarnComponent} from './barn/barn.component';
 import {CreatureListResolve} from './barn/creature-list.resolve';
@@ -20,7 +18,7 @@ import {PenListResolve} from './pen/pen-list.resolve';
 import {PenListContentResolve} from './pen/pen-list-content.resolve';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {PenPriceResolve} from './pen/pen-price.resolve';
-import {CreaturePriceResolve} from "./shared/creature/creature-price.resolve";
+import {CreaturePriceResolve} from './shared/creature/creature-price.resolve';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToHome = () => redirectLoggedInTo(['/']);
@@ -52,8 +50,8 @@ const routes: Routes = [
     component: ShopComponent,
     resolve: {
       user: UserResolve,
-      shopItems: ShopItemResolve,
-      itemCount: ItemCountResolve
+      items: ItemListResolve,
+      shopItems: ShopItemResolve
     },
     ...canActivate(redirectUnauthorizedToLogin)
   },
@@ -63,7 +61,6 @@ const routes: Routes = [
     resolve: {
       user: UserResolve,
       items: ItemListResolve,
-      itemCount: ItemCountResolve,
       pens: PenListResolve
     },
     ...canActivate(redirectUnauthorizedToLogin)

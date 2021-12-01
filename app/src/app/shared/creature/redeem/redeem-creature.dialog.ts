@@ -36,7 +36,6 @@ export class RedeemCreatureDialogComponent implements OnInit, OnDestroy {
     this.creatureService.redeem(this.creature.id).subscribe({
       next: creature => {
         this.baby = creature;
-        CreatureCacheService.incrementTotalElements();
         if (this.user.level < creature.generation) {
           this.userService.updateLevel(creature.generation);
         }

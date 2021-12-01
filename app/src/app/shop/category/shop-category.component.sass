@@ -1,14 +1,39 @@
 .category
-  border-bottom: 1px #4e4e4e solid
-  margin-top: 20px
-  margin-bottom: 5px
-.first-category
-  margin-top: 0
+  padding: 10px
+  border-radius: 4px
+  background-color: #2d2d2d
+  margin-bottom: 20px
 
-.category-title
-  font-weight: bold
-.category-comment
-  font-size: 12px
-
-::ng-deep .image-item
+.category .title
+  display: flex
+.category .title .logo
+  margin-right: 10px
+::ng-deep .category .title .logo app-item-icon mat-icon
+  height: 24px
+  width: 24px
+  font-size: 24px
+.category .title .name
+  font-size: 20px
+.category .description
+  color: #c9c9c9
+  font-size: 16px
   margin-top: 5px
+  margin-bottom: 10px
+
+.category .empty
+  font-size: 16px
+
+.category .items .item
+  padding: 10px
+  display: flex
+  justify-content: space-between
+  background-color: #3b3b3b
+  border-radius: 4px
+  font-size: 16px
+  margin-top: 5px
+.category .items .item.mat-elevation-z1:hover
+  cursor: pointer
+
+.category .items .item.obscure
+  color: #777
+

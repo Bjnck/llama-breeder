@@ -20,14 +20,15 @@
         <mat-icon svgIcon="net"></mat-icon>
       </button>
     </div>
-    <div class="filter space pen">
-      <button mat-raised-button class="icon-button" *ngIf="!inPen" (click)="toggleInPenFilter(true)">
-        <mat-icon>fence</mat-icon>
-      </button>
-      <button mat-raised-button class="icon-button selected" *ngIf="inPen" (click)="toggleInPenFilter(null)">
-        <mat-icon>fence</mat-icon>
-      </button>
-    </div>
+<!-- todo add when filter works on backend -->
+<!--    <div class="filter space pen">-->
+<!--      <button mat-raised-button class="icon-button" *ngIf="!inPen" (click)="toggleInPenFilter(true)">-->
+<!--        <mat-icon>fence</mat-icon>-->
+<!--      </button>-->
+<!--      <button mat-raised-button class="icon-button selected" *ngIf="inPen" (click)="toggleInPenFilter(null)">-->
+<!--        <mat-icon>fence</mat-icon>-->
+<!--      </button>-->
+<!--    </div>-->
     <div class="filter space old">
       <button mat-raised-button class="icon-button" *ngIf="!old" (click)="toggleOldFilter(true)">
         <mat-icon>heart_broken</mat-icon>
@@ -53,18 +54,6 @@
       <div *ngFor="let item of items">
         <div class="item mat-elevation-z2" mat-ripple (click)="openDetails(item)">
 
-          <div class="status">
-            <div class="left"></div>
-            <div class="right">
-              <div class="icon space pen" *ngIf="itemsInPen.indexOf(item.id) > -1">
-                <mat-icon>fence</mat-icon>
-              </div>
-              <div class="icon space old" *ngIf="item.life <= 0">
-                <mat-icon>heart_broken</mat-icon>
-              </div>
-            </div>
-          </div>
-
           <div class="details">
             <div class="image">
               <app-item-icon [code]="item.code"></app-item-icon>
@@ -76,6 +65,18 @@
               </div>
               <div class="life">
                 {{item.life}}/{{itemLifeMax}}
+              </div>
+            </div>
+          </div>
+
+          <div class="status">
+            <div class="left"></div>
+            <div class="right">
+              <div class="icon space pen" *ngIf="itemsInPen.indexOf(item.id) > -1">
+                <mat-icon>fence</mat-icon>
+              </div>
+              <div class="icon space old" *ngIf="item.life <= 0">
+                <mat-icon>heart_broken</mat-icon>
               </div>
             </div>
           </div>

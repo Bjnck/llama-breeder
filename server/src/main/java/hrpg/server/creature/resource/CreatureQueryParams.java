@@ -19,11 +19,11 @@ public class CreatureQueryParams {
         this.inPen = inPen;
     }
 
-    public void setmaxmaturity(Integer maxMaturity) {
+    public void setMaxmaturity(Integer maxMaturity) {
         this.maxMaturity = maxMaturity;
     }
 
-    public void setminpregnancycount(Integer minPregnancyCount) {
+    public void setMinpregnancycount(Integer minPregnancyCount) {
         this.minPregnancyCount = minPregnancyCount;
     }
 }

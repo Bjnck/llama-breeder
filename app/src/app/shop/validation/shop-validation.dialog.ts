@@ -32,8 +32,10 @@ export class ShopValidationDialogComponent {
   purchase() {
     this.itemService.add(this.item.code, this.item.quality)
       .subscribe({
-        next: value => this.userService.updateCoins(this.item.coins),
-        complete: () => this.dialogRef.close()
+        next: value => {
+          this.userService.updateCoins(this.user.coins - this.item.coins);
+          this.dialogRef.close(true);
+        }
       });
   }
 }

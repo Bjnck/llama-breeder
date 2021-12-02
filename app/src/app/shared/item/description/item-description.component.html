@@ -16,8 +16,23 @@
     Add to a pen to increase love
   </div>
 
-  <div class="genes" *ngIf="code.toLowerCase() !== 'net'">
-    genes
+  <div class="stats" *ngIf="code.toLowerCase() !== 'net'">
+    <div class="stat" *ngIf="quality > 2">
+      <div class="generation">Generation {{quality-2 | roman}}-</div>
+      <div class="value">+3</div>
+    </div>
+    <div class="stat" *ngIf="quality > 1">
+      <div class="generation">Generation {{quality-1 | roman}}</div>
+      <div class="value">+2</div>
+    </div>
+    <div class="stat">
+      <div class="generation">Generation {{quality | roman}}</div>
+      <div class="value">+1</div>
+    </div>
+    <div class="stat" *ngIf="quality < 10">
+      <div class="generation">Generation {{quality+1 | roman}}+</div>
+      <div class="value">no effect</div>
+    </div>
   </div>
 </div>
 

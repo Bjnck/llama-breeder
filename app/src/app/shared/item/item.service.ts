@@ -5,9 +5,7 @@ import {Item} from './item.interface';
 import {RestService} from '../rest/rest.service';
 import {ItemCacheService} from './item-cache.service';
 import {map} from 'rxjs/operators';
-import {CreatureSearch} from "../creature/creature-search.interface";
-import {Creature} from "../creature/creature.interface";
-import {ItemSearch} from "./item-search.interface";
+import {ItemSearch} from './item-search.interface';
 
 @Injectable()
 export class ItemService {
@@ -56,6 +54,10 @@ export class ItemService {
   }
 
   delete(item: any): Observable<any> {
-    return this.restService.rest(item).remove();
+    return this.restService.rest(item).remove()
+      .pipe(map(value => {
+        ItemCacheService.decrementTotalElements();
+        return value;
+      }));
   }
 }

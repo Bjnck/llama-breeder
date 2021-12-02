@@ -50,6 +50,8 @@
 
 
 .inventory .item
+  display: flex
+  justify-content: space-between
   border-radius: 4px
   background-color: #3b3b3b
   padding: 5px
@@ -78,10 +80,22 @@
   display: flex
 
 .inventory .item .details .image
+  height: 35px
+  width: 35px
   margin-right: 10px
+::ng-deep .inventory .item .details .image mat-icon
+  font-size: 35px
+  height: 35px
+  width: 35px
 
-.inventory .item .details .info
+.inventory .item .details .info .name
   font-size: 16px
+  line-height: 20px
+  vertical-align: middle
+.inventory .item .details .info .life
+  font-size: 12px
+  line-height: 15px
+  vertical-align: middle
 
 
 .inventory .loading

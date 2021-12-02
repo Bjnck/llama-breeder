@@ -9,7 +9,6 @@ import {ShopItem} from './item/shop-item.interface';
   templateUrl: './shop.component.html',
   styleUrls: [
     './shop.component.sass',
-    '../shared/filter/filter.sass',
     '../shared/shared-style.sass'
   ]
 })

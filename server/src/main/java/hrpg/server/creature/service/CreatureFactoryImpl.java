@@ -15,8 +15,14 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static hrpg.server.creature.type.CreatureConstant.MATURITY_MAX;
 
@@ -51,6 +57,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
     public CreatureDto generateForCapture(int userLevel, int netQuality) throws MaxCreaturesException {
         validateMaxCreaturesReached();
 
+        Sex sex;
         Creature.CreatureBuilder creatureBuilder = Creature.builder();
 
         //tutorial - always get female then male of different color, no gene
@@ -58,29 +65,33 @@ public class CreatureFactoryImpl implements CreatureFactory {
             long creatureCount = creatureRepository.count();
             if (creatureCount == 0) {
                 //if first creature
+                sex = Sex.F;
                 creatureBuilder.info(CreatureInfo.builder()
-                        .sex(Sex.F)
+                        .sex(sex)
                         .color1(colorFactory.getForCapture(null))
                         .build());
             } else if (creatureCount == 1) {
                 //second creature
                 Creature creature = creatureRepository.findAll(Pageable.unpaged()).stream().findFirst().orElseThrow();
+                sex = Sex.M;
                 creatureBuilder.info(CreatureInfo.builder()
-                        .sex(Sex.M)
+                        .sex(sex)
                         .color1(colorFactory.getForCapture(Collections.singletonList(creature.getInfo().getColor1().getCode())))
                         .build());
             } else {
                 List<String> colors = creatureRepository.findAll(PageRequest.of(0, 2))
                         .map(c -> c.getInfo().getColor1().getCode())
                         .getContent();
+                sex = randomSex();
                 creatureBuilder.info(CreatureInfo.builder()
-                        .sex(randomSex())
+                        .sex(sex)
                         .color1(colorFactory.getForCapture(colors))
                         .build());
             }
         } else {
+            sex = randomSex();
             creatureBuilder.info(CreatureInfo.builder()
-                    .sex(randomSex())
+                    .sex(sex)
                     .color1(colorFactory.getForCapture(null))
                     .gene1(geneFactory.getForCapture(netQuality).orElse(null))
                     .build());
@@ -88,6 +99,7 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
         //set creature parameters for capture and save
         Creature creature = creatureBuilder
+                .name(randomName(sex))
                 .originalUserId(OAuthUserUtil.getUserId())
                 .createDate(LocalDate.now())
                 .wild(true)
@@ -129,13 +141,15 @@ public class CreatureFactoryImpl implements CreatureFactory {
             Pair<Optional<Gene>, Optional<Gene>> genes = geneFactory.getForBirth(
                     mother.getInfo().getGene1(), mother.getInfo().getGene2(), father.getGene1(), father.getGene2());
 
+            Sex sex = randomSex();
             Creature baby = Creature.builder()
+                    .name(randomName(sex))
                     .originalUserId(OAuthUserUtil.getUserId())
                     .createDate(LocalDate.now())
                     .generation(Math.max(colors.getFirst().getGeneration(),
                             colors.getSecond().map(Color::getGeneration).orElse(0)))
                     .info(CreatureInfo.builder()
-                            .sex(randomSex())
+                            .sex(sex)
                             .color1(colors.getFirst())
                             .color2(colors.getSecond().orElse(null))
                             .gene1(genes.getFirst().orElse(null))
@@ -176,5 +190,16 @@ public class CreatureFactoryImpl implements CreatureFactory {
 
     private int getNumberOfBabies() {
         return new Random().nextInt(creaturesProperties.getMaxBabies()) + 1;
+    }
+
+    private String randomName(Sex sex) {
+        int line = new Random().nextInt(1000);
+        URL resource = Sex.F.equals(sex) ? CreatureFactoryImpl.class.getResource("/name/female.txt") :
+                CreatureFactoryImpl.class.getResource("/name/male.txt");
+        try (Stream<String> lines = Files.lines(Paths.get(resource.toURI()))) {
+            return lines.skip(line).findFirst().get();
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

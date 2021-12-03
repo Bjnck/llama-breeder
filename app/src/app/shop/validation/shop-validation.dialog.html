@@ -12,11 +12,10 @@
     </div>
   </div>
 
-
   <div mat-dialog-actions>
     <div class="buttons">
-      <button mat-raised-button (click)="purchase()" [disabled]="itemCount >= itemsMax">{{item.coins}} ¤</button>
       <button mat-raised-button mat-dialog-close cdkFocusRegionstart>Back</button>
+      <button mat-raised-button (click)="purchase()" [disabled]="itemCount >= itemsMax">{{item.coins}} ¤</button>
     </div>
   </div>
 </div>

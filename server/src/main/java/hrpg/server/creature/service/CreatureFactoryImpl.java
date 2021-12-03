@@ -15,14 +15,11 @@ import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Stream;
 
 import static hrpg.server.creature.type.CreatureConstant.MATURITY_MAX;
 
@@ -193,12 +190,17 @@ public class CreatureFactoryImpl implements CreatureFactory {
     }
 
     private String randomName(Sex sex) {
-        int line = new Random().nextInt(1000);
-        URL resource = Sex.F.equals(sex) ? CreatureFactoryImpl.class.getResource("/name/female.txt") :
-                CreatureFactoryImpl.class.getResource("/name/male.txt");
-        try (Stream<String> lines = Files.lines(Paths.get(resource.toURI()))) {
-            return lines.skip(line).findFirst().get();
-        } catch (IOException | URISyntaxException e) {
+        int random = new Random().nextInt(1000);
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Sex.F.equals(sex) ?
+                CreatureFactoryImpl.class.getResourceAsStream("/name/female.txt") :
+                CreatureFactoryImpl.class.getResourceAsStream("/name/male.txt")))) {
+            String line = "";
+            for (int i = 0; i < random; i++) {
+                line = reader.readLine();
+            }
+            return line;
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }

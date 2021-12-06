@@ -71,7 +71,8 @@ public class PenController {
     public ResponseEntity<Object> create() {
         try {
             PenResponse response = penResourceMapper.toResponse(penService.create());
-            return ResponseEntity.ok().header(HttpHeaders.LOCATION, links.linkToItemResource(response).toUri().toString()).build();
+            return ResponseEntity.created(links.linkToItemResource(response).toUri())
+                    .header("Access-Control-Expose-Headers", HttpHeaders.LOCATION).build();
         } catch (TooManyPenException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code(ValidationCode.MAX_SIZE.getCode()).build()));

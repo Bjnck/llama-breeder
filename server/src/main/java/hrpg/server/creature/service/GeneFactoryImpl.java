@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class GeneFactoryImpl implements GeneFactory {
-
     private final GeneRepository geneRepository;
     private final GenesProperties genesParameters;
 
@@ -109,6 +108,6 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     private boolean chanceOfGene() {
-        return new Random().nextInt(100) < 67;
+        return new Random().nextInt(100) < 65;
     }
 }

@@ -22,7 +22,6 @@ import {AngularFireModule} from '@angular/fire';
 import {environment} from '../environments/environment';
 import {AngularFireAuthModule} from '@angular/fire/auth';
 import {AngularFireAuthGuardModule} from '@angular/fire/auth-guard';
-import {AuthService} from './shared/auth/auth.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +46,7 @@ import {AuthService} from './shared/auth/auth.service';
     AppRoutingModule,
     RouterModule.forRoot([], {onSameUrlNavigation: 'reload'}),
 
-    RestangularModule.forRoot([AuthService], RestangularConfigFactory),
+    RestangularModule.forRoot([], RestangularConfigFactory),
 
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,

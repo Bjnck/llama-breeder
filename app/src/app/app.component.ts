@@ -14,9 +14,7 @@ export class AppComponent {
   constructor(private router: Router,
               private matIconRegistry: MatIconRegistry,
               private sanitizer: DomSanitizer) {
-    this.matIconRegistry.addSvgIcon('best', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/best.svg'));
     this.matIconRegistry.addSvgIcon('net', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/net.svg'));
-    this.matIconRegistry.addSvgIcon('hay', sanitizer.bypassSecurityTrustResourceUrl('../assets/icon/hay.svg'));
 
     this.router.events.subscribe((event: Event) => {
       switch (true) {

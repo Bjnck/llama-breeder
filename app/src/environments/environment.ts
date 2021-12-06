@@ -19,7 +19,7 @@ export const environment = {
   breedingMax: 2,
   penMaxSize: 6,
   creaturesMax: 250,
-  itemsMax: 3,
+  itemsMax: 100,
   itemLifeMax: 500,
 
   firebase: {

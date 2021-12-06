@@ -34,7 +34,7 @@ export class AccountComponent implements OnInit {
       this.user.name = value;
       this.userService.update(this.user)
         .subscribe({
-          next: user => {
+          next: val => {
             this.invalidSubmit = false;
           },
           error: () => {

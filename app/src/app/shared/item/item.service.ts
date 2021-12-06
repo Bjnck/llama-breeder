@@ -4,7 +4,7 @@ import {Page} from '../page/page.interface';
 import {Item} from './item.interface';
 import {RestService} from '../rest/rest.service';
 import {ItemCacheService} from './item-cache.service';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {ItemSearch} from './item-search.interface';
 
 @Injectable()
@@ -14,15 +14,16 @@ export class ItemService {
   }
 
   get(id: string, compute: boolean = true): Observable<Item> {
-    return this.restService.rest().one('items', id).get({compute});
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.one('items', id).get({compute}) as Observable<Item>));
   }
 
   add(code: string, quality: number): Observable<any> {
-    return this.restService.rest().all('items').post({code, quality})
-      .pipe(map(value => {
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('items').post({code, quality}).pipe(map(value => {
         ItemCacheService.incrementTotalElements();
         return value;
-      }));
+      }))));
   }
 
   count(code?: string, quality?: number, compute: boolean = true): Observable<Page> {
@@ -34,7 +35,8 @@ export class ItemService {
       params.quality = quality;
     }
 
-    return this.restService.rest().all('items').customGET('', params);
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('items').customGET('', params) as Observable<Page>));
   }
 
   list(size: number, page: number, compute: boolean = true, search?: ItemSearch): Observable<Item[]> {
@@ -50,14 +52,15 @@ export class ItemService {
         param.maxLife = search.maxLife;
       }
     }
-    return this.restService.rest().all('items').getList(param);
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('items').getList(param) as Observable<Item[]>));
   }
 
   delete(item: any): Observable<any> {
-    return this.restService.rest(item).remove()
-      .pipe(map(value => {
+    return this.restService.rest(item).pipe(switchMap(rest =>
+      rest.remove().pipe(map(value => {
         ItemCacheService.decrementTotalElements();
         return value;
-      }));
+      }))));
   }
 }

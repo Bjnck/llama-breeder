@@ -70,14 +70,13 @@ export class ItemDetailsDialogComponent {
   }
 
   private removeItem(item: Item, pen: Pen) {
-    pen.items.splice(pen.items.indexOf(pen.items.find(c => c.id === item.id)), 1);
-    this.itemsIdInPen.splice(this.itemsIdInPen.indexOf(item.id), 1);
+    pen.items.splice(pen.items.indexOf(pen.items.find(c =>
+      c.id.toString() === item.id.toString())), 1);
+    this.itemsIdInPen.splice(this.itemsIdInPen.indexOf(item.id.toString()), 1);
   }
 
   private delete(item: Item) {
-    this.itemService.delete(item).subscribe({
-      next: resp => this.onClose(true)
-    });
+    this.itemService.delete(item).subscribe(next => this.onClose(true));
   }
 
   private getPen(item: Item): Pen {

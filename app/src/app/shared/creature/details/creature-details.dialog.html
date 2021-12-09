@@ -240,10 +240,7 @@
     </mat-menu>
     <mat-menu #menu_delete="matMenu">
       <button mat-menu-item *ngIf="!creature.wild" (click)="onDelete(creature)" class="creature-details-menu-item">
-        Sell llama (
-        <span *ngIf="!creature.colors.color2">{{prices | creaturePrice: creature}}</span>
-        <span *ngIf="creature.colors.color2">{{(prices | creaturePrice: creature) * 2}}</span>
-         ¤)
+        Sell llama (<span>{{prices | creaturePrice: creature}}</span> ¤)
       </button>
       <button mat-menu-item *ngIf="creature.wild" (click)="onDelete(creature)" class="creature-details-menu-item">
         Release llama

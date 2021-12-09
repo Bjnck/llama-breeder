@@ -21,5 +21,7 @@ public class GenesProperties {
     private int specialChanceQuality2;
     private int specialChanceQuality5;
     private int specialChanceQuality8;
+
+    private int chanceBirth;
 }
 

@@ -33,8 +33,8 @@ parameters:
   creatures:
     max: 250
     chance-female: 50
-    chance-cross-breed: 50
-    chance-bi-color: 65
+    chance-cross-breed: 65
+    chance-bi-color: 80
     max-babies: 1
     energy-time-unit: SECONDS
     energy-time-value: 30
@@ -98,6 +98,7 @@ parameters:
     special-chance-quality-2: 20
     special-chance-quality-5: 25
     special-chance-quality-8: 30
+    chance-birth: 80
   pens:
     activation-time-unit: SECONDS
     activation-time-value: 30
@@ -106,10 +107,10 @@ parameters:
       pen-1:
         size-3: 0
         size-4: 20
-        size-5: 40
-        size-6: 80
+        size-5: 150
+        size-6: 600
       pen-2:
-        size-3: 150
-        size-4: 300
-        size-5: 600
+        size-3: 40
+        size-4: 80
+        size-5: 300
         size-6: 1000

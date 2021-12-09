@@ -20,7 +20,6 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {PenPriceResolve} from './pen-price.resolve';
 import {PenPricePipe} from './field/pen-price.pipe';
 import {PenPurchaseComponent} from './purchase/pen-purchase.component';
-import {PenConstructiblePipe} from "./purchase/pen-consctructible.pipe";
 
 @NgModule({
   declarations: [
@@ -29,8 +28,7 @@ import {PenConstructiblePipe} from "./purchase/pen-consctructible.pipe";
     PenFieldCreatureComponent,
     PenItemsComponent,
     PenPurchaseComponent,
-    PenPricePipe,
-    PenConstructiblePipe
+    PenPricePipe
   ],
     imports: [
         SharedModule,
@@ -50,8 +48,7 @@ import {PenConstructiblePipe} from "./purchase/pen-consctructible.pipe";
     PenService,
     PenListResolve,
     PenListContentResolve,
-    PenPriceResolve,
-    PenConstructiblePipe
+    PenPriceResolve
   ]
 })
 export class PenModule {

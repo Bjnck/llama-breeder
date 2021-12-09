@@ -108,6 +108,6 @@ public class GeneFactoryImpl implements GeneFactory {
     }
 
     private boolean chanceOfGene() {
-        return new Random().nextInt(100) < 65;
+        return new Random().nextInt(100) < genesParameters.getChanceBirth();
     }
 }

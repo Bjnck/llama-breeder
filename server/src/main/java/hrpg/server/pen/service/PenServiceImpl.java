@@ -77,17 +77,14 @@ public class PenServiceImpl implements PenService {
 
     @Transactional(rollbackFor = {
             TooManyPenException.class,
-            PenNotFullyExtendedException.class,
             InsufficientCoinsException.class,
             InsufficientCoinsException.class
     })
     @Override
-    public PenDto create() throws TooManyPenException, PenNotFullyExtendedException, InsufficientCoinsException {
+    public PenDto create() throws TooManyPenException, InsufficientCoinsException {
         Page<Pen> pens = penRepository.findAll(Pageable.unpaged());
         //max 2 pens
         if (pens.getTotalElements() > 1) throw new TooManyPenException();
-        //first pen must be fully extend
-        if (pens.get().findFirst().orElseThrow().getSize() < MAX_SIZE) throw new PenNotFullyExtendedException();
 
         try {
             int purchasePrice = penInfoService.getPurchasePrice(((Long) (pens.getTotalElements() + 1)).intValue());

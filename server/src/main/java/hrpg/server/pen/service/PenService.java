@@ -8,7 +8,6 @@ import hrpg.server.item.service.exception.ItemNotFoundException;
 import hrpg.server.item.service.exception.MaxItemsException;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
-import hrpg.server.pen.service.exception.PenNotFullyExtendedException;
 import hrpg.server.pen.service.exception.TooManyPenException;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ public interface PenService {
 
     Page<PenDto> search(@NotNull Pageable pageable);
 
-    PenDto create() throws TooManyPenException, PenNotFullyExtendedException, InsufficientCoinsException;
+    PenDto create() throws TooManyPenException, InsufficientCoinsException;
 
     PenDto update(long id, @NotNull PenDto penDto)
             throws PenNotFoundException, InvalidPenSizeException, InsufficientCoinsException, ItemInUseException,

@@ -18,7 +18,6 @@ import hrpg.server.pen.service.PenInfoService;
 import hrpg.server.pen.service.PenService;
 import hrpg.server.pen.service.exception.InvalidPenSizeException;
 import hrpg.server.pen.service.exception.PenNotFoundException;
-import hrpg.server.pen.service.exception.PenNotFullyExtendedException;
 import hrpg.server.pen.service.exception.TooManyPenException;
 import hrpg.server.user.service.exception.InsufficientCoinsException;
 import org.springframework.data.domain.Page;
@@ -76,9 +75,6 @@ public class PenController {
         } catch (TooManyPenException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code(ValidationCode.MAX_SIZE.getCode()).build()));
-        } catch (PenNotFullyExtendedException e) {
-            throw new ValidationException(Collections.singletonList(
-                    ValidationError.builder().field("_self").code(ValidationCode.MIN_SIZE.getCode()).build()));
         } catch (InsufficientCoinsException e) {
             throw new ValidationException(Collections.singletonList(
                     ValidationError.builder().field("_self").code(ValidationCode.INSUFFICIENT_COINS.getCode()).build()));

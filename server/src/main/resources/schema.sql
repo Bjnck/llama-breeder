@@ -36,6 +36,7 @@ create table if not exists shop (
     id int not null auto_increment,
     code enum('NET', 'LOVE', 'HUNGER', 'THIRST') not null,
     quality tinyint(1) not null, check (quality between 1 and 10),
+    availability tinyint(1) not null, check (availability between 0 and 8),
     coins int not null, check (coins >= 0),
     primary key (id),
     unique key code_quality (code, quality)
@@ -85,7 +86,7 @@ create table if not exists creature (
     wild boolean not null,
     pen_activation_time datetime,
     pregnant boolean not null default 0,
-    breeding_count tinyint(1) not null default 0, check (breeding_count between 0 and 10),
+    breeding_count tinyint(1) not null default 0, check (breeding_count between 0 and 2),
     pregnancy_male_info_id bigint,
     pregnancy_start_time datetime,
     pregnancy_end_time datetime,

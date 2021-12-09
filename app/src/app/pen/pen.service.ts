@@ -19,32 +19,34 @@ export class PenService {
   }
 
   private static getPenWithContent(pen: Pen, items: Item[], creatures: Creature[]): PenWithContent {
+    console.log(pen)
     return {pen, creatures, items};
   }
 
   create(): Observable<PenWithContent> {
-    return this.restService.restFull().all('pens').post()
-      .pipe(flatMap((response: any) =>
-        this.restService.rest().oneUrl('pens', response.headers.headers.get('location')).get()
-          .pipe(map((pen: Pen) => PenService.getPenWithContent(pen, [], [])))));
+    return this.restService.restFull().pipe(switchMap(restfull =>
+      restfull.all('pens').post().pipe(flatMap((response: any) =>
+        this.restService.rest().pipe(switchMap(rest =>
+          rest.oneUrl('pens', response.headers.headers.get('location')).get().pipe(map((pen: Pen) =>
+            PenService.getPenWithContent(pen, new Array<Item>(), new Array<Creature>())))))
+      )) as Observable<PenWithContent>));
   }
 
   update(pen: any): Observable<any> {
-    return this.restService.rest(pen).put();
+    return this.restService.rest(pen).pipe(switchMap(rest => rest.put()));
   }
 
   get(id: string): Observable<Pen> {
-    return this.restService.rest().one('pens', id).get();
+    return this.restService.rest().pipe(switchMap(rest => rest.one('pens', id).get() as Observable<Pen>));
   }
 
   getWithContent(id: string): Observable<PenWithContent> {
-    return this.get(id)
-      .pipe(
-        switchMap((pen: Pen) => this.withContent(pen)));
+    return this.get(id).pipe(switchMap((pen: Pen) => this.withContent(pen)));
   }
 
   list(compute: boolean = true): Observable<Pen[]> {
-    return this.restService.rest().all('pens').getList({compute});
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('pens').getList({compute}) as Observable<Pen[]>));
   }
 
   listWithContent(): Observable<PenWithContent[]> {
@@ -59,7 +61,8 @@ export class PenService {
   }
 
   activateItem(pen: Pen, item: Item): Observable<PenActivation> {
-    return this.restService.rest().all('pens').customPOST({}, pen.id + '/action/activate-item/' + item.id);
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('pens').customPOST({}, pen.id + '/action/activate-item/' + item.id) as Observable<PenActivation>));
   }
 
 
@@ -94,6 +97,7 @@ export class PenService {
   }
 
   getPrices(): Observable<PenInfo[]> {
-    return this.restService.rest().all('pens/info').getList();
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('pens/info').getList() as Observable<PenInfo[]>));
   }
 }

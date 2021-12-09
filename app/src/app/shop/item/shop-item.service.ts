@@ -1,17 +1,24 @@
-import {Injectable} from "@angular/core";
-import {Restangular} from "ngx-restangular";
-import {Observable} from "rxjs";
-import {ShopItem} from "./shop-item.interface";
+import {Injectable} from '@angular/core';
+import {Observable, of} from 'rxjs';
+import {ShopItem} from './shop-item.interface';
+import {map, switchMap} from 'rxjs/operators';
+import {RestService} from '../../shared/rest/rest.service';
 
 @Injectable()
 export class ShopItemService {
+  private items: ShopItem[];
 
-  baseRest = this.restangular.all('shop-items');
-
-  constructor(private restangular: Restangular) {
+  constructor(private restService: RestService) {
   }
 
   list(): Observable<ShopItem[]> {
-    return this.baseRest.getList({size: 100});
+    if (!this.items) {
+      return this.restService.rest().pipe(switchMap(rest =>
+        rest.all('shop-items').getList({size: 100}).pipe(map((items: ShopItem[]) => {
+          this.items = items;
+          return items;
+        })) as Observable<ShopItem[]>));
+    }
+    return of(this.items);
   }
 }

@@ -1,0 +1,47 @@
+<div id="item-details">
+
+  <div mat-dialog-title id="title">
+    <app-item-title [code]="item.code" [quality]="item.quality"></app-item-title>
+  </div>
+
+  <div mat-dialog-content>
+    <div class="life" *ngIf="item.code.toLowerCase() !== 'net'">
+      {{item.life}}/{{itemLifeMax}}
+    </div>
+    <div class="description">
+      <app-item-description [code]="item.code" [quality]="item.quality"></app-item-description>
+    </div>
+  </div>
+
+
+  <div mat-dialog-actions>
+    <div id="buttons">
+      <button mat-raised-button class="icon-button" [matMenuTriggerFor]="menu_delete">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+
+      <button mat-raised-button (click)="onClose()" cdkFocusRegionstart>Back</button>
+
+      <button mat-raised-button [matMenuTriggerFor]="menu_pen_add" class="icon-button"
+              *ngIf="itemsIdInPen.indexOf(item.id) === -1">
+        <mat-icon>fence</mat-icon>
+      </button>
+      <button mat-raised-button (click)="removeFromPen(item)" class="in-pen icon-button"
+              *ngIf="itemsIdInPen.indexOf(item.id) > -1">
+        <mat-icon>fence</mat-icon>
+      </button>
+    </div>
+
+    <mat-menu #menu_pen_add="matMenu">
+      <button mat-menu-item *ngFor="let pen of pens"  class="item-details-menu-item"
+              (click)="addToPen(item, pen)" [disabled]="pen.items.length >= pen.size">
+        Add to pen ({{pen.items.length}}/{{pen.size}})
+      </button>
+    </mat-menu>
+    <mat-menu #menu_delete="matMenu">
+      <button mat-menu-item (click)="onDelete(item)" class="item-details-menu-item">
+        Delete item
+      </button>
+    </mat-menu>
+  </div>
+</div>

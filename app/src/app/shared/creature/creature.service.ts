@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {Creature, CreatureInfo} from './creature.interface';
-import {Page} from '../page/page.interface';
 import {CreatureSearch} from './creature-search.interface';
 import {RestService} from '../rest/rest.service';
+import {map, switchMap} from 'rxjs/operators';
+import {CreatureCacheService} from './creature-cache.service';
 
 @Injectable()
 export class CreatureService {
@@ -11,11 +12,8 @@ export class CreatureService {
   }
 
   get(id: string, compute: boolean = true): Observable<Creature> {
-    return this.restService.rest().one('creatures', id).get({compute});
-  }
-
-  count(compute: boolean = true): Observable<Page> {
-    return this.restService.rest().all('creatures').customGET('', {size: 1, compute});
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.one('creatures', id).get({compute}) as Observable<Creature>));
   }
 
   list(size: number, page: number, compute: boolean = true, search?: CreatureSearch): Observable<Creature[]> {
@@ -43,22 +41,32 @@ export class CreatureService {
         param.ids = search.ids;
       }
     }
-    return this.restService.rest().all('creatures').getList(param);
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('creatures').getList(param) as Observable<Creature[]>));
   }
 
   update(creature: any): Observable<any> {
-    return this.restService.rest(creature).put();
+    return this.restService.rest(creature).pipe(switchMap(rest => rest.put()));
   }
 
   delete(creature: any): Observable<any> {
-    return this.restService.rest(creature).remove();
+    return this.restService.rest(creature).pipe(switchMap(rest =>
+      rest.remove().pipe(map(value => {
+        CreatureCacheService.decrementTotalElements();
+        return value;
+      }))));
   }
 
   redeem(id: string): Observable<Creature> {
-    return this.restService.rest().all('creatures').customPOST({}, id + '/action/redeem');
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('creatures').customPOST({}, id + '/action/redeem').pipe(map(value => {
+        CreatureCacheService.incrementTotalElements();
+        return value;
+      })) as Observable<Creature>));
   }
 
   getPrices(): Observable<CreatureInfo[]> {
-    return this.restService.rest().all('creatures/info').getList();
+    return this.restService.rest().pipe(switchMap(rest =>
+      rest.all('creatures/info').getList() as Observable<CreatureInfo[]>));
   }
 }

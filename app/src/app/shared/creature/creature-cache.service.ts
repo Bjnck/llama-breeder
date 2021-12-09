@@ -28,10 +28,10 @@ export class CreatureCacheService {
   }
 
   static getFilterElements(): number {
-    return CreatureCacheService.filterElements;
+    return this.filterElements;
   }
 
   static setFilterElements(elements: number) {
-    CreatureCacheService.filterElements = elements;
+    this.filterElements = elements;
   }
 }

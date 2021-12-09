@@ -19,7 +19,6 @@ import {CreatureCacheService} from '../shared/creature/creature-cache.service';
   templateUrl: './barn.component.html',
   styleUrls: [
     './barn.component.sass',
-    '../shared/filter/filter.sass',
     '../shared/shared-style.sass'
   ]
 })
@@ -30,6 +29,7 @@ export class BarnComponent implements OnInit, OnDestroy {
   energyDivider = environment.energyDivider;
   statsMax = environment.statsMax;
   breedingMax = environment.breedingMax;
+  creaturesMax = environment.creaturesMax;
 
   user: User;
   creatures: Creature[];
@@ -238,7 +238,7 @@ export class BarnComponent implements OnInit, OnDestroy {
       search.inPen = true;
     }
     if (this.baby) {
-      search.maxMaturity = (this.statsMax - 1).toString();
+      search.maxMaturity = (this.maturityMax - 1).toString();
     }
     if (this.pregnant) {
       search.pregnant = true;
@@ -263,6 +263,7 @@ export class BarnComponent implements OnInit, OnDestroy {
       next: (response: CreatureDetailsResponse) => {
         if (response.baby) {
           this.addBabyToList(response.baby);
+          // todo if pregnant filter, remove from list
         }
         if (response.deleted) {
           this.totalCount--;

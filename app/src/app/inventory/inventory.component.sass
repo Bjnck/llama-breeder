@@ -1,19 +1,109 @@
-#filter
+.inventory #filters
+  display: flex
   margin-bottom: 10px
-
-.filter-margin
-  margin-left: 2px
-
-::ng-deep .image-item
-  margin-top: 5px
-
-.button button
-  height: 100%
-  width: 40px
-  min-width: 0
+.inventory #filters .filter button
+  font-size: 16px
+  height: 40px
+  width: 64px
+.inventory #filters .filter .icon-button
   padding: 0
-.button-in-pen
-  background-color: brown
+.inventory #filters .filter .icon-button.all
+  font-size: 28px
+  padding-top: 5px
+.inventory #filters .filter .icon-button mat-icon
+  height: 36px
+  width: 40px
+  font-size: 32px
+  margin-top: 4px
+.inventory #filters .filter .icon-button.net mat-icon
+  height: 28px
+  width: 28px
+  margin-bottom: 4px
 
-.buttonSpace
-  margin-right: 5px
+.inventory #filters .filter.space
+  margin-left: 5px
+
+.inventory #filters .filter.type .hunger.selected
+  color: sandybrown
+.inventory #filters .filter.type .thirst.selected
+  color: cornflowerblue
+.inventory #filters .filter.type .love.selected
+  color: palevioletred
+.inventory #filters .filter.type .net.selected
+  color: seagreen
+.inventory #filters .filter.pen .selected
+  color: brown
+.inventory #filters .filter.old .selected
+  color: orangered
+
+
+.inventory #count
+  display: flex
+  justify-content: space-between
+  font-size: 14px
+  margin-bottom: 5px
+
+
+.inventory .empty-message
+  text-align: center
+  font-size: 16px
+
+
+.inventory .item
+  display: flex
+  justify-content: space-between
+  border-radius: 4px
+  background-color: #3b3b3b
+  padding: 10px 5px
+  margin-bottom: 10px
+.inventory .item:hover
+  cursor: pointer
+
+.inventory .item .status
+  display: flex
+  justify-content: space-between
+  height: 26px
+.inventory .item .status .left, .inventory .item .status .right
+  display: flex
+.inventory .item .status .icon mat-icon
+  font-size: 20px
+.inventory .item .status .icon.space
+  margin-left: 5px
+
+.inventory .item .status .icon.pen
+  color: brown
+.inventory .item .status .icon.old
+  color: orangered
+
+
+.inventory .item .details
+  display: flex
+
+.inventory .item .details .image
+  height: 35px
+  width: 35px
+  margin-right: 10px
+  padding-top: 5px
+::ng-deep .inventory .item .details .image mat-icon
+  font-size: 35px
+  height: 35px
+  width: 35px
+
+.inventory .item .details .info .name
+  font-size: 16px
+  line-height: 24px
+  vertical-align: middle
+.inventory .item .details .info .life
+  font-size: 14px
+  line-height: 20px
+  vertical-align: middle
+  color: #dddddd
+
+
+.inventory .loading
+  height: 30px
+  width: 100%
+  display: flex
+  justify-content: center
+.inventory .loading ::ng-deep .mat-spinner circle
+  stroke: #3b3b3b

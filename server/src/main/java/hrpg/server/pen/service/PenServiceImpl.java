@@ -86,7 +86,7 @@ public class PenServiceImpl implements PenService {
         Page<Pen> pens = penRepository.findAll(Pageable.unpaged());
         //max 2 pens
         if (pens.getTotalElements() > 1) throw new TooManyPenException();
-        //first pen must be fully extended
+        //first pen must be fully extend
         if (pens.get().findFirst().orElseThrow().getSize() < MAX_SIZE) throw new PenNotFullyExtendedException();
 
         try {

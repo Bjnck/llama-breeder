@@ -5,11 +5,22 @@
 .pen mat-tab-group
   height: 100%
   min-width: 340px
+.pen ::ng-deep .mat-tab-label-container
+  border-top-left-radius: 5px
+  border-top-right-radius: 5px
 .pen ::ng-deep .mat-tab-label
   width: 50%
   font-size: 16px
+  background-color: #2d2d2d
+  height: 40px
+
 .pen ::ng-deep .mat-tab-group.mat-primary .mat-ink-bar
-  background-color: #8c8c8c
+  background-color: #2d2d2d
 .pen ::ng-deep .mat-tab-body-wrapper
   height: 100%
 
+
+.pen ::ng-deep .mat-tab-label.mat-tab-label-active:not(.mat-tab-disabled),
+.pen ::ng-deep .mat-tab-label.mat-tab-label-active.cdk-keyboard-focused:not(.mat-tab-disabled)
+  background-color: #832323
+  opacity: 1

@@ -11,9 +11,8 @@ import {RouterModule} from '@angular/router';
 import {AuthService} from './auth/auth.service';
 import {HeaderService} from './header/header.service';
 import {ItemService} from './item/item.service';
-import {ItemCountResolve} from './item/item-count.resolve';
-import {ItemNameComponent} from './item/item-name.component';
-import {ItemIconComponent} from './item/item-icon.component';
+import {ItemNameComponent} from './item/name/item-name.component';
+import {ItemIconComponent} from './item/icon/item-icon.component';
 import {CreatureService} from './creature/creature.service';
 import {LlamaComponent} from './creature/llama.component';
 import {CreatureDetailsDialogComponent} from './creature/details/creature-details.dialog';
@@ -27,13 +26,20 @@ import {RedeemCreatureDialogComponent} from './creature/redeem/redeem-creature.d
 import {UtcPipe} from './timer/utc.pipe';
 import {RestService} from './rest/rest.service';
 import {CreaturePriceResolve} from './creature/creature-price.resolve';
-import {CreaturePricesPipe} from "./creature/details/creature-prices.pipe";
+import {CreaturePricesPipe} from './creature/details/creature-prices.pipe';
+import {ItemListResolve} from './item/item-list.resolve';
+import {ItemTitleComponent} from './item/title/item-title.component';
+import {ItemCategoryNameComponent} from './item/name/item-category-name.component';
+import {ItemDescriptionComponent} from './item/description/item-description.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     ItemNameComponent,
     ItemIconComponent,
+    ItemCategoryNameComponent,
+    ItemTitleComponent,
+    ItemDescriptionComponent,
     LlamaComponent,
     CreatureDetailsDialogComponent,
     RedeemCreatureDialogComponent,
@@ -61,14 +67,17 @@ import {CreaturePricesPipe} from "./creature/details/creature-prices.pipe";
     CreatureDetailsDialogComponent,
     CreatureGeneComponent,
     RomanPipe,
-    UtcPipe
+    UtcPipe,
+    ItemTitleComponent,
+    ItemCategoryNameComponent,
+    ItemDescriptionComponent
   ],
   providers: [
     HeaderService,
     UserResolve,
     UserService,
     ItemService,
-    ItemCountResolve,
+    ItemListResolve,
     CreatureService,
     CreaturePriceResolve,
     AuthService,

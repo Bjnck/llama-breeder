@@ -16,8 +16,11 @@ export const environment = {
   statsMin: 0,
   statsMax: 100,
   statsLoveRequirement: 75,
-  breedingMax: 3,
+  breedingMax: 2,
   penMaxSize: 6,
+  creaturesMax: 250,
+  itemsMax: 100,
+  itemLifeMax: 500,
 
   firebase: {
     apiKey: 'AIzaSyBrq7lRwYNpFlGtce0PTTRvgz14JvS2WlQ',

@@ -14,5 +14,7 @@ public class ShopItemDto {
     private ItemCode code;
     private int quality;
 
+    private int availability;
+
     private int coins;
 }

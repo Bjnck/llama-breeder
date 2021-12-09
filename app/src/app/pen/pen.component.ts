@@ -9,7 +9,7 @@ import {ItemService} from '../shared/item/item.service';
 import {User} from '../shared/user/user.interface';
 import {CreatureUtil} from '../shared/creature/creature.util';
 import {MatTabChangeEvent} from '@angular/material/tabs';
-import {PenInfo} from './pen.interface';
+import {Pen, PenInfo} from './pen.interface';
 
 @Component({
   templateUrl: './pen.component.html',
@@ -122,5 +122,9 @@ export class PenComponent implements OnInit, OnDestroy {
     this.penService.create().subscribe(
       next => this.pens.push(next)
     );
+  }
+
+  onPenExtend(pen: Pen) {
+    this.pens.find(p => p.pen.id === pen.id).pen.size = pen.size;
   }
 }

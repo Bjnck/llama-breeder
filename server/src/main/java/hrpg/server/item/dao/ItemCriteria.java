@@ -11,4 +11,6 @@ import lombok.Data;
 public class ItemCriteria {
     private ItemCode code;
     private Integer quality;
+    private Boolean inPen;
+    private Integer maxLife;
 }

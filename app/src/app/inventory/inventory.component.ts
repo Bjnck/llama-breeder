@@ -1,109 +1,145 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from '../shared/user/user.interface';
 import {ActivatedRoute} from '@angular/router';
 import {HeaderService} from '../shared/header/header.service';
-import {UserService} from '../shared/user/user.service';
 import {Item} from '../shared/item/item.interface';
 import {ItemService} from '../shared/item/item.service';
 import {Pen} from '../pen/pen.interface';
-import {PenService} from '../pen/pen.service';
+import {environment} from '../../environments/environment';
+import {ItemCacheService} from '../shared/item/item-cache.service';
+import {MatDialog} from '@angular/material/dialog';
+import {ItemSearch} from '../shared/item/item-search.interface';
+import {ItemDetailsDialogComponent} from './details/item-details.dialog';
+import {ItemDetailsResponse} from './details/item-details-response.interface';
 
 @Component({
   templateUrl: './inventory.component.html',
   styleUrls: [
     './inventory.component.sass',
-    '../shared/filter/filter.sass',
-    '../shared/shared-style.sass',
-    '../shared/item/item-display.sass'
+    '../shared/shared-style.sass'
   ]
 })
 export class InventoryComponent implements OnInit {
-  user: User;
-  items: Item[];
-  itemCount: number;
-  pen: Pen;
-  itemsInPen: string[];
+  itemsMax = environment.itemsMax;
+  itemLifeMax = environment.itemLifeMax;
 
-  filter: string;
+  items: Item[];
+  totalCount: number;
+  filterCount: number;
+  pens: Pen[];
+  itemsInPen: string[] = [];
+
+  // filters
+  type: string;
+  inPen: boolean;
+  old: boolean;
 
   throttle = 0;
   distance = 2;
   page = 0;
   size = 20;
+  loading = false;
 
   constructor(private headerService: HeaderService,
-              private userService: UserService,
               private itemService: ItemService,
-              private penService: PenService,
+              private dialog: MatDialog,
               private route: ActivatedRoute) {
     this.headerService.showHeader('Inventory', false);
   }
 
   ngOnInit() {
-    this.user = this.route.snapshot.data.user;
     this.items = this.route.snapshot.data.items;
-    this.itemCount = this.route.snapshot.data.itemCount.totalElements;
-    this.pen = this.route.snapshot.data.pens[0];
-    this.itemsInPen = this.pen.items.map(item => item.id.toString());
+    this.pens = this.route.snapshot.data.pens;
+
+    this.totalCount = ItemCacheService.getTotalElements();
+    this.filterCount = ItemCacheService.getFilterElements();
+
+    this.pens = this.route.snapshot.data.pens;
+    this.pens.sort((a, b) => a.id.toString().localeCompare(b.id));
+    this.pens.forEach(pen => pen.items.forEach(item => this.itemsInPen.push(item.id.toString())));
   }
 
-  toggleFilter(value: string) {
-    this.filter = value;
+  toggleTypeFilter(type: string) {
+    this.type = type;
     this.resetList();
   }
 
-  onScroll() {
-    this.itemService.list(this.size, ++this.page, this.filter, false)
-      .subscribe((items: Item[]) => {
-        this.items.push(...items);
-      });
+  toggleInPenFilter(inPen: boolean) {
+    this.inPen = inPen;
+    this.resetList();
+  }
+
+  toggleOldFilter(old: boolean) {
+    this.old = old;
+    this.resetList();
   }
 
   resetList() {
     this.page = 0;
-    this.itemService.list(this.size, this.page, this.filter, false)
+    this.itemService.list(this.size, this.page, true, this.getSearchParams())
       .subscribe((items: Item[]) => {
         this.items = items;
+        this.filterCount = ItemCacheService.getFilterElements();
       });
   }
 
-  delete(item: Item) {
-    this.itemService.delete(item).subscribe((resp: any) => {
-      this.itemCount--;
-      this.items.splice(this.items.findIndex(i => i.id === item.id), 1);
-      this.itemService.list(1, this.items.length, this.filter, false)
-        .subscribe((items: Item[]) => {
-          if (items && items.length > 0 && !this.items.find((i: Item) => i.id === items[0].id)) {
-            this.items.push(...items);
-          }
-        });
+  onScroll() {
+    if (this.items.length === (this.page + 1) * this.size) {
+      this.loading = true;
+    }
+    this.itemService.list(this.size, ++this.page, false, this.getSearchParams())
+      .subscribe((items: Item[]) => {
+        if (items.length < this.size) {
+          this.loading = false;
+        }
+        this.items.push(...items);
+      });
+  }
+
+  private getSearchParams(): ItemSearch {
+    const search: ItemSearch = {};
+    if (this.type) {
+      search.code = this.type;
+    }
+    if (this.inPen) {
+      search.inPen = true;
+    }
+    if (this.old) {
+      search.maxLife = '0';
+    }
+    return search;
+  }
+
+  openDetails(item: Item) {
+    this.dialog.open(ItemDetailsDialogComponent, {
+      data: {item, pens: this.pens, itemsIdInPen: this.itemsInPen},
+      disableClose: true,
+      position: {top: '50px'},
+      width: '100%',
+      maxWidth: '500px',
+      minWidth: '340px',
+      restoreFocus: false
+    }).afterClosed().subscribe({
+      next: (response: ItemDetailsResponse) => {
+        if (response.deleted) {
+          this.totalCount--;
+          this.deleteFromList(response.itemId);
+        }
+        if (response.removeFromPen && this.inPen) {
+          this.deleteFromList(response.itemId);
+        }
+      }
     });
   }
 
-  addToPen(item: Item) {
-    this.pen.items.push({id: item.id});
-    this.itemsInPen.push(item.id);
-    this.penService.update(this.pen).subscribe(
-      pen => {
-      },
-      error => {
-        this.removeItem(item);
+  private deleteFromList(id: string) {
+    this.filterCount--;
+    this.items.splice(this.items.findIndex(i => i.id.toString() === id.toString()), 1);
+    this.itemService.list(1, this.items.length, false, this.getSearchParams())
+      .subscribe((items: Item[]) => {
+        if (items && items.length > 0 && !this.items.find(
+          (i: Item) => i.id.toString() === items[0].id.toString())) {
+          this.items.push(...items);
+        }
       });
-  }
-
-  removeFromPen(item: Item) {
-    this.removeItem(item);
-    this.penService.update(this.pen).subscribe(
-      pen => {
-      },
-      error => {
-        this.pen.items.push({id: item.id});
-        this.itemsInPen.push(item.id);
-      });
-  }
-
-  private removeItem(item: Item) {
-    this.pen.items.splice(this.pen.items.findIndex(i => i.id.toString() === item.id.toString()), 1);
-    this.itemsInPen.splice(this.itemsInPen.indexOf(item.id.toString()), 1);
   }
 }

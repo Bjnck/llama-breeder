@@ -6,7 +6,7 @@ import {CreatureDetailsDialogComponent} from '../../shared/creature/details/crea
 import {User} from '../../shared/user/user.interface';
 import {CreatureDetailsResponse} from '../../shared/creature/details/creature-details-response.interface';
 import {environment} from '../../../environments/environment';
-import {PenInfo} from '../pen.interface';
+import {Pen, PenInfo} from '../pen.interface';
 import {PenService} from '../pen.service';
 
 @Component({
@@ -26,6 +26,7 @@ export class PenFieldComponent {
   @Input() creaturePrices: CreatureInfo[];
 
   @Output() detailsDialogEventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() extendEventEmitter: EventEmitter<Pen> = new EventEmitter<Pen>();
 
   constructor(private dialog: MatDialog,
               private penService: PenService) {
@@ -61,9 +62,9 @@ export class PenFieldComponent {
   extend(size: number) {
     const originalSize = this.pen.pen.size;
     this.pen.pen.size = size;
-    this.penService.update(this.pen.pen).subscribe({
-        error: err => this.pen.pen.size = originalSize
-      }
+    this.penService.update(this.pen.pen).subscribe(
+      next => this.extendEventEmitter.emit(this.pen.pen),
+      error => this.pen.pen.size = originalSize
     );
   }
 }

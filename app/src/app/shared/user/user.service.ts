@@ -1,8 +1,9 @@
 import {EventEmitter, Injectable, Output} from '@angular/core';
 import {User} from './user.interface';
-import {map} from 'rxjs/operators';
+import {map, switchMap} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {RestService} from '../rest/rest.service';
+import {Restangular} from 'ngx-restangular';
 
 @Injectable()
 export class UserService {
@@ -14,18 +15,19 @@ export class UserService {
   }
 
   fetch(): Observable<User> {
-    return this.restService.rest().one('user').get()
-      .pipe(map(user => {
+    return this.restService.rest().pipe(switchMap(rest => {
+      return rest.one('user').get().pipe(map(user => {
         this.user = user;
         this.userChangeEventEmitter.emit(this.user);
         return user;
-      }));
+      })) as Observable<User>;
+    }));
   }
 
-  update(user: any): Observable<User> {
+  update(user: any): Observable<any> {
     this.user = user;
     this.userChangeEventEmitter.emit(this.user);
-    return this.restService.rest(user).put();
+    return this.restService.rest(user).pipe(switchMap((rest: Restangular) => rest.put()));
   }
 
   updateCoins(coins: number) {
@@ -38,9 +40,9 @@ export class UserService {
     this.userChangeEventEmitter.emit(this.user);
   }
 
-  delete(user: any) {
+  delete(user: any): Observable<any> {
     this.user = null;
     this.userChangeEventEmitter.emit(this.user);
-    return this.restService.rest(user).remove();
+    return this.restService.rest(user).pipe(switchMap((rest: Restangular) => rest.remove()));
   }
 }

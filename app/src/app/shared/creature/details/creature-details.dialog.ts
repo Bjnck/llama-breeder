@@ -12,7 +12,6 @@ import {environment} from '../../../../environments/environment';
 import {RedeemCreatureDialogComponent} from '../redeem/redeem-creature.dialog';
 import {CreatureDetailsResponse} from './creature-details-response.interface';
 import {Observable} from 'rxjs';
-import {CreatureCacheService} from '../creature-cache.service';
 
 @Component({
   templateUrl: './creature-details.dialog.html',
@@ -129,7 +128,7 @@ export class CreatureDetailsDialogComponent implements OnInit, OnDestroy {
   private delete(creature: Creature) {
     this.creatureService.delete(creature).subscribe({
       next: resp => {
-        CreatureCacheService.decrementTotalElements();
+        // todo move updateCoins to creatureService in pipe
         this.userService.updateCoins(this.user.coins + resp.coins);
         this.onClose(true);
       }

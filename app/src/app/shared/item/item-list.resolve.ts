@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve} from '@angular/router';
-import {ItemService} from '../shared/item/item.service';
-import {Item} from '../shared/item/item.interface';
+import {ItemService} from './item.service';
+import {Item} from './item.interface';
 import {Observable} from 'rxjs';
 
 @Injectable()
@@ -11,6 +11,6 @@ export class ItemListResolve implements Resolve<Item[]> {
   }
 
   resolve(route: ActivatedRouteSnapshot): Observable<Item[]> {
-    return this.itemService.list(20, 0, null);
+    return this.itemService.list(20, 0);
   }
 }

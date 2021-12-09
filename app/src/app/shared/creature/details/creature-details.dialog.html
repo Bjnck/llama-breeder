@@ -40,6 +40,21 @@
         </div>
       </div>
     </div>
+    <!--todo use template-->
+    <div class="genes-description">
+      <div *ngIf="creature.genes.gene1">
+        <span *ngIf="creature.genes.gene1.toLowerCase() === 'cresus'">Double ¤ when llama is sold</span>
+        <span *ngIf="creature.genes.gene1.toLowerCase() === 'thirst'">Thirst increases faster</span>
+        <span *ngIf="creature.genes.gene1.toLowerCase() === 'hunger'">Hunger increases faster</span>
+        <span *ngIf="creature.genes.gene1.toLowerCase() === 'love'">Love increases faster</span>
+      </div>
+      <div *ngIf="creature.genes.gene2">
+        <span *ngIf="creature.genes.gene2.toLowerCase() === 'cresus'">Double ¤ when llama is sold</span>
+        <span *ngIf="creature.genes.gene2.toLowerCase() === 'thirst'">Thirst increases faster</span>
+        <span *ngIf="creature.genes.gene2.toLowerCase() === 'hunger'">Hunger increases faster</span>
+        <span *ngIf="creature.genes.gene2.toLowerCase() === 'love'">Love increases faster</span>
+      </div>
+    </div>
 
     <mat-divider class="divider"></mat-divider>
 

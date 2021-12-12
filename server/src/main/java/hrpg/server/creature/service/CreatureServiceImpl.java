@@ -79,7 +79,7 @@ public class CreatureServiceImpl implements CreatureService {
         int price = 0;
         if (!creature.isWild()) price = creaturesProperties.getPrice(creature.getGeneration());
 
-        if(hasGene(creature, Gene.CRESUS)) price *= 3;
+        if (hasGene(creature, Gene.CRESUS)) price *= 3;
 
         userService.addCoins(price);
 
@@ -96,7 +96,7 @@ public class CreatureServiceImpl implements CreatureService {
 
         if (CreatureUtil.isHittable(creature, itemCode, itemQuality)) {
             //remove energy
-            creature.setEnergy(creature.getEnergy() - ENERGY_DIVIDER);
+            creature.setEnergy(Math.max(creature.getEnergy() - ENERGY_DIVIDER, ENERGY_MIN));
             //check item quality is valid for creature generation
             if (itemQuality >= creature.getGeneration()) {
                 //increase stats

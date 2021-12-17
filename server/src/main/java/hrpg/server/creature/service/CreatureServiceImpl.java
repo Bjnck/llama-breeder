@@ -78,6 +78,10 @@ public class CreatureServiceImpl implements CreatureService {
         //sell creature
         int price = 0;
         if (!creature.isWild()) price = creaturesProperties.getPrice(creature.getGeneration());
+        if (creature.getInfo().getColor2() != null) {
+            price += (price / 2);
+            price = (int) Math.floor(price);
+        }
 
         if (hasGene(creature, Gene.CRESUS)) price *= 3;
 
